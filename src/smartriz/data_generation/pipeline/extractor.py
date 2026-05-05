@@ -44,8 +44,8 @@ def extract_reasoning_and_content(message: Any) -> tuple[str | None, str]:
     return None, content
 
 
-def parse_json_content(content: str) -> dict | None:
-    """Parse JSON from model content string.  Returns None on failure."""
+def parse_json_content(content: str) -> Any | None:
+    """Parse JSON from model content string. Returns None on failure."""
     try:
         return json.loads(content)
     except (json.JSONDecodeError, TypeError):
@@ -67,25 +67,72 @@ def extract_case(response: Any, parent_seed_id: str, generation_method: str,
         return None
 
     reasoning, content = extract_reasoning_and_content(message)
-
-    if reasoning is None:
-        logger.warning("[drop] no reasoning extracted — seed=%s method=%s round=%d",
-                       parent_seed_id, generation_method, generation_round)
-        return None
-
     data = parse_json_content(content)
     if data is None:
         logger.warning("[drop] JSON parse failed — seed=%s method=%s round=%d content_preview=%.120r",
                        parent_seed_id, generation_method, generation_round, content)
         return None
 
+    # Self-instruct is expected to return a wrapper with 5 variations, each
+    # carrying its own reasoning_chain. Some providers omit reasoning_content
+    # and <think>, so we allow that path and normalize list-shaped responses.
+    if generation_method == "self_instruct":
+        if isinstance(data, list):
+            data = {"variations": data}
+        if not isinstance(data, dict):
+            logger.warning(
+                "[drop] self-instruct payload is not dict/list — seed=%s round=%d",
+                parent_seed_id,
+                generation_round,
+            )
+            return None
+        variations = data.get("variations")
+        if not isinstance(variations, list):
+            logger.warning(
+                "[drop] self-instruct variations not a list (got %s) — seed=%s round=%d data_keys=%s",
+                type(variations).__name__,
+                parent_seed_id,
+                generation_round,
+                list(data.keys())[:10],
+            )
+            return None
+        
+        clean_variations = [v for v in variations if isinstance(v, dict)]
+        if not clean_variations:
+            logger.warning(
+                "[drop] self-instruct variations empty after filter — seed=%s round=%d raw_types=%s",
+                parent_seed_id,
+                generation_round,
+                [type(v).__name__ for v in variations[:5]],
+            )
+            return None
+        
+        data["variations"] = clean_variations
+        if reasoning is not None and "reasoning_chain" not in data:
+            data["reasoning_chain"] = reasoning
+        return data
+
     required = {"id", "source", "language", "domain", "problem",
                 "contradiction_pair", "inventive_principles", "solution", "complexity"}
+    if not isinstance(data, dict):
+        logger.warning("[drop] payload is not a dict — seed=%s method=%s round=%d",
+                       parent_seed_id, generation_method, generation_round)
+        return None
     missing = required - data.keys()
     if missing:
         logger.warning("[drop] missing fields %s — seed=%s method=%s round=%d",
                        missing, parent_seed_id, generation_method, generation_round)
         return None
+
+    # For evol methods: allow reasoning_chain in JSON if reasoning_content/<think> absent
+    if reasoning is None:
+        json_reasoning = data.get("reasoning_chain")
+        if isinstance(json_reasoning, str) and json_reasoning.strip():
+            reasoning = json_reasoning.strip()
+        else:
+            logger.warning("[drop] no reasoning extracted — seed=%s method=%s round=%d",
+                           parent_seed_id, generation_method, generation_round)
+            return None
 
     data["reasoning_chain"] = reasoning
 

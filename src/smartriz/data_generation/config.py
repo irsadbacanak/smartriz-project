@@ -17,12 +17,12 @@ DEEPINFRA_API_KEY: str = os.environ["DEEPINFRA_API_KEY"]
 
 # ── API ──────────────────────────────────────────────────────────────────────
 BASE_URL = "https://api.deepinfra.com/v1/openai"
-TEACHER_MODEL = "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+TEACHER_MODEL = "deepseek-ai/DeepSeek-V4-Pro"  # Top reasoning model (Quality: 51.51)
 JUDGE_MODEL = "deepseek-ai/DeepSeek-V3"
 
 # ── Pricing (USD per 1M tokens) ───────────────────────────────────────────────
-TEACHER_IN_PER_M = 0.23
-TEACHER_OUT_PER_M = 0.69
+TEACHER_IN_PER_M = 1.40  # DeepSeek-V4-Pro pricing
+TEACHER_OUT_PER_M = 1.40
 JUDGE_IN_PER_M = 0.27
 JUDGE_OUT_PER_M = 1.10
 

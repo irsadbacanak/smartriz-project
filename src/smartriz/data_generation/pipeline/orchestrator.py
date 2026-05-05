@@ -143,7 +143,8 @@ async def _run_teacher_task(
     for c in cases:
         append_jsonl(c, RAW_JSONL)
 
-    append_processed_key(key, PROCESSED_KEYS)
+    if cases:
+        append_processed_key(key, PROCESSED_KEYS)
     return cases
 
 
@@ -166,8 +167,31 @@ def _split_self_instruct(raw: dict | None, seed: dict, gen_round: int, temperatu
         # Wrap it as a single variation
         variations = [raw]
 
+    # Normalize model output shape drift:
+    # - {"variations": {...}}  -> wrap single object into list
+    # - {"variations": "<json>"} -> best-effort parse JSON string payload
+    if isinstance(variations, dict):
+        variations = [variations]
+    elif isinstance(variations, str):
+        try:
+            parsed = json.loads(variations)
+            if isinstance(parsed, dict):
+                variations = [parsed]
+            elif isinstance(parsed, list):
+                variations = parsed
+            else:
+                variations = []
+        except json.JSONDecodeError:
+            variations = []
+
     results = []
     for i, var in enumerate(variations, start=1):
+        if isinstance(var, str):
+            try:
+                parsed_var = json.loads(var)
+                var = parsed_var
+            except json.JSONDecodeError:
+                pass
         if not isinstance(var, dict):
             logger.warning("[drop] variation %d is not a dict — seed=%s", i, seed_id)
             continue

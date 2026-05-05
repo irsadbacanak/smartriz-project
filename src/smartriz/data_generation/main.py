@@ -56,8 +56,8 @@ async def _run(args: argparse.Namespace) -> None:
     if args.smoke:
         logger.info("=== SMOKE TEST (n=%d seeds) ===", args.n)
         stats = await run_round(
-            generation_round=1,
-            temperature=0.7,
+            generation_round=args.gen_round,
+            temperature=args.temperature,
             smoke=True,
             smoke_n=args.n,
         )
@@ -70,6 +70,7 @@ async def _run(args: argparse.Namespace) -> None:
 
     if args.auto:
         gen_round = args.gen_round
+        no_progress_rounds = 0
         while True:
             current = count_final_cases()
             if current >= args.target:
@@ -83,6 +84,23 @@ async def _run(args: argparse.Namespace) -> None:
             dedup_count = deduplicate()
             final_count = validate_and_assemble()
             logger.info("Round %d done — final total: %d", gen_round, final_count)
+            if final_count <= current:
+                no_progress_rounds += 1
+                logger.warning(
+                    "No dataset growth in round %d (current=%d, final=%d).",
+                    gen_round,
+                    current,
+                    final_count,
+                )
+                if no_progress_rounds >= 2:
+                    logger.error(
+                        "Stopping auto mode after %d no-progress rounds. "
+                        "Check API billing/access (e.g., HTTP 402).",
+                        no_progress_rounds,
+                    )
+                    break
+            else:
+                no_progress_rounds = 0
             gen_round += 1
         return
 
