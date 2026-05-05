@@ -14,7 +14,9 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import random
 import sys
+from collections import defaultdict
 from pathlib import Path
 from typing import AsyncIterator
 
@@ -66,6 +68,40 @@ def append_processed_key(key: str, path: Path = PROCESSED_KEYS) -> None:
 def append_jsonl(record: dict, path: Path) -> None:
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+# ── Seed scheduler (round-robin selector) ─────────────────────────────────────
+
+class SeedScheduler:
+    """Round-robin seed selector with per-seed usage cap.
+
+    Ensures uniform seed coverage before any seed is selected a second time.
+    Uses least-used-first policy within each tier.
+    """
+
+    def __init__(self, seeds: list[dict], max_per_seed: int = 3) -> None:
+        self.seeds = seeds
+        self.max_per_seed = max_per_seed
+        self.usage: dict[str, int] = defaultdict(int)
+
+    def next_seed(self) -> dict | None:
+        """Return next seed. Returns None when all seeds have reached max_per_seed."""
+        available = [s for s in self.seeds if self.usage[s["id"]] < self.max_per_seed]
+        if not available:
+            return None
+        min_usage = min(self.usage[s["id"]] for s in available)
+        candidates = [s for s in available if self.usage[s["id"]] == min_usage]
+        chosen = random.choice(candidates)
+        self.usage[chosen["id"]] += 1
+        return chosen
+
+    def all_seeds_for_round(self) -> list[dict]:
+        """Return all available seeds for one full round (each selected once)."""
+        available = [s for s in self.seeds if self.usage[s["id"]] < self.max_per_seed]
+        random.shuffle(available)
+        for s in available:
+            self.usage[s["id"]] += 1
+        return available
 
 
 # ── Task generation ────────────────────────────────────────────────────────────
@@ -424,10 +460,15 @@ async def run_round(
     smoke_n: int = 5,
 ) -> dict:
     """Run a full pipeline round. Returns stats dict."""
-    seeds = load_seeds()
+    all_seeds = load_seeds()
     if smoke:
-        seeds = seeds[:smoke_n]
-        logger.info("SMOKE MODE: using %d seeds", len(seeds))
+        # Pick smoke_n seeds RANDOMLY — not always the first ones
+        seeds = random.sample(all_seeds, min(smoke_n, len(all_seeds)))
+        logger.info("SMOKE MODE: using %d randomly selected seeds from %d total",
+                    len(seeds), len(all_seeds))
+    else:
+        seeds = all_seeds
+        logger.info("Full round: using all %d seeds", len(seeds))
 
     processed_keys = load_processed_keys()
     cost_tracker = CostTracker()
