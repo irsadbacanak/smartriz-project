@@ -1,3 +1,5 @@
 .env
 .venv/
 data/chroma_db/
+ui/node_modules/
+ui/dist/

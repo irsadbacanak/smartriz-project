@@ -1,2 +1,12 @@
 PyYAML
 chromadb
+requests
+openai
+python-dotenv
+langgraph
+langchain
+langchain-openai
+streamlit
+pydantic
+fastapi
+uvicorn[standard]
