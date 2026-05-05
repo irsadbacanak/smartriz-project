@@ -64,3 +64,16 @@ def test_principles_reference_block_contains_all_40():
     block = principles_reference_block()
     for n in range(1, 41):
         assert f"#{n} " in block
+
+
+def test_validate_principles_accepts_abbreviated_canonical():
+    # "Spheroid" is a valid abbreviation of "Spheroidality - Curvature"
+    result = validate_principles(["#14 Spheroid"])
+    assert result["valid"] is True
+    assert result["normalized"] == ["#14 Spheroidality - Curvature"]
+
+
+def test_validate_principles_rejects_canonical_with_trailing_garbage():
+    # "Skipping!" should NOT be accepted — stray character
+    result = validate_principles(["#21 Skipping!"])
+    assert result["valid"] is False

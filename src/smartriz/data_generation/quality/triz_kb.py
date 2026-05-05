@@ -86,7 +86,7 @@ _ALIASES: dict[str, int | None] = {
     "convert harm to benefit": 22,
     "pneumatics and hydraulics": 29,
     "pneumatics/hydraulics": 29,
-    "pneumatic/vacuum": None,  # explicitly invalid — no principle #42
+    "pneumatic/vacuum": None,  # explicitly invalid name — not a recognised TRIZ principle alias
     "cheap short-living objects": 27,
     "cheap short-lived objects": 27,
     "parameter changes": 35,
@@ -212,11 +212,11 @@ def validate_principles(principles: list[str]) -> dict:
             normalized.append(f"#{num} {canonical_name}")
             continue
 
-        # Partial-match fallback: name starts with canonical or vice versa
-        if (len(canonical_name) >= 8 and name_lower.startswith(canonical_name.lower()[:8])) or \
-           (len(name_lower) >= 8 and canonical_name.lower().startswith(name_lower[:8])):
+        # Partial-match fallback: accept abbreviated canonical names (e.g. "#14 Spheroid")
+        # but NOT canonical-starts-with-input (that risks accepting corrupted names)
+        if len(name_lower) >= 6 and canonical_name.lower().startswith(name_lower):
             normalized.append(f"#{num} {canonical_name}")
-            logger.info("[validate_principles] fuzzy-accept %r → '#%d %s'", raw_stripped, num, canonical_name)
+            logger.info("[validate_principles] fuzzy-accept abbreviated %r → '#%d %s'", raw_stripped, num, canonical_name)
             continue
 
         # Hard reject
