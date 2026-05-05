@@ -12,19 +12,30 @@ from __future__ import annotations
 
 def build_prompt(variation: dict) -> tuple[str, str]:
     """Return (system, user) prompt for deepening evolution."""
-    system = (
-        "You are a TRIZ expert specializing in multi-contradiction problems. "
-        "You will deepen the provided TRIZ case by adding a secondary contradiction "
-        "or a previously hidden engineering constraint that emerges when the primary "
-        "contradiction is resolved. "
-        "The solution must use 2–3 inventive principles working together. "
-        "Complexity increases by one level (simple→medium, medium→complex; "
-        "complex stays complex but must involve three contradictions). "
-        "RESPOND ONLY WITH VALID JSON matching the schema exactly."
-    )
+    from smartriz.data_generation.quality.triz_kb import principles_reference_block
+    canonical_list = principles_reference_block()
 
     current_complexity = variation.get("complexity", "simple")
     next_complexity = {"simple": "medium", "medium": "complex", "complex": "complex"}[current_complexity]
+
+    system = (
+        "You are a TRIZ expert specializing in multi-contradiction problems.\n"
+        "You will deepen the provided TRIZ case by adding a secondary contradiction "
+        "or a previously hidden engineering constraint that emerges when the primary "
+        "contradiction is resolved.\n"
+        "The solution must use 2–3 inventive principles working together.\n"
+        "Complexity increases by one level (simple→medium, medium→complex; "
+        "complex stays complex but must involve three contradictions).\n\n"
+        "CRITICAL — PRINCIPLE NAMES:\n"
+        "You MUST select principles ONLY from this exact list:\n"
+        f"{canonical_list}\n\n"
+        "Do NOT invent principle names. Do NOT exceed #40.\n\n"
+        "REASONING CHAIN: For medium and complex cases, the simple numbered template "
+        "'1)Problem 2)Parameters 3)Matrix 4)Apply' is BANNED. "
+        "Instead use: Q&A dialogue exploring counterfactuals, "
+        "or narrative that explicitly discusses trade-offs between candidate principles.\n\n"
+        "RESPOND ONLY WITH VALID JSON matching the schema exactly."
+    )
 
     schema_block = """{
   "id": "<parent_id>-DEEP",
@@ -67,5 +78,6 @@ Critical rules:
 - inventive_principles list must contain 2 or 3 principles total.
 - reasoning_chain must cite matrix cells for BOTH contradictions.
 - Do NOT lower complexity.
+- All inventive_principles must use exact canonical names from the list provided.
 """
     return system, user

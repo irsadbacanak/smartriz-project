@@ -25,15 +25,22 @@ _CONSTRAINT_EXAMPLES = [
 
 def build_prompt(variation: dict) -> tuple[str, str]:
     """Return (system, user) prompt for constraint-addition evolution."""
+    from smartriz.data_generation.quality.triz_kb import principles_reference_block
+    canonical_list = principles_reference_block()
+
     system = (
-        "You are a TRIZ expert and product compliance engineer. "
+        "You are a TRIZ expert and product compliance engineer.\n"
         "You will evolve the provided TRIZ case by imposing a realistic real-world constraint "
-        "(regulatory, manufacturing, economic, or environmental). "
+        "(regulatory, manufacturing, economic, or environmental).\n"
         "The constraint must genuinely change which inventive principles are most applicable "
-        "— not just restate the original problem. "
+        "— not just restate the original problem.\n"
         "Rewrite the problem, update or extend the inventive_principles list, "
         "and produce a fresh reasoning_chain that explains why the original principles "
-        "are affected and which new principles are selected. "
+        "are affected and which new principles are selected.\n\n"
+        "CRITICAL — PRINCIPLE NAMES:\n"
+        "You MUST select principles ONLY from this exact list:\n"
+        f"{canonical_list}\n\n"
+        "Do NOT invent principle names. Do NOT exceed #40.\n"
         "RESPOND ONLY WITH VALID JSON matching the schema exactly."
     )
 
