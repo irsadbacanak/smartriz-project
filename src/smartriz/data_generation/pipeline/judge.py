@@ -1,11 +1,12 @@
 """
-Async judge client — wraps DeepSeek-V3 via DeepInfra.
+Async judge client — wraps Qwen2.5-72B-Instruct via DeepInfra.
 
 Features:
-  - Four-criterion rubric (contradiction_validity, principle_correctness,
-    reasoning_coherence, solution_feasibility)
-  - Returns score dict with computed average
+  - Binary pass/fail rubric (5 YES/NO questions: Q1-Q5)
+  - Returns verdict dict with PASS/FAIL and per-question answers
+  - None returned for FAIL cases — caller drops them from dataset
   - Same retry / concurrency / cost-tracking setup as teacher
+  - Backward-compat fallback: old 0-10 numeric responses treated with 7.0 threshold
 """
 from __future__ import annotations
 
@@ -35,11 +36,21 @@ logger = logging.getLogger(__name__)
 
 _semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
-_REQUIRED_KEYS = {
+# Old-format keys (0-10 numeric scores) — used for backward-compat fallback
+_OLD_REQUIRED_KEYS = {
     "contradiction_validity",
     "principle_correctness",
     "reasoning_coherence",
     "solution_feasibility",
+}
+
+# New binary question keys
+_NEW_QUESTION_KEYS = {
+    "Q1_principles_canonical",
+    "Q2_reasoning_uses_all_principles",
+    "Q3_contradiction_domain_match",
+    "Q4_solution_not_forced_fit",
+    "Q5_reasoning_not_template",
 }
 
 
@@ -59,7 +70,7 @@ def _make_retry():
 
 
 class JudgeClient:
-    """Async client for the four-criterion DeepSeek-V3 judge."""
+    """Async client for the binary pass/fail Qwen2.5-72B judge."""
 
     def __init__(self, cost_tracker: CostTracker, client: httpx.AsyncClient | None = None) -> None:
         self._cost_tracker = cost_tracker
@@ -73,21 +84,26 @@ class JudgeClient:
         await self._client.aclose()
 
     async def score(self, case: dict) -> dict | None:
-        """Score a case dict. Returns score dict with 'average' or None on failure."""
+        """Score a case dict.
+
+        Returns:
+            dict with 'verdict' == 'PASS' and per-question answers, or
+            None if the case FAILS or the API call fails entirely.
+        """
         async with _semaphore:
             system_msg, user_msg = build_prompt(case)
-            scores = await self._call_api(system_msg, user_msg)
-            if scores is None:
+            result = await self._call_api(system_msg, user_msg)
+            if result is None:
                 # One retry with stricter instruction
                 logger.info("[judge-retry] retrying at T=0.1 for case %s", case.get("id", "?"))
-                scores = await self._call_api(
+                result = await self._call_api(
                     system_msg,
                     "RESPOND ONLY WITH VALID JSON. NO PROSE.\n\n" + user_msg,
                     temperature=0.1,
                 )
-            if scores is None:
+            if result is None:
                 logger.warning("[judge-drop] failed to score case %s", case.get("id", "?"))
-            return scores
+            return result
 
     @_make_retry()
     async def _call_api(
@@ -111,27 +127,79 @@ class JudgeClient:
 
         raw_content = data["choices"][0]["message"].get("content", "")
         try:
-            scores = json.loads(raw_content)
+            result = json.loads(raw_content)
         except (json.JSONDecodeError, TypeError):
             logger.warning("[judge] JSON parse failed — content=%.80r", raw_content)
             return None
 
-        if not _REQUIRED_KEYS.issubset(scores.keys()):
-            missing = _REQUIRED_KEYS - scores.keys()
-            logger.warning("[judge] missing score keys %s for case content=%.80r", missing, raw_content)
+        # ── New binary verdict schema ────────────────────────────────────────
+        if "verdict" in result or _NEW_QUESTION_KEYS.intersection(result.keys()):
+            verdict = result.get("verdict", "FAIL").upper().strip()
+
+            if verdict == "FAIL":
+                fail_reasons = result.get("fail_reasons", [])
+                logger.info(
+                    "[judge-fail] case rejected — reasons: %s",
+                    fail_reasons if fail_reasons else "(none provided)",
+                )
+                return None  # Drop the case
+
+            if verdict == "PASS":
+                return {
+                    "verdict": "PASS",
+                    "Q1": result.get("Q1_principles_canonical", "?"),
+                    "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
+                    "Q3": result.get("Q3_contradiction_domain_match", "?"),
+                    "Q4": result.get("Q4_solution_not_forced_fit", "?"),
+                    "Q5": result.get("Q5_reasoning_not_template", "?"),
+                    "fail_reasons": result.get("fail_reasons", []),
+                    "average": 10.0,  # Backward compat: PASS cases get 10.0 for downstream meta
+                }
+
+            # Unknown verdict value — treat as FAIL for safety
+            logger.warning("[judge] unknown verdict value %r — treating as FAIL", verdict)
             return None
 
-        # Validate range
-        for key in _REQUIRED_KEYS:
-            val = scores[key]
-            if not isinstance(val, (int, float)) or not (0 <= val <= 10):
-                logger.warning("[judge] out-of-range score %s=%s", key, val)
+        # ── Backward-compat fallback: old 0-10 numeric format ────────────────
+        if _OLD_REQUIRED_KEYS.issubset(result.keys()):
+            logger.info("[judge] received old 0-10 format response — applying 7.0 threshold")
+
+            for key in _OLD_REQUIRED_KEYS:
+                val = result[key]
+                if not isinstance(val, (int, float)) or not (0 <= val <= 10):
+                    logger.warning("[judge] out-of-range score %s=%s", key, val)
+                    return None
+
+            average = round(
+                sum(result[k] for k in _OLD_REQUIRED_KEYS) / len(_OLD_REQUIRED_KEYS), 2
+            )
+            result["average"] = average
+
+            if average < 7.0:
+                logger.info("[judge-fail] old-format case rejected — average=%.2f < 7.0", average)
                 return None
 
-        scores["average"] = round(
-            sum(scores[k] for k in _REQUIRED_KEYS) / len(_REQUIRED_KEYS), 2
+            return {
+                "verdict": "PASS",
+                "Q1": "YES",  # Inferred from passing threshold
+                "Q2": "YES",
+                "Q3": "YES",
+                "Q4": "YES",
+                "Q5": "YES",
+                "fail_reasons": [],
+                "average": average,
+                **result,  # Keep original numeric scores for debugging
+            }
+
+        # No recognized schema
+        missing_new = _NEW_QUESTION_KEYS - result.keys()
+        missing_old = _OLD_REQUIRED_KEYS - result.keys()
+        logger.warning(
+            "[judge] unrecognized response schema — missing new keys %s, missing old keys %s",
+            missing_new,
+            missing_old,
         )
-        return scores
+        return None
 
 
 class _UsageProxy:

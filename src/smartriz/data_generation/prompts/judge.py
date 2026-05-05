@@ -1,78 +1,60 @@
 """
-LLM-as-a-Judge prompt — four-criterion rubric.
+LLM-as-a-Judge prompt — binary pass/fail with 5 YES/NO questions.
 
-Returns a JSON object with four individual scores (0–10 each) and an average.
-A single-number 0–10 score is explicitly forbidden.
-
-Criteria:
-  contradiction_validity   — are improving and worsening parameters genuinely opposing forces?
-  principle_correctness    — do the principles plausibly resolve the contradiction?
-  reasoning_coherence      — does the chain logically connect problem → parameters → matrix → principles → solution?
-  solution_feasibility     — is the solution physically/engineering-realistic and buildable?
+Any NO answer fails the example immediately. No partial credit.
+A failed example is never added to the dataset.
 """
 from __future__ import annotations
+from smartriz.data_generation.quality.triz_kb import principles_reference_block
 
-_SCORE_SCHEMA = """{
-  "contradiction_validity": <integer 0-10>,
-  "principle_correctness": <integer 0-10>,
-  "reasoning_coherence": <integer 0-10>,
-  "solution_feasibility": <integer 0-10>
+_CANONICAL_LIST = principles_reference_block()
+
+_SCHEMA = """{
+  "Q1_principles_canonical": "YES or NO",
+  "Q2_reasoning_uses_all_principles": "YES or NO",
+  "Q3_contradiction_domain_match": "YES or NO",
+  "Q4_solution_not_forced_fit": "YES or NO",
+  "Q5_reasoning_not_template": "YES or NO",
+  "verdict": "PASS or FAIL",
+  "fail_reasons": ["<reason if any question is NO — empty list if all YES>"]
 }"""
-
-_CRITERION_DEFINITIONS = """SCORING CRITERIA (score each independently on a 0–10 integer scale):
-
-1. contradiction_validity (0–10)
-   10 = The improving and worsening parameters are in direct, unavoidable tension in this specific
-        engineering context. Increasing one demonstrably forces the other to degrade.
-   5  = There is a plausible but weak or indirect relationship between the two parameters.
-   0  = The parameters are not genuinely contradictory in the described context, or one/both
-        parameters are not from the 39 TRIZ parameters.
-
-2. principle_correctness (0–10)
-   10 = Each listed inventive principle directly and specifically resolves the stated contradiction.
-        The principle number and name match the standard Altshuller 40 Principles.
-   5  = Principles are broadly relevant to the domain but not the best fit for this contradiction.
-   0  = Principles are hallucinated (non-existent numbers), misnamed, or completely irrelevant.
-
-3. reasoning_coherence (0–10)
-   10 = The reasoning chain explicitly: (a) states the concrete problem, (b) maps to TRIZ parameters
-        with IDs, (c) references a matrix lookup, (d) interprets the selected principle(s) for the
-        specific context, (e) derives the solution from the principle. Steps flow logically.
-   5  = Reasoning chain covers most steps but skips the matrix lookup or parameter IDs, or the
-        connection from principle to solution is hand-wavy.
-   0  = No logical progression; reasoning is circular, contradictory, or missing entirely.
-
-4. solution_feasibility (0–10)
-   10 = The solution is physically plausible, could be prototyped or manufactured with known
-        materials/processes, and directly resolves the stated contradiction.
-   5  = Solution is conceptually sound but vague, or requires speculative technology.
-   0  = Solution is physically impossible, contradicts the laws of thermodynamics/mechanics,
-        or is too abstract to be actionable."""
 
 
 def build_prompt(case: dict) -> tuple[str, str]:
-    """Return (system, user) prompt for the four-criterion judge."""
+    """Return (system, user) prompt for binary pass/fail judge."""
     system = (
-        "You are a TRIZ expert and quality-control judge evaluating AI-generated engineering "
-        "problem-solution cases. "
-        "Score the provided case on FOUR separate criteria, each on a 0–10 integer scale. "
-        "Be strict: 10/10 means expert-level, publishable quality. "
-        "Do NOT produce a single combined score. "
-        "RESPOND ONLY WITH VALID JSON matching the schema exactly — no prose."
+        "You are a TRIZ expert and quality-control judge.\n"
+        "Evaluate the provided TRIZ case study by answering 5 binary questions.\n"
+        "ANY 'NO' answer means the case FAILS. No partial credit.\n"
+        "Be strict — a principle that is close but wrong in name or number is a NO for Q1.\n"
+        "RESPOND ONLY WITH VALID JSON matching the schema exactly — no prose.\n\n"
+        "CANONICAL PRINCIPLE REFERENCE (40 principles):\n"
+        f"{_CANONICAL_LIST}"
     )
 
     import json
     user = f"""CASE TO EVALUATE:
 {json.dumps(case, ensure_ascii=False, indent=2)}
 
-{_CRITERION_DEFINITIONS}
+Answer each question YES or NO.
+
+Q1. Are ALL listed inventive_principles using EXACT canonical names from the reference list above?
+    (Wrong number, invented name, or number above 40 = NO)
+
+Q2. Does the reasoning_chain ACTUALLY USE every principle in inventive_principles?
+    (A principle listed but not mentioned or applied in reasoning = NO)
+
+Q3. Are the contradiction parameters logically consistent with the problem domain?
+    (e.g., a chemistry problem using "cushioning" principle with no thermal justification = NO)
+
+Q4. Is the solution domain-native — NOT a forced copy of a parent seed's solution pattern?
+    (Generic re-application of the same principle in a new domain without new logic = NO)
+
+Q5. Is the reasoning_chain non-formulaic?
+    (The exact pattern "1)Problem 2)Parameters 3)Matrix 4)Apply" for a medium/complex case = NO)
+    (Simple cases with 4-6 step numbered reasoning are acceptable.)
 
 OUTPUT SCHEMA (respond with exactly this JSON — no other text):
-{_SCORE_SCHEMA}
-
-Important:
-- All four fields are required integers in range [0, 10].
-- Do NOT output an "average" field — the caller computes it.
-- Do NOT add explanations outside the JSON object.
+{_SCHEMA}
 """
     return system, user

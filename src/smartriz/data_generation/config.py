@@ -18,13 +18,13 @@ DEEPINFRA_API_KEY: str = os.environ["DEEPINFRA_API_KEY"]
 # ── API ──────────────────────────────────────────────────────────────────────
 BASE_URL = "https://api.deepinfra.com/v1/openai"
 TEACHER_MODEL = "deepseek-ai/DeepSeek-V4-Pro"  # Top reasoning model (Quality: 51.51)
-JUDGE_MODEL = "deepseek-ai/DeepSeek-V3"
+JUDGE_MODEL = "Qwen/Qwen2.5-72B-Instruct"  # Different family from DeepSeek teacher
 
 # ── Pricing (USD per 1M tokens) ───────────────────────────────────────────────
 TEACHER_IN_PER_M = 1.40  # DeepSeek-V4-Pro pricing
 TEACHER_OUT_PER_M = 1.40
-JUDGE_IN_PER_M = 0.27
-JUDGE_OUT_PER_M = 1.10
+JUDGE_IN_PER_M = 0.35   # Qwen2.5-72B DeepInfra pricing
+JUDGE_OUT_PER_M = 0.40
 
 # ── Hyperparameters ───────────────────────────────────────────────────────────
 MAX_CONCURRENCY = 15
