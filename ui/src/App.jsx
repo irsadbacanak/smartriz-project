@@ -1,136 +1,115 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import Breadcrumb from './components/Breadcrumb'
+import { casesMock } from './data/casesMock'
+import { matrixMock } from './data/matrixMock'
+import { parameters } from './data/parameters'
+import { principles } from './data/principles'
+import { reasoningMock } from './data/reasoningMock'
+import { useTrizStream } from './hooks/useTrizStream'
+import AgentPipeline from './screens/AgentPipeline'
+import ContradictionMatrix from './screens/ContradictionMatrix'
+import PrincipleDetailPanel from './screens/PrincipleDetailPanel'
+import ProblemInput from './screens/ProblemInput'
+import ReasoningChain from './screens/ReasoningChain'
+import SolutionOutput from './screens/SolutionOutput'
 import './App.css'
 
-const API_URL = 'http://localhost:8000/api/analyze'
-
-function StatusBadge({ text }) {
-  const approved = text?.toLowerCase() === 'approved'
-  return (
-    <span className={`badge ${approved ? 'badge-approved' : 'badge-pending'}`}>
-      {text ?? '—'}
-    </span>
-  )
-}
-
-function ResultSection({ title, children }) {
-  return (
-    <section className="result-section">
-      <h3 className="result-title">{title}</h3>
-      {children}
-    </section>
-  )
+function resolvePair(contradictionText) {
+  const source = (contradictionText || '').toLowerCase()
+  if (source.includes('weight') && source.includes('strength')) {
+    return { improvingId: 1, worseningId: 14 }
+  }
+  if (source.includes('reliability') && source.includes('strength')) {
+    return { improvingId: 27, worseningId: 14 }
+  }
+  return { improvingId: 27, worseningId: 14 }
 }
 
 export default function App() {
   const [problem, setProblem] = useState('')
-  const [result, setResult] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [domain, setDomain] = useState('')
+  const [improvementParameter, setImprovementParameter] = useState('')
+  const [expandedPrinciple, setExpandedPrinciple] = useState(null)
+  const { status, result, error, agentStates, currentStep, start, reset } = useTrizStream()
 
-  const handleAnalyze = async () => {
+  const pair = useMemo(
+    () => resolvePair(result?.contradictions?.[0] || improvementParameter),
+    [result?.contradictions, improvementParameter],
+  )
+  const matrixKey = `${pair.improvingId}-${pair.worseningId}`
+
+  const recommendedPrinciples = useMemo(() => {
+    const ids = matrixMock[matrixKey] || [15, 35, 1]
+    return principles.filter((item) => ids.includes(item.id))
+  }, [matrixKey])
+
+  const domainCases = useMemo(() => {
+    if (!domain) return casesMock
+    const selected = casesMock.filter((item) => item.domain === domain)
+    return selected.length ? selected : casesMock
+  }, [domain])
+
+  const handleAnalyze = () => {
     if (!problem.trim()) return
-    setLoading(true)
-    setError(null)
-    setResult(null)
-
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem }),
-      })
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}))
-        throw new Error(err.detail || `HTTP ${response.status}`)
-      }
-      setResult(await response.json())
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+    start(problem)
   }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleAnalyze()
+  const handleRefine = () => {
+    reset()
+    setExpandedPrinciple(null)
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>SmarTRIZ</h1>
-        <p className="subtitle">Multi-Agent TRIZ Analysis System</p>
-      </header>
+    <div className="app-shell">
+      {status !== 'idle' ? <Breadcrumb currentStep={currentStep} /> : null}
 
-      <main className="app-main">
-        <div className="input-card">
-          <label htmlFor="problem" className="input-label">
-            Engineering Problem
-          </label>
-          <textarea
-            id="problem"
-            className="input-textarea"
-            value={problem}
-            onChange={(e) => setProblem(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="e.g. We need to make the aircraft wing stronger, but adding material makes it too heavy."
-            rows={5}
+      {status === 'idle' || status === 'error' ? (
+        <>
+          <ProblemInput
+            problem={problem}
+            domain={domain}
+            improvementParameter={improvementParameter}
+            onProblemChange={setProblem}
+            onDomainChange={setDomain}
+            onImprovementParameterChange={setImprovementParameter}
+            onAnalyze={handleAnalyze}
           />
-          <div className="input-hint">Tip: Cmd+Enter / Ctrl+Enter to run</div>
-          <button
-            className="run-button"
-            onClick={handleAnalyze}
-            disabled={loading || !problem.trim()}
-          >
-            {loading ? (
-              <span className="spinner-row">
-                <span className="spinner" /> Agents are working...
-              </span>
-            ) : (
-              'Run TRIZ Analysis'
-            )}
-          </button>
-        </div>
+          {error ? <p className="inline-error">{error}</p> : null}
+        </>
+      ) : null}
 
-        {error && (
-          <div className="alert alert-error">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
+      {status === 'running' ? <AgentPipeline agentStates={agentStates} /> : null}
 
-        {result && (
-          <div className="results-card">
-            <ResultSection title="1. Problem Analysis">
-              <p className="result-text">{result.analysis ?? '—'}</p>
-            </ResultSection>
+      {status === 'complete' ? (
+        <main className="results-layout">
+          <ContradictionMatrix
+            parameters={parameters}
+            improvingId={pair.improvingId}
+            worseningId={pair.worseningId}
+            matrixMap={matrixMock}
+            recommendedPrinciples={recommendedPrinciples}
+            onExpandPrinciple={setExpandedPrinciple}
+          />
 
-            <ResultSection title="2. Detected Contradictions">
-              {result.contradictions?.length ? (
-                <ul className="contradiction-list">
-                  {result.contradictions.map((c, i) => (
-                    <li key={i}>{c}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="result-text muted">No contradictions detected.</p>
-              )}
-            </ResultSection>
+          <ReasoningChain text={reasoningMock} />
 
-            <ResultSection title="3. Proposed Solution">
-              <p className="result-text">{result.final_solution ?? '—'}</p>
-            </ResultSection>
+          <SolutionOutput
+            improvingLabel={parameters[pair.improvingId - 1].name}
+            worseningLabel={parameters[pair.worseningId - 1].name}
+            principles={recommendedPrinciples}
+            cases={domainCases}
+            finalSolution={result?.final_solution}
+            onRefine={handleRefine}
+          />
 
-            <ResultSection title="4. Critic Feedback">
-              <div className="critic-row">
-                <StatusBadge text={result.critic_feedback} />
-                <span className="iteration-tag">
-                  Iteration {result.iterations ?? 0}
-                </span>
-              </div>
-            </ResultSection>
-          </div>
-        )}
-      </main>
+          <PrincipleDetailPanel
+            principle={expandedPrinciple}
+            cases={domainCases}
+            onApply={() => setExpandedPrinciple(null)}
+            onClose={() => setExpandedPrinciple(null)}
+          />
+        </main>
+      ) : null}
     </div>
   )
 }
