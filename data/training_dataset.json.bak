@@ -1,0 +1,1569 @@
+{
+  "dataset_name": "SmarTRIZ-Seed-v1",
+  "version": "2026-05-05",
+  "schema": {
+    "id": "string",
+    "source": "string",
+    "language": "en|tr|mixed",
+    "domain": "string",
+    "problem": "string",
+    "contradiction_pair": {
+      "improving_parameter": "name (#)",
+      "worsening_parameter": "name (#)"
+    },
+    "inventive_principles": ["#name", "..."],
+    "reasoning_chain": "string",
+    "solution": "string",
+    "complexity": "simple|medium|complex"
+  },
+  "cases": [
+
+    {
+      "id": "AT-01",
+      "source": "AutoTRIZ casebase (Orloff 2012, Modern TRIZ p.187)",
+      "language": "en",
+      "domain": "civil/environmental",
+      "problem": "To prevent water erosion of river banks, they can be strengthened with stones. However, water gradually washes sand and soil from under the stones, and the shoreline collapses. What can we do?", 
+      "contradiction_pair": {
+        "improving_parameter": "Stability of object's composition (#13)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#24 Intermediary/Mediator", "#40 Composite materials"],
+      "reasoning_chain": "1) Specific problem: stones protect bank but underlying soil is still washed away. 2) Generalize: improve stability of bank composition without losing substance under stones. 3) Map to 39 parameters: improving = #13 stability of composition; worsening = #23 loss of substance. 4) Matrix lookup at (13,23): principles include #24, #2, #35, #40. 5) Apply #24 Mediator: insert an intermediate object between stones and water that holds the stones together while letting water pass. 6) Concrete: durable wire mesh that fixes stones in place. 7) Refine: prefabricated wire-mesh baskets (gabions) give the construction the required size and shape and remain permeable.",
+      "solution": "The stones are fixed with durable mesh wire. Stones are placed inside prefabricated gabion sections (mesh wire baskets), giving the bank construction the required shape and size while preventing the under-soil from being washed out.", 
+      "complexity": "simple"
+    },
+
+    {
+      "id": "AT-02",
+      "source": "AutoTRIZ casebase (Childs 2013, Mechanical Design Engineering Handbook p.136)",
+      "language": "en",
+      "domain": "manufacturing/consumer-products",
+      "problem": "An axe must be light enough for the user to swing repeatedly without fatigue, yet must deliver a powerful blow. Reducing handle mass usually reduces blow energy because mass at the head is what matters.",
+      "contradiction_pair": {
+        "improving_parameter": "Weight of moving object (#1)",
+        "worsening_parameter": "Force/Intensity (#10)"
+      },
+      "inventive_principles": ["#29 Pneumatic or hydraulic construction", "#1 Segmentation"],
+      "reasoning_chain": "1) Concrete problem: heavy axe is tiring; light axe is weak. 2) Identify contradiction: lower weight (#1) usually lowers force at impact (#10). 3) Look up matrix (1,10): principles 8, 10, 18, 37 → also commonly 29 in modern matrix. 4) Apply #29: replace solid handle interior with air. 5) Hollow handle shifts the centre of gravity forward, concentrating mass at the head while overall weight drops. 6) Result: a lighter tool that delivers a more powerful blow because of mass distribution.",
+      "solution": "Fiskars axe with a hollow handle: by replacing solid plastic with air inside the handle, the centre of gravity is moved toward the head; the axe is lighter overall but delivers a more powerful blow.", 
+      "complexity": "simple"
+    },
+
+    {
+      "id": "AT-03",
+      "source": "AutoTRIZ casebase (textbook diving case)",
+      "language": "en",
+      "domain": "sports/biomedical",
+      "problem": "In competitive high diving, divers must repeatedly practise dives, but each impact between diver and water can cause injury. Lowering impact by reducing height makes practice unrealistic.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Productivity (#39)"
+      },
+      "inventive_principles": ["#11 Cushion in advance/Beforehand cushioning", "#35 Transformation of properties", "#37 Thermal expansion", "#28 Mechanical substitution"], 
+      "reasoning_chain": "1) Problem: high impacts injure divers but practice volume must remain high. 2) Translate to TRIZ: reduce harm acting on diver (#30) without reducing practice productivity (#39). 3) Matrix (30,39) suggests cushioning-type principles. 4) Apply #11 Cushion in advance: prepare the water to be 'softer' before impact. 5) Apply #35 Transform state: change state/properties of water (introduce gas). 6) Concrete mechanism: bubble curtain that aerates the landing zone. 7) Aerated water absorbs impact energy via compressible air bubbles, reducing surface tension and peak deceleration on the diver.",
+      "solution": "Aerate the pool surface with a bubble curtain during practice. The aerated water layer is compressible and 'softer', dramatically reducing impact loads on the diver and enabling many more practice dives without injury.", 
+      "complexity": "simple"
+    },
+
+    {
+      "id": "AT-04",
+      "source": "AutoTRIZ casebase / Savransky 2000 p.229",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "A pneumatic conveying system originally built (with plastic piping) to transport plastic pellets must now transport metal shots. The shots wear out the plastic elbows quickly, causing failures.", 
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Stability of object's composition (#13)"
+      },
+      "inventive_principles": ["#28 Mechanical substitution"],
+      "reasoning_chain": "1) Concrete: high-speed metal shots impact plastic elbows, eroding them. 2) Improving: throughput speed (#9). Worsening: stability of plastic composition (#13). 3) Matrix (9,13) → {28, 33, 1, 18}. 4) Pick #28 Mechanical substitution: replace mechanical (kinetic-impact) interaction with a field-based one. 5) Use a magnetic field at the elbow to attract some metal shots and pin them to the wall. 6) The pinned shots form a self-renewing 'blanket' of metal that absorbs the impact instead of the plastic. 7) The plastic elbow is no longer in contact with high-speed metal — wear stops.",
+      "solution": "Place a permanent magnet at each elbow. Some metal shots adhere to the inside of the elbow under the magnetic field, forming an energy-absorbing layer of shots. Subsequent shots impact this self-replenishing metallic layer rather than the plastic, eliminating elbow wear.", 
+      "complexity": "medium"
+    },
+
+    {
+      "id": "AT-05",
+      "source": "AutoTRIZ casebase (Altshuller, Innovation Algorithm)",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "An anti-tank gun fires a round whose shielding must be thick enough to survive launch acceleration and engagement, but thin enough not to add prohibitive mass that reduces range and projectile speed.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Weight of moving object (#1)"
+      },
+      "inventive_principles": ["#40 Composite materials", "#1 Segmentation", "#3 Local quality"],
+      "reasoning_chain": "1) Stronger shielding via thicker steel raises mass, lowering range (worsens #1). 2) Improve #14, worsen #1. 3) Matrix (14,1) recommends #1 Segmentation, #8 Anti-weight, #15 Dynamics, #40 Composite. 4) Apply #40 Composite: use a composite of light alloy with a hard ceramic/metal facing — high local hardness/strength at low average mass. 5) Apply #3 Local quality: stronger only at the most-stressed regions of the shield. 6) Outcome: a tailored composite shield with regional reinforcement gives required ballistic strength at lower mass.",
+      "solution": "Layered composite shielding: a hard ceramic outer face bonded to a tough light-alloy backing, with local thickness increased only at high-stress regions. The composite provides the required ballistic resistance while keeping mass within range/speed limits.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "AT-06",
+      "source": "AutoTRIZ casebase (Fey & Rivin, Innovation on Demand)",
+      "language": "en",
+      "domain": "energy",
+      "problem": "High-voltage transmission lines accumulate ice in winter, increasing weight and breaking towers. Mechanical de-icing is dangerous and slow.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Loss of energy (#22)"
+      },
+      "inventive_principles": ["#22 Convert harm into benefit", "#19 Periodic action", "#37 Thermal expansion"],
+      "reasoning_chain": "1) Ice buildup is harmful; removing it usually wastes energy. 2) Improving #30 (reduce harm), worsening #22 (extra energy needed). 3) Apply #22 Convert harm to benefit: use the existing electric current itself. 4) Periodically short the line through a controlled load to drive a higher current; resistive heating melts ice. 5) Apply #19 Periodic action so heating is pulsed and minimally disruptive. 6) Energy 'lost' as I²R heat is no longer lost — it serves the de-icing function.",
+      "solution": "Use a controlled short-circuit/high-current pulse on each phase to drive resistive heating that melts accumulated ice. Periodic, automated pulses keep lines clear without mechanical access.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "AT-07",
+      "source": "AutoTRIZ casebase (Orloff, Inventive Thinking through TRIZ)",
+      "language": "en",
+      "domain": "transportation/aerospace",
+      "problem": "Icebreakers must crush thick polar ice to clear shipping lanes, but thicker hulls and bigger engines add mass and fuel cost.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Weight of moving object (#1)"
+      },
+      "inventive_principles": ["#22 Convert harm into benefit", "#35 Parameter changes (state)", "#13 Inversion"],
+      "reasoning_chain": "1) Improving icebreaker capability requires either heavier hull or stronger engine. 2) Apply #22 Convert harm to benefit: use ice itself. 3) Apply #13 Inversion: instead of crushing ice from above, lift the ice and break it from below using buoyancy/asymmetry. 4) Combine with #35: locally raise ice temperature with hull-heating to weaken bonds before mechanical loading. 5) Outcome: heated, asymmetric prow that rides up onto ice and breaks it under the ship's own weight, exploiting ice's brittle response.",
+      "solution": "Heated, asymmetric icebreaker prow design: ship rides up onto ice and uses its own weight to fracture pre-weakened (heated) ice, drastically reducing required engine power and hull mass for given ice thickness.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "AT-08",
+      "source": "AutoTRIZ casebase (Altshuller, ampoule problem)",
+      "language": "en",
+      "domain": "manufacturing/biomedical",
+      "problem": "Glass ampoules containing pharmaceutical solution must be sealed at the open end without overheating the contents. Direct flame cracks the glass and degrades the drug.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Object-affected harmful factors (#31)"
+      },
+      "inventive_principles": ["#35 Parameter changes (state)", "#39 Inert atmosphere", "#11 Cushion in advance"],
+      "reasoning_chain": "1) Sealing requires high local heat; drug is heat-sensitive. 2) Improve sealing throughput, worsen damage to contents. 3) Apply #35 transform state: immerse ampoules in a cool liquid bath up to the neck. 4) Apply heat only above the liquid line — the solution stays cool while the glass neck reaches sealing temperature. 5) Liquid acts as instantaneous heat sink (cushion in advance, #11). 6) High throughput sealing without thermal damage.",
+      "solution": "Pass ampoules through a cool liquid bath that submerges everything but the neck, then apply a flame to the exposed neck. The bath protects the drug; only the glass neck heats and seals.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "AT-09",
+      "source": "AutoTRIZ casebase (Silverstein, How to Achieve Competitive Excellence)",
+      "language": "en",
+      "domain": "manufacturing",
+      "problem": "Paint must be vigorously mixed in a sealed can to produce uniform color, but inserting a mechanical agitator creates a sealing problem and contamination risk.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "inventive_principles": ["#28 Mechanical substitution", "#18 Mechanical vibration", "#13 Inversion"],
+      "reasoning_chain": "1) Need agitation inside sealed container; agitator shaft would breach seal. 2) Apply #13 Inversion: don't put a mixer inside — move the can. 3) Apply #18 Mechanical vibration: shake/centrifuge the entire sealed can. 4) Apply #28 substitution: replace internal mechanical agitation with external orbital motion. 5) Result: no shaft, no seals, no contamination.",
+      "solution": "Commercial paint shakers/centrifugal mixers grip the sealed can externally and oscillate or spin it; the contents mix vigorously through induced fluid motion without ever opening the can.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "AT-10",
+      "source": "AutoTRIZ casebase (aerospace/space-suit case)",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "Astronaut space suits must support oxygen consumption during EVA, but larger oxygen tanks add mass and reduce mobility.",
+      "contradiction_pair": {
+        "improving_parameter": "Duration of action of moving object (#15)",
+        "worsening_parameter": "Weight of moving object (#1)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#34 Discarding/recovering", "#25 Self-service"],
+      "reasoning_chain": "1) Longer EVA = more oxygen = heavier suit. 2) Apply #34 Discarding/recovering: scrub and recycle CO₂ to recover oxygen. 3) Apply #25 Self-service: integrate the recovery into the suit so astronaut effort drives part of the cycle (breathing). 4) Preliminary action (#10): pre-charge LiOH/regenerable scrubbers before EVA. 5) Outcome: closed-loop life-support extends EVA duration without adding tank mass.",
+      "solution": "Closed-loop suit life support: lithium-hydroxide CO₂ scrubbers plus regenerable oxygen recovery extend EVA duration without proportional increase in stored-oxygen mass.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "TG-01",
+      "source": "TRIZ-GPT case study (Xie & Liu 2023, Machines 11(9):912)",
+      "language": "en",
+      "domain": "robotics",
+      "problem": "An in-pipe peristaltic robot must traverse pipes of varying diameter. The classical design uses three motors and rigid legs, leading to excess weight, control complexity, and poor adaptability when diameter changes.", 
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability/versatility (#35)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#11 Beforehand cushioning"], 
+      "reasoning_chain": "1) Concrete problem: too many motors, rigid legs cannot accommodate diameter change. 2) Improving: adaptability across diameters (#35). Worsening: device complexity (#36). 3) Matrix (35,36) suggests {1, 13, 16, 15, 29}. 4) Apply #1 Segmentation: split each driven leg into rigid + flexible segments so the flexible portion conforms to local diameter. 5) Apply #11 Beforehand cushioning: pre-compressed spring on each leg ensures continuous contact with the pipe wall as diameter varies. 6) Combination eliminates need for active control of leg length while preserving traction. 7) Result: fewer motors, broader pipe-diameter range, simpler control.",
+      "solution": "Each driven leg is split into a rigid section and a flexible rubber pad (segmentation), with a pre-compressed spring (beforehand cushioning) maintaining contact pressure. The robot adapts to a wide range of pipe diameters with fewer motors and simpler control.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "TG-02",
+      "source": "TRIZ-GPT case base (Chang et al. 2023, Adv. Eng. Inf. 56:101901)",
+      "language": "en",
+      "domain": "biomedical/product-design",
+      "problem": "A blood-collection test tube rack used in clinical labs must hold tubes of various sizes, be safe to handle, easy to manufacture, and easy to clean.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability/versatility (#35)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#1 Segmentation", "#35 Parameter changes"],
+      "reasoning_chain": "1) Tubes vary in diameter and length; rigid rack accommodates only one type. 2) Improve adaptability (#35) without adding complexity (#36). 3) Apply #15 Dynamization: slot geometry adapts (retractable/expandable inserts). 4) Apply #1 Segmentation: rack and lid are detachable for cleaning. 5) Apply #35 (shape change): rounded body, no sharp edges. 6) Tubes can rotate in slots for flexible handling. 7) Final design integrates all three.",
+      "solution": "Round-shape, demountable test-tube rack with adaptive slots that grip different tube diameters via expandable inserts. Rounded body improves safety; demountable cover simplifies manufacture and cleaning.", 
+      "complexity": "medium"
+    },
+
+    {
+      "id": "TG-03",
+      "source": "TRIZ-GPT collection (Gilani & Lee 2023, TRIZ Future Conf.)",
+      "language": "en",
+      "domain": "electronics/HCI",
+      "problem": "An online museum virtual exhibition should be highly interactive and immersive, but added features make the interface harder to operate for casual visitors.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#2 Taking out", "#15 Dynamization", "#25 Self-service"],
+      "reasoning_chain": "1) Adding features increases complexity, hurts usability. 2) Apply #2 Taking out: hide advanced controls behind progressive-disclosure menus. 3) Apply #15 Dynamization: UI adapts to user expertise (novice vs. curator). 4) Apply #25 Self-service: tutorial overlays help users teach themselves. 5) Outcome: simple default UI, with depth on demand.",
+      "solution": "Adaptive UI with progressive disclosure: novice users see a minimal, guided interface; advanced users unlock immersive controls. Self-service tutorials reduce support burden.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "TG-04",
+      "source": "TRIZ-GPT few-shot example (muscle-powered submarine)",
+      "language": "en",
+      "domain": "transportation",
+      "problem": "Existing muscle-powered submarines require huge effort for sustained high speed; conventional propellers are inefficient and cause water resistance.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution"],
+      "reasoning_chain": "1) Propeller mechanics are inefficient; making them more efficient via gearing increases operator load. 2) Apply #28: replace mechanical propulsion with hydrodynamic. 3) Use Coandă-effect water flow drawn in by a muscle pump and ejected along the hull. 4) Front jets reduce resistance, rear jets propel. 5) Operator effort goes into a pump rather than spinning a propeller, improving energy efficiency.",
+      "solution": "Hydrodynamic-jet muscle-powered submarine: rider drives a pump that draws water in and ejects it through bow side-jets (Coandă-effect drag reduction) and stern jets (propulsion).",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "TG-05",
+      "source": "TRIZ-GPT few-shot example (silent desktop fan)",
+      "language": "en",
+      "domain": "consumer-electronics",
+      "problem": "Conventional desktop fans with large rubber-coated blades are noisy, cause injury risk, and produce uneven gusts.", 
+      "contradiction_pair": {
+        "improving_parameter": "Object-generated harmful factors (#31)",
+        "worsening_parameter": "Productivity (#39)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#19 Periodic action"],
+      "reasoning_chain": "1) Bigger blades = more flow but more noise/risk. 2) Apply #28: replace bladed propulsion with bladeless air multiplication (Dyson-style induced flow). 3) Apply #19: oscillating jet creates more pleasant airflow pattern. 4) Result: equal cooling, far lower noise, no exposed blades.",
+      "solution": "Bladeless desktop fan: a small impeller in the base accelerates air through an annular slit; entrained ambient air multiplies flow. No exposed blades, lower noise, smoother airflow.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "AT-BTMS-01",
+      "source": "AutoTRIZ Adv. Eng. Informatics 2025 (BTMS case)",
+      "language": "en",
+      "domain": "automotive/energy",
+      "problem": "An electric-vehicle battery pack must be cooled effectively across a wide ambient range, while preserving energy density, packaging volume, and weight. Liquid cooling adds mass and complexity; air cooling is uneven; phase-change materials add bulk.",
+      "contradiction_pair": {
+        "improving_parameter": "Shape (#12)",
+        "worsening_parameter": "Loss of energy (#22)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#17 Transition to a new dimension", "#35 Parameter changes", "#40 Composite materials"],
+      "reasoning_chain": "1) Concrete: heat dissipation must be uniform across many cells without sacrificing pack density. 2) Improving: pack shape/geometry (#12). Worsening: parasitic energy loss to coolant pumping or thermal mass (#22). 3) Multiple contradictions identified by AutoTRIZ; dominant pair is (12,22). 4) Matrix → {1, 17, 35, 28, 40}. 5) Apply #1 Segmentation: subdivide cooling into per-module zones. 6) Apply #17 New dimension: extend heat-pipe contact from 1-D (single line) to 2-D (flat heat pipe with interconnected chambers wrapping cells). 7) Apply #35: phase-change working fluid inside heat pipes shifts state to absorb heat. 8) Apply #40 Composite: grooved aluminum + phase-change-fluid composite plate. 9) Result: a flat-heat-pipe-based BTMS (FHP-BTMS) that improves grouping efficiency 26%, volumetric energy density 24%, thermal management efficiency 64% vs. baseline.", 
+      "solution": "Flat-Heat-Pipe BTMS: interconnected-chamber flat heat pipes with grooved structures wrap each cell, transferring heat in two dimensions; phase-change working fluid passively transports heat to a small radiator.  Reported gains: grouping efficiency +26%, volumetric energy density +24%, thermal management +64%.", 
+      "complexity": "complex"
+    },
+
+    {
+      "id": "ALT-01",
+      "source": "Altshuller, And Suddenly the Inventor Appeared (lightning-rod problem)",
+      "language": "en",
+      "domain": "civil/electrical",
+      "problem": "A tall radio antenna must be protected from lightning. A traditional metal lightning rod alongside the antenna interferes with the radio signal.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Loss of information (#24)"
+      },
+      "inventive_principles": ["#6 Universality", "#13 Inversion", "#19 Periodic action"],
+      "reasoning_chain": "1) Lightning rod protects but blocks signal. 2) Apply #6 Universality: make the antenna itself act as the lightning rod. 3) Add a bypass circuit (#19 periodic) that grounds the antenna only during a lightning event detected by a fast field sensor. 4) Antenna performs both functions; no separate rod needed.",
+      "solution": "Use the antenna as its own lightning rod with a fast switching ground that activates only during detected lightning, preserving signal during normal operation.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "ALT-02",
+      "source": "Altshuller, Innovation Algorithm (chocolate packaging)",
+      "language": "en",
+      "domain": "manufacturing/packaging",
+      "problem": "Chocolate must be enrobed in liquid form, then cooled to solid; molds add cost, slow throughput, and must be cleaned.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Manufacturability (#32)"
+      },
+      "inventive_principles": ["#35 Parameter changes", "#10 Preliminary action", "#5 Merging"],
+      "reasoning_chain": "1) Molding step is bottleneck. 2) Apply #35: change state — let the chocolate solidify around its own filling on a moving belt. 3) Apply #10 Preliminary action: pre-extrude shell shape. 4) Eliminate molds entirely.",
+      "solution": "Mold-less chocolate enrobing: pre-shaped fillings travel under a chocolate curtain, are cooled in line, packaged downstream. Productivity rises, cleaning costs drop. (TRIZ-derived patent used by Mars.)", 
+      "complexity": "simple"
+    },
+
+    {
+      "id": "ALT-03",
+      "source": "Altshuller, Creativity as an Exact Science (foundry sand)",
+      "language": "en",
+      "domain": "manufacturing",
+      "problem": "Foundry sand mold must be strong during pouring, but easy to break apart afterward to remove the casting.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Ease of repair (#34)"
+      },
+      "inventive_principles": ["#35 Parameter changes (state)", "#36 Phase transitions", "#15 Dynamization"],
+      "reasoning_chain": "1) Need strong-when-hot, weak-when-cold sand. 2) Apply #35/#36: a binder that depolymerizes above a threshold or below a threshold (e.g., CO₂-cured silicate that releases on water). 3) Mold is rigid during casting; collapses on rinse.",
+      "solution": "Water-soluble silicate binder: rigid during pour, dissolves on water rinse for easy casting removal.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "ALT-04",
+      "source": "Altshuller (split-engine compressor)",
+      "language": "en",
+      "domain": "energy",
+      "problem": "Industrial compressor needs both high pressure and high flow rate; a single stage cannot deliver both efficiently.",
+      "contradiction_pair": {
+        "improving_parameter": "Pressure (#11)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#3 Local quality", "#19 Periodic action"],
+      "reasoning_chain": "1) High pressure needs small volume; high flow needs large volume. 2) Apply #1 Segmentation: split into stages. 3) Apply #3 Local quality: each stage tuned to its own pressure ratio.",
+      "solution": "Multi-stage axial-then-centrifugal compressor where each stage is locally optimized; intercoolers between stages reduce work.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "MOD-01",
+      "source": "Cortes Robles et al. 2009, Chem. Eng. Process. (chemical reactor)",
+      "language": "en",
+      "domain": "chemical",
+      "problem": "Exothermic batch reactor needs higher productivity but hot-spots and runaway risk grow with throughput.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#19 Periodic action", "#35 Parameter changes"],
+      "reasoning_chain": "1) Continuous feed in batch reactor causes runaway. 2) #1 segment reactor into microchannels — large surface-to-volume. 3) #19 pulsed feed avoids accumulation. 4) Productivity up, hot-spots eliminated.",
+      "solution": "Switch to continuous-flow microreactor with pulsed reagent injection; high productivity, intrinsically safe thermals.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-02",
+      "source": "Yao et al. 2022, Sustainability 14(22):15482 (folding-chair assembly)",
+      "language": "en",
+      "domain": "manufacturing",
+      "problem": "A folding chair must be quick to assemble at the factory but stable and durable in use.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#5 Merging", "#10 Preliminary action"],
+      "reasoning_chain": "1) Faster assembly means fewer/looser fasteners → lower reliability. 2) #5 Merging: combine multiple parts into a single hinge module. 3) #10: pre-assemble subassemblies. 4) Snap-fit + lockable hinge.",
+      "solution": "Pre-assembled hinge modules with snap-fit final assembly: reduces assembly steps from 14 to 4, with no loss of stability or rated load.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "MOD-03",
+      "source": "Deng, Feng & Wang 2010 IEEE ICIEEM (submersible motor pump)",
+      "language": "en",
+      "domain": "energy/manufacturing",
+      "problem": "Submersible pump motor must be reliable underwater (sealed) yet serviceable when failures occur.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Ease of repair (#34)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#26 Copying", "#27 Cheap short-living objects"],
+      "reasoning_chain": "1) Hermetic seals improve reliability but mean disposing of the unit on failure. 2) #1 segmentation: modularize seals so a single module can be swapped. 3) #27 cheap-short-living: make wear parts (lip seals) inexpensive and replaceable.",
+      "solution": "Modular cartridge seal with low-cost replaceable lip seals; the rest of the motor remains sealed and reliable.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-04",
+      "source": "Akay, Demıray, Kurt 2008 IJPR (assembly ergonomics)",
+      "language": "en",
+      "domain": "ergonomics/manufacturing",
+      "problem": "Manual assembly worker must reach far for components, causing musculoskeletal stress; redesigning the line is costly.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Manufacturability (#32)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#15 Dynamization", "#25 Self-service"],
+      "reasoning_chain": "1) Reaching causes injury, but moving stations is expensive. 2) #10: pre-position parts at point of use. 3) #15: rotating part-presentation tray that brings parts within reach. 4) #25: gravity-fed self-replenishing bins.",
+      "solution": "Karakuri-style gravity-fed rotating part presenters at each workstation: parts arrive within 30 cm of the worker, reducing reach and musculoskeletal load with no line redesign.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "MOD-05",
+      "source": "Cascini & Rissone 2004, J. Eng. Design (plastics design)",
+      "language": "en",
+      "domain": "materials",
+      "problem": "Injection-molded plastic part needs a thin wall for cooling time but cannot warp.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "inventive_principles": ["#3 Local quality", "#9 Preliminary anti-action", "#40 Composite materials"],
+      "reasoning_chain": "1) Thinner walls cool faster but warp on demolding. 2) #3 local quality: ribs only where stiffness needed. 3) #9: pre-stress molded part. 4) #40: glass-fiber-filled composite resin.",
+      "solution": "Variable-thickness ribbed design in glass-filled polymer with pre-stressing during demolding; cycle time drops 30% without warpage.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-06",
+      "source": "Bariani, Berti, Lucchetta 2004 (DFMA + TRIZ)",
+      "language": "en",
+      "domain": "manufacturing",
+      "problem": "Automotive subassembly with too many parts is costly to assemble; reducing parts may compromise function.",
+      "contradiction_pair": {
+        "improving_parameter": "Number of parts (#26 — substance amount)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#5 Merging", "#6 Universality", "#40 Composite materials"],
+      "reasoning_chain": "1) Reducing parts can lose redundancy. 2) #5 merge multiple parts into one (e.g., snap-fit clip integral with bracket). 3) #6 each part takes more functions. 4) #40 composite materials enable single-piece replacement.",
+      "solution": "DFMA-driven part consolidation: 23-part subassembly reduced to 8 multifunctional composite parts with equal or higher reliability.",
+      "complexity": "simple"
+    },
+
+    {
+      "id": "MOD-07",
+      "source": "Kim, Lim, Cho 2022 IJAMT (construction layout robot)",
+      "language": "en",
+      "domain": "robotics/civil",
+      "problem": "Robot must lay out building structure markings on uneven construction floors quickly and accurately.",
+      "contradiction_pair": {
+        "improving_parameter": "Accuracy of measurement (#28)",
+        "worsening_parameter": "Speed (#9)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#35 Parameter changes", "#15 Dynamization"],
+      "reasoning_chain": "1) Faster movement loses positional accuracy on uneven surfaces. 2) #28: replace wheel odometry with laser/lidar localization. 3) #35: variable speed based on local terrain. 4) #15: active suspension keeps marking head normal to floor.",
+      "solution": "Laser-tracker-localized robot with adaptive suspension marking head: maintains <2 mm accuracy at full layout speed.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-08",
+      "source": "Tan 2007, Int. J. Product Development (analogy-based design)",
+      "language": "en",
+      "domain": "biomedical",
+      "problem": "Endoscope tip must steer through tortuous vessels, but added actuators make it bulky.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability (#35)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#1 Segmentation", "#29 Pneumatic/hydraulic"],
+      "reasoning_chain": "1) Steering needs actuators; actuators bulk up tip. 2) #29: replace mechanical with pneumatic (inflatable steering channels). 3) #1: segment tip into independent inflatable cells. 4) #15 dynamization: cells can be selectively pressurized.",
+      "solution": "Soft-robotic endoscope with multiple pneumatic steering chambers: <5 mm OD with full multi-axis steering.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-09",
+      "source": "Berdyugina & Cavallucci 2023 J. Intell. Manuf. (patent NLP for inventive info)",
+      "language": "en",
+      "domain": "manufacturing/electronics",
+      "problem": "PCB testing throughput vs. defect detection: faster test misses defects.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Accuracy of measurement (#28)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#24 Mediator", "#28 Mechanics substitution"],
+      "reasoning_chain": "1) Faster probing causes contact errors. 2) #28: replace contact probing with optical AOI. 3) #24: machine-vision intermediary verifies defects before electrical retest. 4) #10: train defect classifier in advance.",
+      "solution": "Two-stage AOI + targeted electrical retest pipeline: full-board AOI in 5 s; only flagged regions get probed; throughput +40%, escape rate –60%.",
+      "complexity": "medium"
+    },
+
+    {
+      "id": "MOD-10",
+      "source": "Spreafico & Russo 2016 Procedia CIRP — automotive liquid bumper",
+      "language": "en",
+      "domain": "automotive",
+      "problem": "A liquid (water-filled) bumper would absorb crash energy but adds mass and freezes in winter.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Weight of moving object (#1)"
+      },
+      "inventive_principles": ["#35 Parameter changes", "#29 Pneumatic/hydraulic", "#40 Composite materials"],
+      "reasoning_chain": "1) Liquid absorbs energy but is heavy. 2) #35 + #29: replace liquid with pressurized gas + foam composite. 3) #40 composite skin holds gas; foam absorbs initial impact, gas absorbs peak.",
+      "solution": "Composite-skin pneumatic-foam bumper: 30% lighter than liquid bumper, no freeze risk, equal energy absorption.",
+      "complexity": "medium"
+    }
+  ]
+  {
+    "cases": [
+      {
+        "id": "AT-11",
+        "source": "AutoTRIZ casebase (pipeline operations / pigging)",
+        "language": "en",
+        "domain": "oil-gas/manufacturing",
+        "problem": "Pipeline inspection pigs must be rigid enough to carry sensor payloads and clear wax blockages, yet flexible enough to negotiate tight bends and diameter changes without getting stuck.",
+        "contradiction_pair": {
+          "improving_parameter": "Adaptability/versatility (#35)",
+          "worsening_parameter": "Strength (#14)"
+        },
+        "inventive_principles": [
+          "#1 Segmentation",
+          "#15 Dynamics",
+          "#29 Pneumatic or hydraulic construction"
+        ],
+        "reasoning_chain": "1) Concrete: a rigid pig jams in bends; a flexible pig lacks the push force to clear blockages. 2) Improving: adaptability to geometry (#35). Worsening: structural strength for blockage clearing (#14). 3) Matrix (35,14) → {1, 15, 29, 40}. 4) Apply #1 Segmentation: divide pig body into rigid sensor modules linked by articulating joints. 5) Apply #15 Dynamics: joints allow each segment to independently follow pipe curvature. 6) Apply #29 Pneumatic: inflatable disc seals maintain pipeline pressure differential at each segment, preserving pushing force without relying on a single rigid body. 7) Combination retains full pushing strength while negotiating bends up to 1.5D radius.",
+        "solution": "Multi-body articulated pig: rigid sensor/scraper modules connected by flexible universal-joint couplings, each sealed with inflatable polyurethane discs. The segmented design tracks tight bends while cumulative differential pressure across all seals produces ample driving force.",
+        "complexity": "medium"
+      },
+      {
+        "id": "AT-12",
+        "source": "AutoTRIZ casebase (space systems engineering)",
+        "language": "en",
+        "domain": "aerospace",
+        "problem": "Satellite solar arrays must be large enough (tens of square metres) to generate sufficient power in orbit, but must fit within the narrow cylindrical launch vehicle fairing during ascent.",
+        "contradiction_pair": {
+          "improving_parameter": "Use of energy by stationary object (#20)",
+          "worsening_parameter": "Volume of stationary object (#8)"
+        },
+        "inventive_principles": [
+          "#7 Nested doll",
+          "#15 Dynamics",
+          "#17 Transition to another dimension"
+        ],
+        "reasoning_chain": "1) Larger array = more power; larger array = doesn't fit in fairing. 2) Improve #20 (energy harvested), worsen #8 (stowed volume). 3) Matrix (20,8) → {7, 15, 17, 2}. 4) Apply #7 Nested doll: panels fold inside one another in a Z-fold accordion arrangement. 5) Apply #17 Transition to another dimension: roll the flexible substrate into a cylinder (ROSA concept — Roll-Out Solar Array). 6) Apply #15 Dynamics: a deployment mechanism with motorised booms unrolls the array in orbit. 7) Results: 250 W/kg specific power, <1 m³ stowed volume for 50 m² deployed area.",
+        "solution": "Roll-Out Solar Array (ROSA): a flexible photovoltaic blanket wound on a drum; two motorised composite booms unroll and tension the blanket to full span after fairing separation. Used on ISS and Dragon missions.",
+        "complexity": "medium"
+      },
+      {
+        "id": "AT-13",
+        "source": "AutoTRIZ casebase (coal mining safety)",
+        "language": "en",
+        "domain": "mining/energy",
+        "problem": "Methane accumulates in underground coal mines, creating explosion risk. Forced-ventilation dilution requires enormous airflow that disrupts mining operations and is energy-intensive.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#2 Taking out",
+          "#39 Inert atmosphere"
+        ],
+        "reasoning_chain": "1) Ventilation removes methane but displaces miners and equipment during high-flow events. 2) Improving: reducing methane hazard (#31). Worsening: mining productivity (#39). 3) Matrix (31,39) → {22, 35, 2, 28}. 4) Apply #2 Taking out: extract methane separately before mining by pre-drilling degassing boreholes into the coal seam. 5) Apply #22 Convert harm to benefit: captured methane is fed to surface gas grid or power generators. 6) Apply #39 Inert atmosphere: residual voids flushed with N₂ reduce in-seam concentration below explosive limit. 7) Outcome: mine productivity unaffected, methane hazard controlled at source.",
+        "solution": "Pre-mine degassing: directional boreholes drilled into virgin coal ahead of the working face extract methane by suction. Captured gas is compressed into the national grid or burned in a mine-mouth power plant, converting a safety hazard into revenue.",
+        "complexity": "medium"
+      },
+      {
+        "id": "AT-14",
+        "source": "AutoTRIZ casebase (rotary-wing aircraft icing)",
+        "language": "en",
+        "domain": "aerospace",
+        "problem": "Ice accumulates on helicopter rotor blades in flight, adding mass and altering the aerodynamic profile; uneven ice shedding causes severe vibration. Continuous heating is impractical due to power limits.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Use of energy by moving object (#19)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#37 Thermal expansion",
+          "#19 Periodic action"
+        ],
+        "reasoning_chain": "1) Ice formation harms blade; continuous electric heat exceeds rotor power budget. 2) Improving #30 (harm reduction). Worsening #19 (energy use). 3) Matrix (30,19) → {22, 35, 2, 19}. 4) Apply #22 Convert harm to benefit: use the centrifugal force during shedding as a self-cleaning mechanism. 5) Apply #37 Thermal expansion: resistive elements bonded at the leading edge expand when pulsed, cracking the ice-alloy bond. 6) Apply #19 Periodic action: short high-power pulses (electrothermal debonding) consume far less energy than continuous heat; ice shedding by centrifugal force once bond is broken. 7) Outcome: 70% reduction in power requirement vs. continuous systems.",
+        "solution": "Pulsed electrothermal de-icing: thin-film heater elements bonded beneath the leading-edge abrasion shield receive high-current pulses from slip rings, breaking the adhesive ice bond. Centrifugal force then ejects ice fragments outboard. Sequential span-wise pulsing balances ice shedding loads.",
+        "complexity": "medium"
+      },
+      {
+        "id": "AT-15",
+        "source": "AutoTRIZ casebase (offshore drilling, flexible riser)",
+        "language": "en",
+        "domain": "oil-gas/offshore",
+        "problem": "Marine drilling risers connecting a floating platform to the wellhead must withstand deep-sea pressure, fatigue from wave-induced platform motion, and high internal pressure, yet must be light and flexible enough for deployment and retrieval.",
+        "contradiction_pair": {
+          "improving_parameter": "Strength (#14)",
+          "worsening_parameter": "Weight of moving object (#1)"
+        },
+        "inventive_principles": [
+          "#40 Composite materials",
+          "#30 Flexible shells and thin films",
+          "#1 Segmentation"
+        ],
+        "reasoning_chain": "1) High-strength riser = thick steel = heavy, hard to bend/handle. 2) Improve #14, worsen #1. 3) Matrix (14,1) → {1, 8, 15, 40}. 4) Apply #40 Composite: CFRP structural carcass provides hoop strength at low weight. 5) Apply #30 Flexible shells: thin polymer pressure-barrier and anti-wear layers allow bending. 6) Apply #1 Segmentation: alternating armor wires wound helically in opposing angles absorb tension and compression independently. 7) Buoyancy modules attached externally reduce effective submerged weight. 8) Result: flexible composite riser with same burst rating as steel at 40% lower mass.",
+        "solution": "Flexible composite riser: carbon-fibre reinforced polymer carcass + polymer pressure barrier + counter-wound helical wire armour + polyethylene outer sheath. Clip-on syntactic foam buoyancy modules offset most of the submerged weight.",
+        "complexity": "complex"
+      },
+      {
+        "id": "ALT-05",
+        "source": "Altshuller, The Innovation Algorithm (ship rolling stabilizer)",
+        "language": "en",
+        "domain": "transportation/marine",
+        "problem": "A ship must be stabilized against rolling in heavy seas, but stabilizer fins add drag that wastes fuel in calm conditions. Fixed fins that are effective in heavy weather are inefficient at all times.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#15 Dynamics",
+          "#19 Periodic action",
+          "#23 Feedback"
+        ],
+        "reasoning_chain": "1) Large fins damp rolling but create permanent drag. 2) Improve #30 (reduce roll harm), worsen #22 (drag = energy loss). 3) Matrix (30,22) → {15, 23, 22, 2}. 4) Apply #15 Dynamics: make fin angle actively variable, not fixed. 5) Apply #23 Feedback: gyroscope measures roll rate and angle; servo drives fin angle to generate opposing moment in real time. 6) Apply #19 Periodic action: fins feather to zero incidence in calm seas, eliminating drag. 7) Result: active fin stabilizer that is highly effective in rough seas and drag-free in calm conditions.",
+        "solution": "Active retractable fin stabilizer: gyroscope and rate sensors feed a control computer that drives hydraulic actuators to set fin angle proportional to roll rate. In calm seas the fins feather (zero lift/drag) or retract inside the hull. 85–95% roll reduction in heavy seas with negligible calm-water penalty.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-06",
+        "source": "Altshuller, Creativity as an Exact Science (oil well fire)",
+        "language": "en",
+        "domain": "energy/safety",
+        "problem": "A burning oil well cannot be extinguished with water — water boils and disperses before reaching the seat of the fire. Foam is consumed rapidly. The fire must be snuffed instantly to prevent further damage.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Loss of substance (#23)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#39 Inert atmosphere",
+          "#19 Periodic action"
+        ],
+        "reasoning_chain": "1) Any extinguishing substance (water, foam) is destroyed by intense heat before reaching the base. 2) Improve #30 (reduce fire harm), worsen #23 (extinguishing agent lost). 3) Matrix (30,23) → {22, 39, 2, 28}. 4) Apply #22 Convert harm to benefit: use a conventional explosive. The explosion displaces the oxygen-fuel mixture faster than the flame-front can propagate. 5) Apply #39 Inert atmosphere: the detonation products (CO₂, N₂, steam) create a momentary oxygen-deficient zone at the wellhead. 6) Apply #19 Periodic: a second smaller charge removes residual flame pockets. 7) Classic Red Adair technique.",
+        "solution": "Explosive well-fire extinction: a high-explosive charge detonated at the wellhead ejects the burning gas-air mixture faster than combustion can continue, creating a momentary oxygen-depleted zone. Massive water curtains then cool the wellhead to prevent re-ignition.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-07",
+        "source": "Altshuller, And Suddenly the Inventor Appeared (periscope wake)",
+        "language": "en",
+        "domain": "aerospace/defense",
+        "problem": "A submarine periscope creates a visible V-shaped wake when the vessel moves at speed, betraying its position to aircraft. Slowing down to reduce the wake makes the submarine unresponsive during an attack.",
+        "contradiction_pair": {
+          "improving_parameter": "Speed (#9)",
+          "worsening_parameter": "Loss of information (#24)"
+        },
+        "inventive_principles": [
+          "#13 Inversion",
+          "#2 Taking out",
+          "#28 Mechanics substitution"
+        ],
+        "reasoning_chain": "1) Faster speed = larger wake = visible position. 2) Improve #9 (speed), worsen #24 (position secrecy compromised). 3) Matrix (9,24) → {13, 28, 35, 2}. 4) Apply #13 Inversion: instead of a hull-penetrating periscope, invert the concept — photonic mast does not penetrate the pressure hull at all. 5) Apply #2 Taking out: optics are extracted to a non-rotating electronic imager at the mast tip. 6) Apply #28 Mechanics substitution: replace mechanical rotation with electronic pan/tilt and image stitching. 7) Mast exposure time reduces from minutes to 1–2 seconds, making wake detection nearly impossible.",
+        "solution": "Non-hull-penetrating photonic/optronic mast: a slim carbon-fibre mast carries CCD/IR cameras at the tip; image data is transmitted electrically to a central display. Exposure above water lasts <2 s, eliminating any detectable wake.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-08",
+        "source": "Altshuller, Innovation Algorithm (rotating shaft temperature)",
+        "language": "en",
+        "domain": "manufacturing/measurement",
+        "problem": "The temperature of a rapidly spinning turbine shaft must be measured precisely during operation; attaching a thermocouple to the shaft requires sliding contacts that introduce noise and wear.",
+        "contradiction_pair": {
+          "improving_parameter": "Accuracy of measurement (#28)",
+          "worsening_parameter": "Device complexity (#36)"
+        },
+        "inventive_principles": [
+          "#28 Mechanics substitution",
+          "#26 Copying",
+          "#32 Color changes"
+        ],
+        "reasoning_chain": "1) Contact thermocouple on spinning shaft needs slip rings → noise, wear, complexity. 2) Improve #28 (accuracy), worsen #36 (complexity). 3) Matrix (28,36) → {26, 32, 28, 2}. 4) Apply #28 Mechanics substitution: replace electrical contact with a field-based measurement — infrared pyrometry. 5) Apply #26 Copying: use an optical replica of the radiation emitted (IR band imaging). 6) Apply #32 Color changes: coat shaft with temperature-indicating paint whose fluorescence wavelength shifts with temperature for easy optical reading. 7) Result: non-contact measurement, ±1°C accuracy, zero wear.",
+        "solution": "Dual-wavelength infrared pyrometer aligned at the shaft through a sapphire window: ratio of two IR emission bands gives emissivity-independent temperature. Phosphorescent temperature-sensitive paint applied to shaft provides visual confirmation during initial calibration.",
+        "complexity": "simple"
+      },
+      {
+        "id": "ALT-09",
+        "source": "Altshuller, ARIZ applied examples (railway switch icing)",
+        "language": "en",
+        "domain": "transportation/civil",
+        "problem": "Railway track switches accumulate ice and compacted snow in winter, causing switches to jam and trains to be delayed or derailed. Manual clearing is slow and labour-intensive.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#37 Thermal expansion",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Heating rails to prevent ice uses energy; unheated rails jam. 2) Improve #27 (reliability), worsen #22 (energy). 3) Matrix (27,22) → {22, 35, 3, 37}. 4) Apply #22 Convert harm: ice itself can be used as a trigger — moisture sensors detect ice-forming conditions. 5) Apply #37 Thermal expansion: resistance heating wire embedded in the switch rail groove expands and cracks ice adhesion. 6) Apply #35 Parameter change: apply heating only in the transition zone where ice matters, not the whole track. 7) Smart thermostat activates only when ambient temperature and humidity form ice — typical 70% energy saving vs. always-on systems.",
+        "solution": "Embedded electric switch-heating: stainless-steel resistance wires cast into the rail groove, controlled by a microprocessor that monitors rail temperature and atmospheric moisture. Activates only when ice-forming conditions are met; consumes <3 kW per switch; eliminates 98% of ice-related switch failures.",
+        "complexity": "simple"
+      },
+      {
+        "id": "ALT-10",
+        "source": "Altshuller, ARIZ (glass tubing drawing)",
+        "language": "en",
+        "domain": "manufacturing/materials",
+        "problem": "Drawing very thin borosilicate glass tubes at high speed produces uneven wall thickness because thermal gradients around the mandrel cause asymmetric viscosity distribution in the molten glass.",
+        "contradiction_pair": {
+          "improving_parameter": "Productivity (#39)",
+          "worsening_parameter": "Manufacturing precision (#29)"
+        },
+        "inventive_principles": [
+          "#19 Periodic action",
+          "#35 Parameter changes",
+          "#3 Local quality"
+        ],
+        "reasoning_chain": "1) Faster drawing → larger thermal asymmetry → wall thickness variation. 2) Improve #39, worsen #29. 3) Matrix (39,29) → {19, 35, 10, 3}. 4) Apply #19 Periodic: rotate the mandrel and blank continuously during drawing — thermal gradients are averaged around the circumference. 5) Apply #35 Parameter change: control mandrel temperature independently from blank draw temperature. 6) Apply #3 Local quality: apply local infra-red lamps to cold side only. 7) Rotation averaging eliminates asymmetry; speed can increase without precision loss.",
+        "solution": "Rotating-mandrel Danner process: the mandrel rotates at 10–30 rpm while molten glass spirals around it and is drawn downward. Circumferential averaging of any thermal asymmetry ensures uniform wall thickness at draw speeds 30% higher than static-mandrel processes.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-11",
+        "source": "Altshuller, And Suddenly the Inventor Appeared (steel cable inspection)",
+        "language": "en",
+        "domain": "mining/civil",
+        "problem": "Steel wire ropes in mine hoists fatigue internally and break without warning; visual inspection only detects surface breaks and requires stopping the hoist, disrupting production.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Loss of time (#25)"
+        },
+        "inventive_principles": [
+          "#28 Mechanics substitution",
+          "#26 Copying",
+          "#10 Preliminary action"
+        ],
+        "reasoning_chain": "1) Safe rope requires frequent inspection; inspection halts production (time loss). 2) Improve #27, worsen #25. 3) Matrix (27,25) → {28, 10, 3, 35}. 4) Apply #28 Mechanics substitution: replace visual/tactile inspection with a magnetic field. 5) Apply #26 Copying: wrap a magnetic-flux-leakage (MFL) sensor collar around the rope; flaws cause detectable anomalies in the leakage field — a non-contact 'copy' of internal defects. 6) Apply #10 Preliminary action: magnetise a rope segment before it enters the sensor collar. 7) MFL head travels with the rope at full operating speed; output streamed to surface for AI-based defect classification without any production stop.",
+        "solution": "Continuous magnetic-flux-leakage rope tester: permanent-magnet yokes saturate a rope segment; Hall-effect sensors read the flux leakage signature of every wire break, corrosion pit, and cross-section loss. Full-speed, in-service testing yields daily rope condition reports without halting the hoist.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-12",
+        "source": "Altshuller, Creativity as an Exact Science (blast-furnace taphole)",
+        "language": "en",
+        "domain": "manufacturing/metallurgy",
+        "problem": "The taphole of a blast furnace must be sealed with refractory clay after tapping. When re-tapping, the hardened clay plug must be drilled out quickly; slow drilling wastes heat and delays production.",
+        "contradiction_pair": {
+          "improving_parameter": "Ease of operation (#33)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#10 Preliminary action",
+          "#13 Inversion",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Hard clay stops drilling progress; faster drilling risks oxygen lance blow-through near molten iron. 2) Improve #33 (ease of opening), worsen #30 (risk of splashback). 3) Matrix (33,30) → {10, 35, 21, 28}. 4) Apply #10 Preliminary action: cast the plug material around a pre-inserted graphite rod that burns away under oxygen, creating an initial bore. 5) Apply #13 Inversion: instead of drilling in, burn through with an oxygen lance from outside — material is removed from the taphole side toward the furnace interior. 6) Apply #35 Parameter change: use a pre-conditioned low-density clay on the inner face that opens easily, with harder clay only on the outer face. 7) Opening time reduces from 8 min to 90 s.",
+        "solution": "Combination taphole system: the inner half of the clay plug is a fast-burning low-density compound; the outer half is dense refractory for sealing. A water-cooled oxygen lance burns through the inner material in <90 s; drill is used only if lance fails.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-13",
+        "source": "Altshuller, Innovation Algorithm (TBM cutter replacement)",
+        "language": "en",
+        "domain": "civil/mining",
+        "problem": "Tunnel-boring machine disc cutters wear rapidly in hard rock; replacing them requires workers to enter the dangerous cutterhead excavation face under compressed air, causing health risks and long downtime.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Ease of repair (#34)"
+        },
+        "inventive_principles": [
+          "#27 Cheap short-living objects",
+          "#25 Self-service",
+          "#1 Segmentation"
+        ],
+        "reasoning_chain": "1) Hard rock demands frequent cutter change; each change = entry into hazardous compressed-air environment. 2) Improve #27, worsen #34. 3) Matrix (27,34) → {1, 27, 35, 3}. 4) Apply #1 Segmentation: design modular rear-loading cutter housings accessible from the safe pressurized crew chamber behind the bulkhead. 5) Apply #27 Cheap short-living objects: make disc rings (the wear element) separately replaceable without removing the entire cutter assembly. 6) Apply #25 Self-service: embed wear-indicator pins that shear at minimum thickness, pushing a signal pin visible through an inspection port. 7) Cutter change at full pressure in crew compartment with no face exposure.",
+        "solution": "Rear-loading cutter system: disc rings slide axially out of their housings through sealed ports in the TBM bulkhead, serviced from the safe crew compartment. Colour-coded wear-indicator pins provide visual go/no-go status. Average change time cut from 4 h to 45 min.",
+        "complexity": "complex"
+      },
+      {
+        "id": "ALT-14",
+        "source": "Altshuller, Innovation Algorithm (flexible deep-sea pipeline)",
+        "language": "en",
+        "domain": "oil-gas/marine",
+        "problem": "A deep-sea pipeline connecting wellhead to floating production vessel must withstand thousands of fatigue cycles from platform motion and 200-bar external pressure, yet must remain flexible enough to accommodate large catenary displacements.",
+        "contradiction_pair": {
+          "improving_parameter": "Strength (#14)",
+          "worsening_parameter": "Adaptability/versatility (#35)"
+        },
+        "inventive_principles": [
+          "#1 Segmentation",
+          "#40 Composite materials",
+          "#30 Flexible shells and thin films"
+        ],
+        "reasoning_chain": "1) High strength needs thick rigid wall; flexibility needs thin compliant wall — contradiction. 2) Improve #14, worsen #35. 3) Matrix (14,35) → {1, 40, 30, 15}. 4) Apply #1 Segmentation: decompose pipe wall into independent functional layers: carcass (collapse resistance), pressure sheath (containment), tensile armour (longitudinal loads), outer sheath (corrosion). 5) Apply #40 Composite: each layer uses the optimal material — interlocked stainless carcass, PVDF pressure sheath, double helical carbon-steel armour wires. 6) Apply #30 Flexible shells: the independent wound-wire structure allows overall bending at a minimum bend radius of 4 m while maintaining 350-bar internal pressure capability. 7) Layers slide on each other during bending (no shear coupling) — the key enabling mechanism.",
+        "solution": "Unbonded flexible riser: a concentric stack of independent functional layers — interlocked steel carcass, polymer pressure barrier, and counter-wound helical steel armour wires — that slide freely during bending while combining to resist all static and fatigue loads. Industry standard for deepwater production in 1500+ m water depth.",
+        "complexity": "complex"
+      },
+      {
+        "id": "ALT-15",
+        "source": "Altshuller / aviation TRIZ (ground de-icing)",
+        "language": "en",
+        "domain": "aerospace/environmental",
+        "problem": "Aircraft must be de-iced before takeoff in winter; glycol-based fluids are effective but toxic, expensive, and contaminate airport stormwater runoff.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Object-generated harmful factors (#31)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#22 Convert harm into benefit",
+          "#39 Inert atmosphere"
+        ],
+        "reasoning_chain": "1) Fluid de-icing removes ice but creates toxic runoff. 2) Improving #30 (ice harm), worsening #31 (chemical pollution). 3) Matrix (30,31) → {22, 35, 2, 39}. 4) Apply #35 Parameter change: heat the aircraft in an enclosed hangar with infrared radiant panels — ice melts without chemicals. 5) Apply #22 Convert harm: meltwater collected from hangar floor is recirculated as potable heating. 6) Apply #39 Inert atmosphere: hangar creates controlled thermal zone that also allows inspection. 7) For aircraft that must de-ice at gate: concentrated glycol sprayed in reclaim-mat zones and recycled.",
+        "solution": "IR-heated de-icing hangar with floor drainage collection: infrared radiant heaters melt ice without chemicals; meltwater drains to a collection sump for reuse. For gate de-icing, glycol reclaim mats beneath the aircraft capture 95% of fluid for recycling, reducing environmental load by 80%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-16",
+        "source": "Altshuller (crane overload protection)",
+        "language": "en",
+        "domain": "manufacturing/safety",
+        "problem": "Overhead cranes must not exceed their rated load, but mechanical overload limiters are slow to react and can be mechanically defeated by operators under production pressure.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Device complexity (#36)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#23 Feedback",
+          "#9 Preliminary anti-action"
+        ],
+        "reasoning_chain": "1) Mechanical limiters can be bypassed and give no warning before limit. 2) Improve #27, worsen #36. 3) Matrix (27,36) → {25, 23, 35, 11}. 4) Apply #23 Feedback: continuous load-cell signal in hook block feeds a PLC that monitors load in real time. 5) Apply #25 Self-service: system self-checks its own sensors on each lift; calibration anomaly triggers automatic lockout. 6) Apply #9 Preliminary anti-action: a two-stage alert (warning at 90%, hard stop at 100%) prevents the operator from ever reaching the damaging limit. 7) PLC records all lifts — provides evidence trail that defeats operator bypass attempts.",
+        "solution": "Electronic load-monitoring crane control: dual-redundant strain-gauge load cells in the hook block transmit to a safety PLC; audible/visual warning at 90% SWL, automatic hoist lockout at 100% SWL with operator-bypass inhibit. Event log prevents tampering.",
+        "complexity": "simple"
+      },
+      {
+        "id": "ALT-17",
+        "source": "Altshuller, Innovation Algorithm (submarine ballast)",
+        "language": "en",
+        "domain": "aerospace/defense",
+        "problem": "A submarine must rapidly surface in an emergency by blowing ballast tanks, but at depth the ambient seawater pressure far exceeds onboard compressed-air pressure, preventing effective blowing.",
+        "contradiction_pair": {
+          "improving_parameter": "Speed (#9)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#29 Pneumatic or hydraulic construction",
+          "#22 Convert harm into benefit",
+          "#13 Inversion"
+        ],
+        "reasoning_chain": "1) At depth, high ambient pressure prevents compressed air from pushing water out of ballast tanks. 2) Improve #9 (emergency ascent speed), worsen #22 (energy to overcome depth pressure). 3) Matrix (9,22) → {29, 22, 35, 13}. 4) Apply #22 Convert harm to benefit: ambient seawater pressure is the enemy — use it as the power source via inversion. 5) Apply #13 Inversion: instead of blowing water out against ambient pressure, release the seawater through special flood/vent valves while compressed air in a high-pressure reservoir only needs to overcome differential, not absolute, pressure via a hydraulic intensifier. 6) Apply #29 Pneumatic: staged blow — low-pressure air first expands to accelerate ascent; hull-mounted hydroplanes assist rapid depth change. 7) Modern submarines use MBT blow pressures stored at 200+ bar.",
+        "solution": "High-pressure emergency blow: air banks at 200 bar discharge into main ballast tanks via fast-opening valves; the stored energy easily overcomes even full-ocean-depth ambient pressure. Hydraulic intensifiers on later designs multiply available blow pressure from lower-stored reserves, reducing bank weight.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-18",
+        "source": "Altshuller (textile mill noise reduction)",
+        "language": "en",
+        "domain": "manufacturing/ergonomics",
+        "problem": "High-speed looms in textile mills produce noise levels exceeding 100 dB, damaging workers' hearing; full acoustic enclosures trap heat and prevent rapid servicing.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Ease of operation (#33)"
+        },
+        "inventive_principles": [
+          "#28 Mechanics substitution",
+          "#2 Taking out",
+          "#10 Preliminary action"
+        ],
+        "reasoning_chain": "1) Enclosures reduce noise but block operator access. 2) Improve #31, worsen #33. 3) Matrix (31,33) → {28, 10, 35, 2}. 4) Apply #2 Taking out: relocate operator control station away from the loom floor to a sound-insulated booth. 5) Apply #28 Mechanics substitution: replace acoustic management with remote electronic monitoring — cameras and vibration sensors replace on-floor listening. 6) Apply #10 Preliminary action: preventive maintenance schedules derived from vibration data avoid noisy fault conditions. 7) Workers enter the loom floor only during stops.",
+        "solution": "Operator relocation to sound-isolated supervisory booth; looms monitored via IP camera arrays and vibration sensors; predictive maintenance alerts schedule interventions during planned stops. Loom-floor sound levels become a health concern only for brief maintenance visits with PPE.",
+        "complexity": "simple"
+      },
+      {
+        "id": "ALT-19",
+        "source": "Altshuller / process engineering (heat exchanger fouling)",
+        "language": "en",
+        "domain": "chemical/energy",
+        "problem": "Heat exchanger tubes in cooling-water circuits foul with calcium carbonate scale, reducing heat transfer efficiency by 30–50% within months; chemical cleaning requires hazardous acids and production shutdown.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Ease of repair (#34)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#22 Convert harm into benefit",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Scale reduces efficiency; cleaning is hazardous and disruptive. 2) Improve #22, worsen #34. 3) Matrix (22,34) → {25, 35, 2, 22}. 4) Apply #25 Self-service: introduce a continuous internal cleaning agent — recirculating sponge balls. 5) Balls slightly larger than tube ID pass through the exchanger under normal flow, scrubbing the tube wall mechanically. 6) Apply #35 Parameter change: ball density and resilience tuned to water chemistry. 7) Apply #22 Convert harm: the slight additional pressure drop from balls actually increases tube-side velocity, improving heat transfer coefficient by 5–8% above clean-shell baseline.",
+        "solution": "Recirculating sponge-ball online tube cleaning system (e.g., Taprogge): slightly oversized porous rubber balls circulate continuously through every tube pass, preventing scale nucleation. No chemicals, no shutdown, and improved overall heat transfer coefficient compared to conventional fouled exchanger.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-20",
+        "source": "Altshuller, Engineering Creativity (military mobile bridge)",
+        "language": "en",
+        "domain": "civil/defense",
+        "problem": "Military assault bridges must support main battle tank loads (60+ tonnes) but must be transported by a single vehicle and deployed by a small crew in under 5 minutes.",
+        "contradiction_pair": {
+          "improving_parameter": "Strength (#14)",
+          "worsening_parameter": "Weight of stationary object (#2)"
+        },
+        "inventive_principles": [
+          "#7 Nested doll",
+          "#15 Dynamics",
+          "#1 Segmentation"
+        ],
+        "reasoning_chain": "1) Strong bridge needs heavy steel; heavy bridge needs large vehicle and long crew time. 2) Improve #14, worsen #2. 3) Matrix (14,2) → {7, 1, 40, 15}. 4) Apply #7 Nested doll: fold bridge into nested scissor sections stacked on the launcher arm. 5) Apply #15 Dynamics: hydraulic scissors self-deploy across the gap, extending sections sequentially. 6) Apply #1 Segmentation: each panel is independently replaceable after battle damage. 7) Apply #40 high-strength aluminium alloy rather than steel — same strength at 35% lower mass.",
+        "solution": "Scissor-mechanism AVLB (Armoured Vehicle Launched Bridge): two-piece or single-piece high-strength aluminium scissor bridge folds to half-span length on the launcher, hydraulically extends and lowers in 2 min. MLC 70 load class at 14-tonne bridge weight.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-21",
+        "source": "Altshuller (glass bottle annealing)",
+        "language": "en",
+        "domain": "manufacturing/materials",
+        "problem": "Newly formed glass bottles must be annealed by slowly cooling through the glass transition temperature to relieve internal stress; fast cooling causes cracking or invisible residual stress that leads to field failure.",
+        "contradiction_pair": {
+          "improving_parameter": "Productivity (#39)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#19 Periodic action",
+          "#35 Parameter changes",
+          "#9 Preliminary anti-action"
+        ],
+        "reasoning_chain": "1) Faster throughput requires faster cooling which causes stress fractures. 2) Improve #39, worsen #30. 3) Matrix (39,30) → {19, 35, 38, 10}. 4) Apply #35 Parameter change: precisely control temperature gradient — fast in zones above/below the strain point, slow only through the 5°C critical anneal zone. 5) Apply #19 Periodic: use pulsed gas-flame/air curtains to maintain sharp zone boundaries in the lehr. 6) Apply #9 Preliminary anti-action: pre-temper the gathering at a calibrated temperature before mold entry, minimising residual gradient entering the lehr. 7) Outcome: annealing cycle shortened 40% while residual stress remains below specification.",
+        "solution": "Profiled-gradient lehr conveyor: individual zone temperatures follow a precisely programmed stress-relief curve — rapid cooling above 600°C, slow (≤3°C/min) through 530–500°C anneal zone, rapid cooling below 460°C. Pulsed cross-fire burners maintain sharp zone boundaries without hot spots.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-22",
+        "source": "Altshuller / maritime engineering (hull biofouling)",
+        "language": "en",
+        "domain": "transportation/environmental",
+        "problem": "Marine organisms fouling ship hulls increase hydrodynamic drag by 10–40%, raising fuel consumption; traditional antifouling paints contain tributyltin or copper biocides that are toxic to marine ecosystems.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Object-generated harmful factors (#31)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#35 Parameter changes",
+          "#28 Mechanics substitution"
+        ],
+        "reasoning_chain": "1) Toxic coatings reduce drag but pollute. 2) Improve #22, worsen #31. 3) Matrix (22,31) → {25, 35, 2, 28}. 4) Apply #35 Parameter change: change surface energy — silicone fouling-release coatings achieve surface energy <22 mN/m so organisms cannot form adhesive bonds. 5) Apply #25 Self-service: any organisms that do settle detach at ship service speeds ≥10 knots due to shear. 6) Apply #28 Mechanics substitution: for port-idle periods, underwater cleaning robots (ROVs) remove any attached life without dry-docking. 7) Zero biocides; drag at par with antifouling paint over 5-year hull life.",
+        "solution": "Silicone fouling-release coating (e.g., Intersleek) + periodic robotic hull cleaning: ultra-low surface energy prevents adhesion; autonomous underwater cleaning robots run monthly during port stays to remove any barnacle settlement before it hardens. No biocide discharge.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-23",
+        "source": "Altshuller / aerospace (turbine blade cooling)",
+        "language": "en",
+        "domain": "aerospace/energy",
+        "problem": "Gas turbine blades operate at gas temperatures 200°C above the alloy melting point; internal cooling air channels weaken the blade cross-section and complicate manufacture.",
+        "contradiction_pair": {
+          "improving_parameter": "Temperature (#17)",
+          "worsening_parameter": "Strength (#14)"
+        },
+        "inventive_principles": [
+          "#3 Local quality",
+          "#31 Porous materials",
+          "#40 Composite materials"
+        ],
+        "reasoning_chain": "1) Higher TIT (Turbine Inlet Temperature) improves efficiency but destroys blades. 2) Improve #17 (raise permissible operating temperature), worsen #14 (strength reduced by holes). 3) Matrix (17,14) → {3, 40, 31, 35}. 4) Apply #3 Local quality: ceramic thermal barrier coating (TBC) on external surface insulates blade locally — blade metal is protected from gas temperature. 5) Apply #31 Porous materials: sintered hollow porous leading-edge insert provides transpiration cooling — film of cooling air exudes through millions of micro-pores. 6) Apply #40 Composite: single-crystal Ni superalloy (no grain boundaries) with TBC on top, minimising thermomechanical fatigue. 7) Combined effect: blade survives 1700°C gas temperature while bulk metal remains below 1000°C.",
+        "solution": "Three-tier thermal protection: (1) single-crystal Ni-superalloy blade eliminates grain-boundary creep; (2) EB-PVD ceramic TBC (YSZ, 125 μm) on all airfoil surfaces cuts surface heat flux 25%; (3) multi-pass internal serpentine cooling channels with film-cooling holes on leading/trailing edge. Net: TIT raised to 1700°C, blade life >25,000 h.",
+        "complexity": "complex"
+      },
+      {
+        "id": "ALT-24",
+        "source": "Altshuller (welding distortion control)",
+        "language": "en",
+        "domain": "manufacturing/metallurgy",
+        "problem": "Welding large steel structural members causes severe thermal distortion as heated zones shrink on cooling; pre-clamping resists distortion but induces residual stress that can cause delayed cracking.",
+        "contradiction_pair": {
+          "improving_parameter": "Shape (#12)",
+          "worsening_parameter": "Stress or pressure (#11)"
+        },
+        "inventive_principles": [
+          "#9 Preliminary anti-action",
+          "#13 Inversion",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Clamping prevents distortion but adds residual stress. 2) Improve #12 (retain shape), worsen #11 (residual stress). 3) Matrix (12,11) → {9, 13, 10, 35}. 4) Apply #13 Inversion: instead of restraining the part, deliberately pre-distort it in the opposite direction. 5) Apply #9 Preliminary anti-action: introduce controlled pre-bending or pre-offsetting of joints. 6) Thermal contraction during welding then returns the part to its intended geometry. 7) Apply #35 Parameter change: use low-stress welding sequence (backstep, balanced, wandering) and inter-pass peening to relax residual stress.",
+        "solution": "Pre-distortion welding method: fixtures position joint faces with a calculated reverse offset (opposite to expected shrinkage direction); welding shrinkage brings the part to net-zero distortion. Combined with backstep welding sequence and inter-pass peening to minimise residual stress. Eliminates post-weld straightening.",
+        "complexity": "medium"
+      },
+      {
+        "id": "ALT-25",
+        "source": "Altshuller (waterjet cutting of glass/ceramics)",
+        "language": "en",
+        "domain": "manufacturing/materials",
+        "problem": "High-pressure waterjet cutting is effective on glass and ceramic but the impact pressure and hydraulic wedging cause edge microchipping and subsurface cracking that reduce strength of the finished part.",
+        "contradiction_pair": {
+          "improving_parameter": "Manufacturing precision (#29)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#11 Beforehand cushioning",
+          "#35 Parameter changes",
+          "#3 Local quality"
+        ],
+        "reasoning_chain": "1) Abrasive waterjet cuts glass well but creates edge damage. 2) Improve #29, worsen #30. 3) Matrix (29,30) → {11, 35, 3, 10}. 4) Apply #11 Beforehand cushioning: submerge the workpiece in a water bath — jet enters a hydrodynamic environment; secondary shock waves are absorbed before reaching cut edge. 5) Apply #35 Parameter change: switch from large-grit abrasive (80 mesh) to ultra-fine garnet (220 mesh) for ceramics — lower kinetic energy per particle, finer kerf, less microchipping. 6) Apply #3 Local quality: vary jet pressure and standoff distance specifically at entry and exit points where chipping risk is highest.",
+        "solution": "Submerged low-pressure abrasive waterjet: workpiece held in a shallow water tray; jet pressure reduced by 15% vs. dry cutting; fine-mesh garnet abrasive (220 mesh). Subsurface crack depth reduced from 150 μm to <30 μm; edge strength improved 40%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-06",
+        "source": "TRIZ-GPT / additive manufacturing (3D print support removal)",
+        "language": "en",
+        "domain": "manufacturing/additive",
+        "problem": "FDM 3D-printed parts require support structures for overhangs; mechanical removal of supports damages fine surface features and consumes significant post-processing time.",
+        "contradiction_pair": {
+          "improving_parameter": "Manufacturing precision (#29)",
+          "worsening_parameter": "Ease of manufacture (#32)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#27 Cheap short-living objects",
+          "#36 Phase transitions"
+        ],
+        "reasoning_chain": "1) Support removal is difficult without damaging delicate features. 2) Improve #29, worsen #32. 3) Matrix (29,32) → {35, 27, 10, 40}. 4) Apply #35 + #36 Phase transition: supports made from a water-soluble or solvent-soluble polymer (PVA or HIPS) change phase (dissolve) in a bath without mechanical force. 5) Apply #27 Cheap short-living: the support material is intentionally temporary and low-cost. 6) Support surfaces are perfectly preserved since no mechanical contact occurs. 7) Dual-extruder printer deposits build material and soluble support simultaneously.",
+        "solution": "Soluble support FDM printing: dual-extruder printer deposits PVA (water-soluble) or HIPS (d-limonene-soluble) supports. Parts are bathed post-print; supports dissolve completely without mechanical intervention, leaving clean overhanging surfaces with ±0.1 mm accuracy.",
+        "complexity": "simple"
+      },
+      {
+        "id": "TG-07",
+        "source": "TRIZ-GPT / EV battery thermal management (fast-charge heat)",
+        "language": "en",
+        "domain": "automotive/energy",
+        "problem": "Ultra-fast EV charging (≥150 kW) generates extreme heat that degrades battery cells; active liquid cooling during charging adds cost and delays charging session.",
+        "contradiction_pair": {
+          "improving_parameter": "Speed (#9)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#36 Phase transitions",
+          "#19 Periodic action"
+        ],
+        "reasoning_chain": "1) Fast charging generates heat faster than liquid cooling can remove it. 2) Improve #9 (charge speed), worsen #30 (heat damage). 3) Matrix (9,30) → {35, 36, 10, 37}. 4) Apply #36 Phase transitions: encapsulate cells in PCM (phase-change material, e.g. paraffin or salt hydrate at 40–45°C). 5) PCM absorbs heat isothermally as it melts, buffering cell temperature without active cooling. 6) Apply #19 Periodic: between sessions the PCM solidifies and resets its thermal capacity. 7) Apply #35 Parameter change: PCM formulated with paraffin micro-capsules dispersed in a polymer matrix for mechanical stability. 8) Result: cells stay within 25–45°C during 10-minute 350 kW charge without active cooling system.",
+        "solution": "Phase-change material thermal buffer: cells encapsulated in micro-encapsulated paraffin composite (latent heat ~200 kJ/kg, melting point 42°C). The PCM absorbs charge-generated heat isothermally; between sessions it re-solidifies passively. Eliminates need for coolant pump during the charging event itself.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-08",
+        "source": "TRIZ-GPT / photovoltaic maintenance (desert dust soiling)",
+        "language": "en",
+        "domain": "energy/environmental",
+        "problem": "Dust deposition on solar panels in desert environments reduces output by 20–50% per month; water-based cleaning is impractical due to water scarcity.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Loss of substance (#23)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#28 Mechanics substitution",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Cleaning needs water; water is scarce; unclean panels lose power. 2) Improve #22, worsen #23. 3) Matrix (22,23) → {25, 35, 28, 2}. 4) Apply #28 Mechanics substitution: replace water-mechanical cleaning with an electric field. 5) Transparent ITO electrodes deposited on panel glass create a travelling electrostatic wave that levitates and ejects dust particles. 6) Apply #25 Self-service: system runs autonomously triggered by irradiance drop sensor. 7) Apply #35 Parameter change: alternating high-frequency field aligned with gravity direction optimises ejection efficiency for different particle sizes.",
+        "solution": "Electrostatic self-cleaning panel surface: two sets of interdigitated transparent ITO electrodes beneath the glass cover generate a travelling dielectrophoretic wave at 2–10 kV, 10–60 Hz. Dust particles acquire charge and are propelled off the surface in 30 s. Autonomously triggered; zero water consumption; restores 90%+ of soiled power loss.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-09",
+        "source": "TRIZ-GPT / UAV design (payload vs flight time)",
+        "language": "en",
+        "domain": "aerospace/robotics",
+        "problem": "Heavier payload reduces drone flight time due to increased power consumption; for long-endurance missions carrying large sensor packages, battery alone is insufficient.",
+        "contradiction_pair": {
+          "improving_parameter": "Weight of moving object (#1)",
+          "worsening_parameter": "Duration of action of moving object (#15)"
+        },
+        "inventive_principles": [
+          "#8 Anti-weight",
+          "#15 Dynamics",
+          "#40 Composite materials"
+        ],
+        "reasoning_chain": "1) More payload = shorter flight. 2) Improve #1 (reduce effective weight), worsen #15 (duration). 3) Matrix (1,15) → {8, 15, 35, 40}. 4) Apply #8 Anti-weight: for stationary missions, tethered drone draws continuous power from ground, eliminating battery weight limit. 5) Apply #15 Dynamics: for range missions, hybrid VTOL-fixed-wing design transitions to efficient glide mode, cutting cruise power 70% vs. quadrotor. 6) Apply #40 Composite: CFRP airframe minimises structural weight fraction, maximising payload ratio.",
+        "solution": "Hybrid solution — (1) tethered multirotor for stationary surveillance: 100 m Kevlar power-tether supplies unlimited energy from ground generator; (2) fixed-wing VTOL (e.g., Quantum Trinity) for range missions: transitions from quad hover to fixed-wing cruise at L/D = 20, achieving 90+ min flight with 1 kg payload.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-10",
+        "source": "TRIZ-GPT / autonomous vehicles (LiDAR in adverse weather)",
+        "language": "en",
+        "domain": "transportation/electronics",
+        "problem": "LiDAR sensors on autonomous vehicles degrade severely in rain, fog, or snow, reducing detection range by up to 80%; relying solely on LiDAR in adverse weather compromises safety.",
+        "contradiction_pair": {
+          "improving_parameter": "Accuracy of measurement (#28)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#40 Composite materials",
+          "#24 Intermediary/Mediator",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) LiDAR performance degrades in rain; camera and LiDAR both degrade. 2) Improve #28 (perception accuracy), worsen #30 (weather degradation). 3) Matrix (28,30) → {40, 24, 35, 28}. 4) Apply #40 Composite: fuse multiple sensor modalities — LiDAR, 4D radar (weather-penetrating), visible camera, thermal IR. 5) Apply #24 Mediator: a Bayesian/deep-learning fusion layer arbitrates between sensor streams, weighting each by its real-time confidence score. 6) Apply #35 Parameter change: radar wavelength (77 GHz) penetrates rain that defeats LiDAR — use radar as primary detection in heavy rain, LiDAR for precise geometry in clear conditions. 7) Combined system maintains >95% object detection in ISO weather conditions.",
+        "solution": "Heterogeneous sensor fusion: 4D imaging radar (long range, weather-penetrating) + solid-state LiDAR (precise geometry) + thermal IR camera (pedestrian detection in darkness/fog) fused by a convolutional attention network. Radar weight increases automatically in precipitation; LiDAR weight increases in clear conditions. Object detection AUC remains >0.95 across all ISO weather states.",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-11",
+        "source": "TRIZ-GPT / wearable technology (battery life vs size)",
+        "language": "en",
+        "domain": "consumer-electronics/biomedical",
+        "problem": "Wearable health monitors must run continuously for multiple days, but battery capacity is constrained by the small, lightweight form factor required for comfort.",
+        "contradiction_pair": {
+          "improving_parameter": "Duration of action of moving object (#15)",
+          "worsening_parameter": "Weight of moving object (#1)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#35 Parameter changes",
+          "#15 Dynamics"
+        ],
+        "reasoning_chain": "1) Larger battery = longer life but heavier. 2) Improve #15, worsen #1. 3) Matrix (15,1) → {25, 15, 35, 8}. 4) Apply #25 Self-service: harvest ambient energy from the user's own body — TEG (thermoelectric generator) from skin-core temperature differential + piezoelectric from wrist motion. 5) Apply #35 Parameter change: adaptive duty-cycling — sample SpO₂ at 0.1 Hz normally, 1 Hz during detected activity. 6) Apply #15 Dynamics: machine-learning context-awareness shuts down sensors not needed in detected context (sleep, desk work). 7) Combined effect: harvested power + aggressive duty-cycling reduces net battery draw by 60%, doubling effective battery life.",
+        "solution": "Energy-aware wearable architecture: dual-source harvester (TEG at 30 μW + piezoelectric at 20 μW) supplements a 250 mAh battery; ML context engine reduces average sensor duty-cycle from 100% to 38%. Battery life extends from 3 to 7+ days without size or weight increase.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-12",
+        "source": "TRIZ-GPT / pharmaceutical supply chain (cold-chain monitoring)",
+        "language": "en",
+        "domain": "biomedical/logistics",
+        "problem": "Temperature-sensitive pharmaceuticals (vaccines, biologics) must maintain cold-chain integrity across multiple handoffs; monitoring is inconsistent and excursion data is often falsified or delayed.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Loss of information (#24)"
+        },
+        "inventive_principles": [
+          "#23 Feedback",
+          "#10 Preliminary action",
+          "#26 Copying"
+        ],
+        "reasoning_chain": "1) Data tampering and manual entry errors corrupt the record. 2) Improve #27 (cold-chain reliability), worsen #24 (information loss/falsification). 3) Matrix (27,24) → {23, 10, 26, 35}. 4) Apply #23 Feedback: IoT NFC/BLE loggers record temperature every 5 min with cryptographic timestamps. 5) Apply #26 Copying: blockchain ledger stores an immutable copy of each reading — impossible to retroactively alter. 6) Apply #10 Preliminary action: calibrate and seal loggers with tamper-evident label before dispatch. 7) Chemically irreversible time-temperature indicator on packaging provides physical backup visible to anyone.",
+        "solution": "Dual-layer cold-chain assurance: (1) IoT temperature logger with NFC for automated scanning at each handoff, writing to a permissioned blockchain ledger; (2) irreversible thermochromic time-temperature indicator on each package as a physical backup. 100% tamper-evident, automated record with regulatory compliance.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-13",
+        "source": "TRIZ-GPT / controlled environment agriculture (LED grow-light energy)",
+        "language": "en",
+        "domain": "energy/agriculture",
+        "problem": "Artificial LED lighting for vertical farms accounts for 60–70% of operating energy cost; full-spectrum broad-area illumination is inefficient because plants absorb only specific wavelengths and only during certain growth phases.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#3 Local quality",
+          "#19 Periodic action",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Full-spectrum all-time lighting wastes power on unused wavelengths. 2) Improve #22, worsen #39 (plant growth rate). 3) Matrix (22,39) → {3, 19, 35, 10}. 4) Apply #3 Local quality: deliver only the wavelengths the current growth stage absorbs — blue (450 nm) for vegetative, red (660 nm) for flowering, far-red (730 nm) for shade-avoidance. 5) Apply #19 Periodic: circadian-mimicking photoperiod with 5-min dawn/dusk ramp reduces shock. 6) Apply #35 Parameter change: UV-B pulses (2 min/day) stress-prime anthocyanin and flavonoid production in leafy greens, increasing nutritional value without extra energy. 7) Net result: 40% energy reduction with 10% faster growth.",
+        "solution": "Spectrally adaptive LED recipe controller: individually addressable red/blue/far-red/UV LED channels follow a growth-stage look-up table; circadian dimming curve programmed per species. UV stress pulses scheduled once daily. Energy consumption reduced 40% vs. fixed full-spectrum; anthocyanin content increased 25%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-14",
+        "source": "TRIZ-GPT / workplace design (open-plan office noise)",
+        "language": "en",
+        "domain": "ergonomics/architecture",
+        "problem": "Open-plan offices promote collaboration but elevated noise levels reduce cognitive performance and individual focus; individual soundproofing booths are expensive and reduce floor density.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Ease of operation (#33)"
+        },
+        "inventive_principles": [
+          "#2 Taking out",
+          "#28 Mechanics substitution",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Noise harms focus; enclosures reduce collaboration and floor efficiency. 2) Improve #31, worsen #33. 3) Matrix (31,33) → {2, 28, 10, 35}. 4) Apply #2 Taking out: extract the noise-generating activities (calls, meetings) to designated zones. 5) Apply #28 Mechanics substitution: replace physical walls with a sound-masking field — distributed ceiling speaker array emits spectrally-shaped broadband noise at 45 dB(A), raising ambient to mask speech. 6) Apply #35 Parameter change: speech intelligibility (STI) is lowered to <0.50 beyond 4 m, providing effective acoustic privacy without walls. 7) Absorptive ceiling + pendant baffles reduce direct reflections. 8) Activity-based working protocol routes calls to phone booths.",
+        "solution": "Layered acoustic strategy: (1) sound masking system (Qt Pro / LogiSon) calibrated to 45 dB(A) pink-modified spectrum masks speech beyond 4 m; (2) A-weighted pendant acoustic baffles reduce RT60 from 0.9 to 0.4 s; (3) Activity-based zoning routes calls and collaboration to dedicated pods. No walls added; STI in open zone drops from 0.72 to 0.47.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-15",
+        "source": "TRIZ-GPT / water treatment (RO membrane fouling)",
+        "language": "en",
+        "domain": "chemical/environmental",
+        "problem": "Reverse osmosis membranes in desalination plants foul with biofilm and particulates, reducing permeate flux 30–50% within weeks; chemical cleaning requires plant shutdown and produces hazardous waste streams.",
+        "contradiction_pair": {
+          "improving_parameter": "Productivity (#39)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#25 Self-service",
+          "#19 Periodic action",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Fouling reduces productivity; cleaning wastes energy and chemicals. 2) Improve #39, worsen #22. 3) Matrix (39,22) → {25, 19, 35, 28}. 4) Apply #19 Periodic: pulsed feed flow (pressure oscillations at 0.1–1 Hz) creates secondary Dean vortices that continuously sweep the membrane surface. 5) Apply #25 Self-service: hydrodynamic instability itself does the cleaning — no external cleaning agent. 6) Apply #35 Parameter change: add low-dose antiscalant (5 ppm) to prevent mineral scaling in the pulsed-flow environment. 7) Bench tests show 40% fouling reduction and 8% improvement in average permeate flux vs. steady-flow baseline.",
+        "solution": "Pulsed cross-flow RO operation: a variable-frequency pressure modulator superimposes 0.5 Hz oscillations on feed pressure; resulting transient Dean vortices sweep foulants from membrane surface. Combined with 5 ppm antiscalant dosing; achieves 40% fouling reduction with zero chemical cleaning events over a 6-month pilot.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-16",
+        "source": "TRIZ-GPT / concrete 3D printing (interlayer bond strength)",
+        "language": "en",
+        "domain": "civil/additive-manufacturing",
+        "problem": "3D-printed concrete structures exhibit 30–50% lower interlayer tensile bond strength compared to cast concrete; slow printing to allow partial setting reduces productivity.",
+        "contradiction_pair": {
+          "improving_parameter": "Strength (#14)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#10 Preliminary action",
+          "#35 Parameter changes",
+          "#18 Mechanical vibration"
+        ],
+        "reasoning_chain": "1) Letting each layer set longer improves bond but slows output. 2) Improve #14, worsen #39. 3) Matrix (14,39) → {10, 35, 18, 40}. 4) Apply #18 Mechanical vibration: attach ultrasonic transducer to the nozzle — micro-vibration at 30 kHz fluidizes fresh concrete at the layer interface, improving particle contact and compaction. 5) Apply #10 Preliminary action: spray a thin retarder layer on the just-deposited surface to keep it open for bonding while the bulk below sets quickly. 6) Apply #35 Parameter change: nano-silica additive accelerates bulk setting while retarder selectively delays interface. 7) Interlayer bond increases from 0.8 MPa to 1.4 MPa with no reduction in print speed.",
+        "solution": "Vibration-assisted concrete 3D printing with chemical interface control: 30 kHz ultrasonic nozzle compacts each layer; a trailing sprayer applies 0.3% retarder solution to the top surface to preserve interface workability. Bulk concrete sets rapidly (nano-silica admixture); interface stays open 10 min for next layer. Bond strength reaches 1.4 MPa — 75% of cast concrete.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-17",
+        "source": "TRIZ-GPT / MRI acoustic noise reduction",
+        "language": "en",
+        "domain": "biomedical/electronics",
+        "problem": "Clinical MRI scanners produce acoustic noise of 100–120 dB(A) from gradient coil vibration, causing patient anxiety, hearing risk, and communication difficulties with radiographers during scanning.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#28 Mechanics substitution",
+          "#19 Periodic action",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Noise comes from Lorentz forces on gradient coils during rapid switching; reducing switching reduces noise but also reduces scan speed. 2) Improve #31, worsen #39. 3) Matrix (31,39) → {28, 19, 35, 10}. 4) Apply #35 Parameter change: use silent MRI sequences (PETRA, ZTE — zero echo time) that ramp gradients quasi-continuously instead of switching them; acoustic noise reduced to 70–75 dB(A). 5) Apply #28 Mechanics substitution: active acoustic control (ANC) system inside the bore generates anti-phase sound to cancel residual noise at patient ear level. 6) Apply #19 Periodic: noise-generating gradient events timed to avoid resonance frequencies of the gradient tube. 7) Combined: 40 dB(A) peak noise reduction.",
+        "solution": "Silent MRI platform: (1) PETRA/ZTE silent pulse sequences replace conventional EPI — reduce noise 30 dB at source; (2) ANC headphones with in-bore reference microphones and speaker array cancel residual 70 dB to <50 dB at patient ear; (3) gradient tube damping film (viscoelastic polymer) suppresses structural resonance. Net scanner noise at patient: <55 dB(A).",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-18",
+        "source": "TRIZ-GPT / urban planning (urban heat island effect)",
+        "language": "en",
+        "domain": "civil/environmental",
+        "problem": "Urban heat islands increase city temperatures 2–8°C above rural surroundings, raising cooling energy demand, heat-related mortality, and ground-level ozone; dark paving and roofing are primary drivers.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#35 Parameter changes",
+          "#25 Self-service"
+        ],
+        "reasoning_chain": "1) Dark surfaces absorb solar heat that raises ambient temperature and increases A/C energy demand. 2) Improve #30 (thermal harm), worsen #22 (extra A/C energy). 3) Matrix (30,22) → {22, 35, 2, 39}. 4) Apply #35 Parameter change: change surface radiative properties — apply photonic radiative cooling (PRC) paint (SiO₂/TiO₂ nano-particle coating) with high solar reflectance (ρ>0.95) and mid-IR emissivity (ε>0.95 in 8–13 μm atmospheric window). 5) Apply #22 Convert harm: surface radiates heat to cold outer space passively — sub-ambient cooling of 5–8°C below air temperature without energy input. 6) Apply #25 Self-service: rain self-cleans white roof coatings. 7) Scaled city-wide: urban temperature reduction 1.5–3°C modelled.",
+        "solution": "Photonic radiative cooling paint for rooftops and pavements: nano-structured SiO₂/TiO₂ pigments in polymer binder achieve ρ_solar = 0.97 and ε_IR = 0.96, enabling daytime sub-ambient cooling up to 8°C. Applied to 50% of rooftops in a city block, modelled urban temperature drops 1.5–2°C and peak A/C load drops 10%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-19",
+        "source": "TRIZ-GPT / consumer electronics (waterproof vs. repairable smartphone)",
+        "language": "en",
+        "domain": "consumer-electronics",
+        "problem": "High IP68 water-resistance in smartphones requires bonded, sealed construction that makes screen and battery replacement nearly impossible, creating electronic waste when a single component fails.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Ease of repair (#34)"
+        },
+        "inventive_principles": [
+          "#1 Segmentation",
+          "#5 Merging",
+          "#30 Flexible shells and thin films"
+        ],
+        "reasoning_chain": "1) Glued seals achieve IP68 but prevent repair. 2) Improve #27, worsen #34. 3) Matrix (27,34) → {1, 11, 5, 40}. 4) Apply #1 Segmentation: divide the phone into snap-fit modular sections (screen, battery, camera) each with its own silicone O-ring seal, independent of each other. 5) Apply #5 Merging: a single perimeter gasket frame serves as the chassis seal and structural spine. 6) Apply #30 Flexible shells: thin-film elastomeric O-ring at each module interface maintains IP67 rating through repeated assembly/disassembly. 7) Inspired by Fairphone 4, which achieves IP54 + modular repair.",
+        "solution": "Modular waterproof architecture: standardized module connectors with compressible O-ring seals at each module boundary; central chassis frame aligns all modules and maintains IP67 compression. Screen, battery, camera, and charging port each replaceable with a spudger in <10 min without adhesive. Sustainability benefit: 70% of failures addressed by module swap.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-20",
+        "source": "TRIZ-GPT / flexible display technology (foldable OLED durability)",
+        "language": "en",
+        "domain": "consumer-electronics/materials",
+        "problem": "Flexible OLED displays crack at the encapsulation layers after thousands of fold cycles because brittle inorganic barrier layers cannot tolerate bending strain, allowing moisture ingress that destroys the organic emitters.",
+        "contradiction_pair": {
+          "improving_parameter": "Adaptability/versatility (#35)",
+          "worsening_parameter": "Reliability (#27)"
+        },
+        "inventive_principles": [
+          "#40 Composite materials",
+          "#30 Flexible shells and thin films",
+          "#3 Local quality"
+        ],
+        "reasoning_chain": "1) Flexible = thin inorganic barrier cracks; thick inorganic barrier = stiff. 2) Improve #35, worsen #27. 3) Matrix (35,27) → {40, 30, 3, 1}. 4) Apply #40 Composite: alternating inorganic (Al₂O₃, SiNx) and organic (Parylene, acrylic) layers — inorganic blocks moisture (WVTR <10⁻⁶ g/m²/day); organic absorbs crack propagation energy and redistributes strain. 5) Apply #3 Local quality: encapsulation is thickest at the fold axis where curvature is maximum. 6) Apply #30 Flexible shells: <1 μm total thickness preserves flexibility. 7) Dyadic barrier system proven at >200,000 fold cycles on Samsung Z Fold devices.",
+        "solution": "Dyadic multi-layer thin-film encapsulation (Vitex Barix-style): 6–8 alternating Al₂O₃/Parylene-C layers, each <100 nm. Organic layers decouple crack propagation between inorganic layers; any pinhole in one layer is blocked by the next. Fold-axis local thickness increased by 20% via shadow masking. Tested to 200,000 fold cycles at 1.5 mm radius; WVTR <5×10⁻⁷ g/m²/day maintained.",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-21",
+        "source": "TRIZ-GPT / construction environmental control (site dust)",
+        "language": "en",
+        "domain": "civil/environmental",
+        "problem": "Construction sites in urban areas generate respirable dust (PM2.5/PM10) harmful to workers and neighbours; water spraying from hoses wastes large water volumes and only suppresses coarse particles.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Loss of substance (#23)"
+        },
+        "inventive_principles": [
+          "#29 Pneumatic or hydraulic construction",
+          "#35 Parameter changes",
+          "#25 Self-service"
+        ],
+        "reasoning_chain": "1) Dust control needs fine droplets matching particle size; hose water droplets are 10–100× too large. 2) Improve #31, worsen #23 (water waste). 3) Matrix (31,23) → {29, 35, 25, 2}. 4) Apply #35 Parameter change: atomise water to 10–50 μm droplets (mist) matching PM10 particle aerodynamic diameter for efficient collision and coagulation. 5) Apply #29 Pneumatic: compressed-air atomising nozzles or ultrasonic disc foggers generate mist from 90% less water than a hose. 6) Apply #25 Self-service: dust sensor feedback triggers mist cannons automatically when PM10 exceeds 150 μg/m³. 7) Mist cannon suppresses 80% of PM10 at 1/10 the water consumption of hose spraying.",
+        "solution": "Automated atomised mist cannon system: electric-drive fan + high-pressure atomising ring produces a 50-m cone of 15–40 μm droplets. PM10 sensor triggers activation; droplet size matched to target particle diameter maximises capture efficiency. Water use: 10 L/min vs. 100 L/min for hose spraying; PM10 suppression >80%.",
+        "complexity": "simple"
+      },
+      {
+        "id": "TG-22",
+        "source": "TRIZ-GPT / food packaging (oxygen barrier vs. recyclability)",
+        "language": "en",
+        "domain": "manufacturing/environmental",
+        "problem": "Food packaging must provide high oxygen barrier (OTR < 0.5 cm³/m²/day) to extend shelf life, but multi-layer barrier films (PA/EVOH/PE) are not recyclable because the different polymers cannot be separated.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Manufacturability (#32)"
+        },
+        "inventive_principles": [
+          "#40 Composite materials",
+          "#35 Parameter changes",
+          "#27 Cheap short-living objects"
+        ],
+        "reasoning_chain": "1) Multi-layer barrier film is effective but not recyclable. 2) Improve #27 (barrier reliability), worsen #32 (recyclability/manufacture for circular economy). 3) Matrix (27,32) → {40, 1, 35, 16}. 4) Apply #40 Composite within a mono-material: nano-clay platelets (Montmorillonite) dispersed in a polyethylene matrix create a tortuous path for oxygen — OTR reduction 70% with no extra polymer type. 5) Apply #35 Parameter change: crystallinity of the PE layer controlled during extrusion to maximise barrier. 6) Apply #27 Cheap short-living: an integrated sacrificial oxygen scavenger (iron-based sachet) consumes residual O₂ during shelf life. 7) Entire package is recycled in the PE stream.",
+        "solution": "Nano-clay enhanced mono-material PE film: 5% wt Cloisite clay nano-platelets exfoliated in LLDPE matrix reduce oxygen transmission rate by 70% vs. neat PE, approaching conventional EVOH barrier levels. Iron-based oxygen scavenger sachet handles residual permeation. Entire pack recyclable in PE stream; OTR <1.2 cm³/m²/day vs. target.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-23",
+        "source": "TRIZ-GPT / railway maintenance (track geometry monitoring)",
+        "language": "en",
+        "domain": "transportation/civil",
+        "problem": "Railway track geometry degrades between periodic inspection campaigns; infrequent dedicated measurement trains leave developing defects undetected until they reach dangerous levels.",
+        "contradiction_pair": {
+          "improving_parameter": "Accuracy of measurement (#28)",
+          "worsening_parameter": "Loss of time (#25)"
+        },
+        "inventive_principles": [
+          "#26 Copying",
+          "#28 Mechanics substitution",
+          "#10 Preliminary action"
+        ],
+        "reasoning_chain": "1) Dedicated measurement trains are infrequent; geometry changes continuously. 2) Improve #28, worsen #25. 3) Matrix (28,25) → {26, 28, 10, 35}. 4) Apply #26 Copying: equip every revenue train with an inertial measurement unit (IMU) + accelerometer package that passively records track response — a continuous 'copy' of track geometry. 5) Apply #28 Mechanics substitution: replace manual track geometry car with cloud-aggregated signal processing from fleet sensor data. 6) Apply #10 Preliminary action: train ML model on known defect signatures; alerts triggered before threshold breaches. 7) Network of equipped trains provides daily geometry updates on all lines.",
+        "solution": "Fleet-based continuous track monitoring: low-cost IMU/accelerometer modules (axle-box mounted) on revenue train bogies transmit 1 kHz acceleration data via 4G/5G; cloud algorithm reconstructs vertical and lateral track geometry to ±1 mm precision. Daily geometry map replaces bi-monthly measurement train campaign; predictive maintenance reduces geometry-caused delays by 35%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-24",
+        "source": "TRIZ-GPT / data centre sustainability (cooling energy)",
+        "language": "en",
+        "domain": "energy/electronics",
+        "problem": "Hyperscale data centres consume 1–2% of global electricity, with 30–40% used for cooling; air-cooled servers waste energy maintaining cold aisles, and heat discharged at 25–35°C is too low-grade to reuse.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Object-generated harmful factors (#31)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#29 Pneumatic or hydraulic construction",
+          "#22 Convert harm into benefit"
+        ],
+        "reasoning_chain": "1) Cooling wastes energy and heat is too low grade to recycle. 2) Improve #22, worsen #31. 3) Matrix (22,31) → {35, 29, 22, 2}. 4) Apply #35 Parameter change: raise chip-exit coolant temperature from 25°C to 60°C using direct liquid cooling (DLC) — cold plates on CPUs. 5) Apply #29 Hydraulic: single-phase dielectric liquid or water flows through cold plates mounted directly on chip packages. 6) Apply #22 Convert harm: 60°C waste heat drives absorption chillers (COP 0.7) or district heating networks. 7) PUE drops from 1.5 to 1.1; waste heat covers 80% of an adjacent district heating load.",
+        "solution": "Direct liquid cooling with waste heat recovery: copper/titanium cold plates on CPUs/GPUs circulate water at 45–60°C inlet; warm return water (60–70°C) feeds an absorption chiller and/or district heating network. PUE falls from 1.5 to 1.05; 60% of heat exported to adjacent buildings. Cooling electricity reduced 85% vs. CRAC-based air cooling.",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-25",
+        "source": "TRIZ-GPT / wind energy (blade leading-edge erosion)",
+        "language": "en",
+        "domain": "energy/manufacturing",
+        "problem": "Wind turbine blade leading edges erode from rain and sand impact, reducing aerodynamic efficiency by 5–25% and structural integrity; full blade replacement is expensive, and conventional polyurethane coatings last only 2–3 years.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Strength (#14)"
+        },
+        "inventive_principles": [
+          "#10 Preliminary action",
+          "#40 Composite materials",
+          "#3 Local quality"
+        ],
+        "reasoning_chain": "1) Erosion-resistant coatings must absorb impact energy; too hard a coating cracks; too soft a coating wears. 2) Improve #30 (erosion harm), worsen #14 (structural integrity vs. brittleness). 3) Matrix (30,14) → {10, 40, 3, 35}. 4) Apply #10 Preliminary action: bond a pre-formed thermoplastic polyurethane (TPU) tape shield to the leading edge before blade is deployed — applied once at factory. 5) Apply #40 Composite: multi-layer tape — hard ceramic-filled TPU outer skin (impact resistance) over a soft energy-absorbing polyurea layer (ductility). 6) Apply #3 Local quality: shield applied only to the erosion-critical 0–10% chord section. 7) TPU shield is field-replaceable without blade removal — accessible by rope technician.",
+        "solution": "Pre-formed leading-edge protection (LEP) tape system: bi-layer TPU/polyurea tape bonded to the leading edge 0–10% chord. Hard outer layer (Shore D 60) resists rain droplet impact; soft inner layer (Shore A 70) dissipates crack energy. Tape replaced in <4 h by rope-access technicians. Lab-measured erosion rate at 120 m/s rain simulation: 40× improvement over polyurethane paint.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-26",
+        "source": "TRIZ-GPT / environmental engineering (microplastic removal from wastewater)",
+        "language": "en",
+        "domain": "environmental/chemical",
+        "problem": "Microplastics (1–5000 μm) pass through conventional wastewater primary/secondary treatment and are discharged to waterways; additional filtration clogs rapidly and is prohibitively expensive at municipal scale.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of substance (#23)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#19 Periodic action",
+          "#25 Self-service"
+        ],
+        "reasoning_chain": "1) Fine filtration captures microplastics but clogs. 2) Improve #23 (stop microplastic loss), worsen #39 (treatment throughput). 3) Matrix (23,39) → {35, 10, 25, 19}. 4) Apply #35 Parameter change: use electrocoagulation (EC) — alternating polarity iron/aluminum electrodes generate coagulant in situ, destabilising microplastic particles and agglomerating them to sizes >50 μm for easy settlement. 5) Apply #19 Periodic: pulsed electrode polarity (60 s on/off) prevents electrode passivation, maintaining coagulant generation. 6) Apply #25 Self-service: electrode reversal also self-cleans electrode surfaces. 7) EC captures 97% of >1 μm particles; sludge can be pyrolysed to synthetic fuel.",
+        "solution": "Electrocoagulation microplastic removal stage: iron sacrificial electrodes at 20 A/m² with 60 s polarity reversal generate Fe(OH)₃ floc in situ that captures >97% of microplastics ≥1 μm; combined with lamella clarifier for rapid settlement. Concentrated sludge sent to pyrolysis unit (600°C, N₂) to produce synthetic oil. Treatment cost: €0.08/m³ — 60% less than membrane filtration.",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-27",
+        "source": "TRIZ-GPT / aerospace structures (fuselage fatigue from pressurisation cycles)",
+        "language": "en",
+        "domain": "aerospace/materials",
+        "problem": "Metal aircraft fuselages accumulate fatigue cracks around windows, door frames, and rivets after thousands of pressurisation cycles; inspection and repair add significant maintenance cost.",
+        "contradiction_pair": {
+          "improving_parameter": "Reliability (#27)",
+          "worsening_parameter": "Weight of stationary object (#2)"
+        },
+        "inventive_principles": [
+          "#40 Composite materials",
+          "#3 Local quality",
+          "#9 Preliminary anti-action"
+        ],
+        "reasoning_chain": "1) More metal fatigue cycles = more fatigue; heavier structure to compensate adds weight. 2) Improve #27, worsen #2. 3) Matrix (27,2) → {1, 40, 11, 35}. 4) Apply #40 Composite: CFRP fuselage barrel does not experience metal fatigue — fatigue limit essentially infinite for fibre composites at operating stress levels. 5) Apply #3 Local quality: titanium fitting inserts only at door frames and window surrounds where point loads occur. 6) Apply #9 Preliminary anti-action: oval window cutout geometry (B787 80% larger than B767 windows) distributes hoop stress so peak stress at corner is below fatigue threshold. 7) Result: B787 CFRP fuselage designed for 44,000 flights with no scheduled fatigue inspections.",
+        "solution": "CFRP fuselage barrel construction (B787-style): filament-wound carbon-epoxy one-piece barrel eliminates thousands of rivets and crack initiation sites; titanium fasteners at structural fittings only. Oval windows 80% larger, reducing corner stress concentration factor by 30%. Scheduled airframe fatigue inspection interval: none (on-condition only).",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-28",
+        "source": "TRIZ-GPT / hydrogen vehicles (storage tank design)",
+        "language": "en",
+        "domain": "energy/automotive",
+        "problem": "Hydrogen for fuel-cell vehicles must be stored at 70 MPa to achieve acceptable volumetric energy density; metal pressure vessels are too heavy; lower-pressure storage loses range.",
+        "contradiction_pair": {
+          "improving_parameter": "Volume of moving object (#7)",
+          "worsening_parameter": "Object-affected harmful factors (#30)"
+        },
+        "inventive_principles": [
+          "#7 Nested doll",
+          "#40 Composite materials",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) High pressure = small volume = acceptable range; but extreme pressure = heavy safety margin. 2) Improve #7 (reduce tank volume for given energy), worsen #30 (burst risk at 70 MPa). 3) Matrix (7,30) → {7, 40, 35, 17}. 4) Apply #40 Composite: Type IV tank — high-density polyethylene liner (hydrogen-impermeable) overwound with carbon-fibre/epoxy at optimal geodesic angle. 5) Apply #7 Nested doll: valve boss incorporates excess-flow check valve and thermally-activated pressure relief device (TPRD) inside the tank volume. 6) Apply #35 Parameter change: conformable multi-cylinder pack (3–4 parallel cylinders) fits vehicle underbody better than a single large cylinder. 7) System gravimetric capacity: 5.7 wt% H₂; 700 km range at 100 kg/60 L tank weight.",
+        "solution": "Type IV 70 MPa tank array: HDPE liner + T700 carbon-fibre overwrap at 12–18° helical angle; internal TPRD activates at 110°C; 3-cylinder conformable pack fits Toyota Mirai underbody. Gravimetric storage efficiency: 5.7 wt% H₂; volumetric: 40.8 kg H₂/m³. FMVSS 304 and UN GTR13 compliant.",
+        "complexity": "complex"
+      },
+      {
+        "id": "TG-29",
+        "source": "TRIZ-GPT / additive manufacturing (FDM printer vibration and noise)",
+        "language": "en",
+        "domain": "manufacturing/consumer-electronics",
+        "problem": "Industrial desktop FDM 3D printers produce mechanical vibration and acoustic noise above 60 dB(A) from stepper motors and belt-driven motion systems, disturbing nearby workers and causing print quality artefacts (ringing/ghosting).",
+        "contradiction_pair": {
+          "improving_parameter": "Object-generated harmful factors (#31)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#18 Mechanical vibration",
+          "#28 Mechanics substitution",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) Faster print speeds exacerbate vibration and noise. 2) Improve #31, worsen #39. 3) Matrix (31,39) → {28, 35, 10, 19}. 4) Apply #28 Mechanics substitution: switch from Cartesian bed-slinger to CoreXY gantry — only the lightweight toolhead moves, eliminating massive Y-axis bed mass that amplifies vibration. 5) Apply #35 Parameter change: replace standard stepper drivers with silent-step drivers (TMC2208 stealthChop algorithm) that use sine-wave current interpolation, eliminating 80% of motor whine. 6) Apply #18 Vibration (convert): input-shaping (Klipper resonance compensation) generates an inverse-vibration pulse that pre-cancels ringing artefacts, allowing higher acceleration without ghosting. 7) Result: <40 dB(A) operation, print speed +60%.",
+        "solution": "High-speed silent FDM platform: CoreXY motion system + TMC2208 stealthChop drivers + input-shaping resonance compensation (ADXL345 accelerometer auto-calibrates). Acoustic level drops from 62 to 38 dB(A); achievable print speed increases from 60 to 150 mm/s with equal quality. Enclosed with acoustic foam panels if <35 dB(A) required.",
+        "complexity": "medium"
+      },
+      {
+        "id": "TG-30",
+        "source": "TRIZ-GPT / smart grid (peak demand management)",
+        "language": "en",
+        "domain": "energy/electronics",
+        "problem": "Peak electricity demand (typically 5–8 PM) overloads the distribution grid, requiring expensive peaking plants that run only a few hundred hours per year and still risk brownouts.",
+        "contradiction_pair": {
+          "improving_parameter": "Productivity (#39)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#19 Periodic action",
+          "#23 Feedback",
+          "#25 Self-service"
+        ],
+        "reasoning_chain": "1) Peaking plants are wasteful and expensive; building more capacity is inefficient. 2) Improve #39 (grid supply sufficiency), worsen #22 (energy wasted in peaking plants). 3) Matrix (39,22) → {19, 23, 35, 25}. 4) Apply #19 Periodic: shift flexible loads (EV charging, HVAC pre-cooling, dishwashers) to off-peak periods via automated scheduling. 5) Apply #23 Feedback: real-time grid-frequency signal (±0.1 Hz from 50/60 Hz) propagated to smart appliances as a broadcast demand signal — no central controller needed. 6) Apply #25 Self-service: appliances autonomously decide to defer or advance their load based on the frequency signal. 7) 15–20% peak demand reduction demonstrated in national trials (UK Power Networks).",
+        "solution": "Frequency-responsive demand management: smart EV chargers, heat pumps, and HVAC units read grid frequency; 49.9 Hz triggers deferral, 50.1 Hz triggers advance. Aggregated across a city, 200 MW of flexible load shifts automatically. No central communication; self-organising response. Combined with V2G discharge from EV fleet at peak, peak demand reduced 18%.",
+        "complexity": "medium"
+      },
+      {
+        "id": "MOD-11",
+        "source": "TRIZ in construction engineering (underwater concrete placement)",
+        "language": "en",
+        "domain": "civil/manufacturing",
+        "problem": "Placing concrete in submerged or flowing water environments causes cement washout and aggregate segregation, producing weak, non-uniform concrete in underwater foundations and cofferdams.",
+        "contradiction_pair": {
+          "improving_parameter": "Stability of object's composition (#13)",
+          "worsening_parameter": "Productivity (#39)"
+        },
+        "inventive_principles": [
+          "#35 Parameter changes",
+          "#24 Intermediary/Mediator",
+          "#10 Preliminary action"
+        ],
+        "reasoning_chain": "1) Water flowing through fresh concrete disperses cement; preventing dispersion requires admixtures that slow placement. 2) Improve #13, worsen #39. 3) Matrix (13,39) → {35, 10, 24, 1}. 4) Apply #24 Mediator: submerged tremie pipe acts as an intermediary — concrete enters from below the existing pour surface, displacing water upward rather than falling through it. 5) Apply #35 Parameter change: anti-washout admixtures (HPMC-based viscosity modifier) raise viscosity 20-fold, preventing dispersion even at 1 m/s current. 6) Apply #10 Preliminary action: pre-fill the tremie with a cement grout plug to prevent water ingress before concrete pumping starts. 7) Result: underwater concrete achieves 85% of in-air 28-day strength.",
+        "solution": "Tremie-pipe underwater concrete placement: 200–300 mm steel tremie pipe primed with cement grout plug; anti-washout HPMC admixed concrete flows continuously from the bottom up, always maintained in contact with the fresh pour face below water surface. Meets EN 206 class XA2 and ACI 304R requirements for underwater placement.",
+        "complexity": "medium"
+      },
+      {
+        "id": "MOD-12",
+        "source": "TRIZ in energy technology (tandem solar cell efficiency)",
+        "language": "en",
+        "domain": "energy/materials",
+        "problem": "Single-junction silicon photovoltaic cells are limited to ~29% theoretical efficiency (Shockley-Queisser); higher efficiency multi-junction cells are 10× more expensive and require exotic III-V substrates.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of energy (#22)",
+          "worsening_parameter": "Manufacturability (#32)"
+        },
+        "inventive_principles": [
+          "#1 Segmentation",
+          "#3 Local quality",
+          "#17 Transition to another dimension"
+        ],
+        "reasoning_chain": "1) More junctions = higher efficiency but exponentially higher cost. 2) Improve #22, worsen #32. 3) Matrix (22,32) → {1, 17, 35, 10}. 4) Apply #1 Segmentation: divide the solar spectrum into sub-bands, each harvested by a different material — perovskite top cell (1.68 eV bandgap, absorbs UV/visible) + silicon bottom cell (1.1 eV, absorbs NIR). 5) Apply #17 Transition to another dimension: stack the two cells in a vertical tandem — light passes through the top cell and residual is absorbed by the bottom cell. 6) Apply #3 Local quality: each sub-cell optimised for its spectral band. 7) Two-terminal perovskite/Si tandem avoids III-V cost; lab record 33.9% efficiency (LONGi, 2023); manufacturing cost only 20% above PERC.",
+        "solution": "Perovskite/Silicon monolithic tandem cell: methylammonium-free (Cs,FA)Pb(I,Br)₃ perovskite top cell (1.68 eV) deposited by slot-die coating on n-type TOPCon silicon bottom cell; recombination junction via indium tin oxide interlayer. Certified 33.9% PCE (LONGi 2023); compatible with existing silicon cell manufacturing with one extra deposition step.",
+        "complexity": "complex"
+      },
+      {
+        "id": "MOD-13",
+        "source": "TRIZ in medical devices (noise-cancelling stethoscope)",
+        "language": "en",
+        "domain": "biomedical/electronics",
+        "problem": "Acoustic stethoscopes in busy ICUs and emergency departments pick up ambient noise that masks cardiac and lung sounds, leading to diagnostic errors; moving to a quiet room delays care.",
+        "contradiction_pair": {
+          "improving_parameter": "Accuracy of measurement (#28)",
+          "worsening_parameter": "Device complexity (#36)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#28 Mechanics substitution",
+          "#23 Feedback"
+        ],
+        "reasoning_chain": "1) More sensitive microphone = more ambient noise. 2) Improve #28, worsen #36. 3) Matrix (28,36) → {26, 32, 28, 2}. 4) Apply #28 Mechanics substitution: replace passive acoustics with dual-microphone electronics. 5) Apply #22 Convert harm: the second reference microphone records ambient noise without body contact; digital subtraction removes it from the chest-contact signal. 6) Apply #23 Feedback: real-time adaptive filter updates coefficients every 5 ms to track changing ambient noise. 7) Net: body sound SNR improved by 30 dB in 90 dB ambient environments; output amplified 40× and frequency-shaped for heart/lung emphasis.",
+        "solution": "Adaptive noise-cancelling electronic stethoscope: two MEMS microphones — one in the chest piece (body + ambient), one on external housing (ambient only); ANC DSP computes inverse ambient signal and subtracts in real time. SNR gain: +30 dB. Bluetooth transmission to smartphone app for waveform display and AI-assisted murmur classification.",
+        "complexity": "medium"
+      },
+      {
+        "id": "MOD-14",
+        "source": "TRIZ in environmental engineering (direct air carbon capture)",
+        "language": "en",
+        "domain": "environmental/chemical",
+        "problem": "Direct Air Capture (DAC) of CO₂ requires moving large air volumes through sorbent beds using powered fans; energy cost (2,000–2,500 kWh/tonne CO₂) makes deployment economically unviable at required climate scale.",
+        "contradiction_pair": {
+          "improving_parameter": "Loss of substance (#23)",
+          "worsening_parameter": "Loss of energy (#22)"
+        },
+        "inventive_principles": [
+          "#22 Convert harm into benefit",
+          "#25 Self-service",
+          "#35 Parameter changes"
+        ],
+        "reasoning_chain": "1) DAC needs fans = energy; without fans = low contact area = slow capture. 2) Improve #23 (capture CO₂), worsen #22 (energy). 3) Matrix (23,22) → {25, 35, 22, 2}. 4) Apply #22 Convert harm: use existing wind as the motive force — passive wind-driven DAC contactors (louvred towers) exploit natural convective and wind flows to circulate air through sorbent. 5) Apply #25 Self-service: calcium looping sorbent regenerates via the same waste heat stream from co-located industrial process. 6) Apply #35 Parameter change: use anion exchange resin that captures CO₂ from humid air and releases it upon humidity swing (moisture-swing, zero thermal energy). 7) Combined energy: <800 kWh/tonne CO₂.",
+        "solution": "Passive moisture-swing DAC: anion-exchange resin (quaternary ammonium hydroxide on polystyrene) captures CO₂ from ambient air when dry; releases pure CO₂ when wetted with water vapour — no heat, no fans. Wind-driven louvred towers provide air contact. Regeneration energy: 0 kWh heat + <200 kWh electrical/tonne CO₂. Scales via modular towers sited at coastal/humid locations.",
+        "complexity": "complex"
+      },
+      {
+        "id": "MOD-15",
+        "source": "TRIZ in civil engineering (bridge cable vibration fatigue)",
+        "language": "en",
+        "domain": "civil/transportation",
+        "problem": "Stay cables on cable-stayed bridges undergo rain-wind induced vibration at large amplitudes, causing fatigue at anchorage zones and deteriorating cable sheathing; passive viscous dampers are effective but must be replaced on a 10–15 year cycle.",
+        "contradiction_pair": {
+          "improving_parameter": "Object-affected harmful factors (#30)",
+          "worsening_parameter": "Reliability (#27)"
+        },
+        "inventive_principles": [
+          "#23 Feedback",
+          "#35 Parameter changes",
+          "#18 Mechanical vibration"
+        ],
+        "reasoning_chain": "1) Passive dampers reduce vibration but have fixed damping coefficient that is sub-optimal across a range of wind conditions. 2) Improve #30 (reduce fatigue harm), worsen #27 (passive dampers degrade and must be replaced). 3) Matrix (30,27) → {23, 35, 18, 11}. 4) Apply #23 Feedback: accelerometers on cables feed a real-time controller that adjusts damping force. 5) Apply #35 Parameter change: magnetorheological (MR) fluid damper whose viscosity is controllable by magnetic field in <10 ms — variable damping ratio. 6) Apply #18 Mechanical vibration: controller generates opposing phase force to cancel detected vibration. 7) Semi-active MR damper with closed-loop control outperforms passive damper by 50% at minimal energy cost (max 50 W).",
+        "solution": "Semi-active magnetorheological cable damper: each stay cable fitted with an MR damper at deck level; accelerometer on cable feeds LQR optimal controller that adjusts coil current (0–5 A) to vary damping coefficient in real time. Rain-wind induced vibration amplitude reduced 80% vs. untreated cable; 60% reduction vs. passive viscous damper. Damper requires no mechanical maintenance for 25+ years.",
+        "complexity": "complex"
+      }
+    ]
+  }
+}
