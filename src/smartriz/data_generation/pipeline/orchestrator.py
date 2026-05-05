@@ -35,6 +35,7 @@ from smartriz.data_generation.config import (
 from smartriz.data_generation.pipeline.teacher import TeacherClient
 from smartriz.data_generation.pipeline.judge import JudgeClient
 from smartriz.data_generation.quality.matrix import check, parse_param_id, parse_principle_id
+from smartriz.data_generation.quality.triz_kb import validate_principles
 
 logger = logging.getLogger(__name__)
 
@@ -354,6 +355,66 @@ def _run_matrix_check(case: dict) -> bool:
     return check(imp_id, wor_id, principle_ids)
 
 
+# ── Principle validation sweep ────────────────────────────────────────────────
+
+def principle_validation_sweep(
+    in_path: Path = None,
+    out_path: Path = None,
+) -> int:
+    """
+    Hard-gate: reject any case where inventive_principles contain hallucinated
+    or incorrectly named principles. Overwrites in_path in-place (temp file swap).
+    Returns count of cases that passed.
+    """
+    from smartriz.data_generation.config import MATRIX_VALIDATED_JSONL as _DEFAULT_PATH
+    if in_path is None:
+        in_path = _DEFAULT_PATH
+    if out_path is None:
+        out_path = in_path  # in-place
+
+    if not in_path.exists():
+        logger.warning("principle_validation_sweep: no file at %s", in_path)
+        return 0
+
+    tmp_path = in_path.with_suffix(".tmp")
+    count_pass = 0
+    count_fail = 0
+
+    with open(in_path, encoding="utf-8") as fin, \
+         open(tmp_path, "w", encoding="utf-8") as fout:
+        for line in fin:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                case = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            principles = case.get("inventive_principles", [])
+            result = validate_principles(principles)
+
+            if not result["valid"]:
+                for r in result["rejected"]:
+                    logger.info(
+                        "[drop/principles] id=%s — rejected '%s': %s",
+                        case.get("id", "?"), r["original"], r["reason"],
+                    )
+                count_fail += 1
+                continue
+
+            # Normalize principle strings in-place
+            case["inventive_principles"] = result["normalized"]
+            case.setdefault("meta", {})["principles_validated"] = True
+            fout.write(json.dumps(case, ensure_ascii=False) + "\n")
+            count_pass += 1
+
+    # Atomic replace
+    tmp_path.replace(in_path)
+    logger.info("Principle validation: %d passed, %d rejected", count_pass, count_fail)
+    return count_pass
+
+
 # ── Main orchestration entry point ────────────────────────────────────────────
 
 async def run_round(
@@ -438,6 +499,10 @@ async def run_round(
     logger.info("Stage 5.1: matrix check")
     matrix_count = matrix_check_sweep()
 
+    # Stage 5.2: principle name validation (hard gate — drops hallucinated principles)
+    logger.info("Stage 5.2: principle validation sweep")
+    principle_count = principle_validation_sweep()
+
     stats = {
         "round": generation_round,
         "temperature": temperature,
@@ -445,6 +510,7 @@ async def run_round(
         "raw_generated": total_raw,
         "judge_passed": judged_count,
         "matrix_passed": matrix_count,
+        "principle_passed": principle_count,
         "total_cost_usd": cost_tracker.total,
         "total_calls": cost_tracker.call_count,
     }
