@@ -34,7 +34,13 @@ def main() -> None:
         return
 
     with open(FINAL_JSON, encoding="utf-8") as f:
-        cases = json.load(f)
+        data = json.load(f)
+
+    # Handle both bare list and wrapped {"cases": [...]} format
+    if isinstance(data, dict):
+        cases = data.get("cases", [])
+    else:
+        cases = data
 
     flagged = 0
     for case in cases:
@@ -42,8 +48,13 @@ def main() -> None:
             case.setdefault("meta", {})["legacy_v0"] = True
             flagged += 1
 
+    # Write back preserving the wrapper structure
     with open(FINAL_JSON, "w", encoding="utf-8") as f:
-        json.dump(cases, f, ensure_ascii=False, indent=2)
+        if isinstance(data, dict):
+            data["cases"] = cases
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        else:
+            json.dump(cases, f, ensure_ascii=False, indent=2)
 
     print(f"Flagged {flagged}/{len(cases)} cases as legacy_v0.")
     print("Review and delete legacy cases manually before next pipeline run.")
