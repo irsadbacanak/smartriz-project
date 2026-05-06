@@ -233,6 +233,46 @@ def validate_principles(principles: list[str]) -> dict:
     }
 
 
+# Methods where copying the parent contradiction pair is a HARD FAIL
+_COPY_BLOCKED_METHODS = {"self_instruct", "evol_cross_domain"}
+
+
+def validate_no_contradiction_copying(
+    generated_case: dict,
+    parent_seed: dict,
+    method: str,
+) -> tuple[bool, str]:
+    """
+    Hard-reject a case where the generator copied the parent seed's contradiction pair.
+
+    Returns (is_valid, reason).
+    - self_instruct and evol_cross_domain: identical pair → FAIL
+    - evol_deepening and evol_constraint: copying is intentional → always PASS
+    - Missing contradiction_pair in generated case → FAIL (malformed output)
+    """
+    if method not in _COPY_BLOCKED_METHODS:
+        return True, ""
+
+    gen_cp = generated_case.get("contradiction_pair")
+    if not gen_cp:
+        return False, "generated case has no contradiction_pair field"
+
+    par_cp = parent_seed.get("contradiction_pair", {})
+    gen_imp = gen_cp.get("improving_parameter", "").strip()
+    gen_wor = gen_cp.get("worsening_parameter", "").strip()
+    par_imp = par_cp.get("improving_parameter", "").strip()
+    par_wor = par_cp.get("worsening_parameter", "").strip()
+
+    if gen_imp == par_imp and gen_wor == par_wor:
+        return False, (
+            f"contradiction_pair identical to parent seed "
+            f"(improving='{par_imp}', worsening='{par_wor}') — "
+            f"generator copied instead of deriving independently"
+        )
+
+    return True, ""
+
+
 def principles_reference_block() -> str:
     """Return a formatted string listing all 40 principles for injection into prompts."""
     lines = [f"  #{n} {name}" for n, name in sorted(TRIZ_PRINCIPLES.items())]
