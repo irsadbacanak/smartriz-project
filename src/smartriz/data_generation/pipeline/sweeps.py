@@ -11,7 +11,15 @@ import json
 import logging
 from pathlib import Path
 
-from smartriz.data_generation.pipeline.io import append_jsonl
+from smartriz.data_generation.pipeline.io import (
+    append_jsonl,
+    append_reject,
+    REASON_MATRIX_STRUCTURAL,
+    REASON_MATRIX_CITATION,
+    REASON_PRINCIPLE_INVALID,
+    REASON_CP_COPY,
+    REASON_COMPLEXITY_INVALID,
+)
 from smartriz.data_generation.pipeline.seeds import load_seeds
 from smartriz.data_generation.quality.matrix import (
     check,
@@ -68,6 +76,19 @@ def matrix_check_sweep(
                 logger.info("[drop/matrix] matrix check failed — id=%s", case.get("id", "?"))
                 if is_citation_drop:
                     citation_drops += 1
+                    append_reject(
+                        case,
+                        stage="matrix",
+                        reason_code=REASON_MATRIX_CITATION,
+                        reason_text="Hallucinated matrix citation in reasoning_chain",
+                    )
+                else:
+                    append_reject(
+                        case,
+                        stage="matrix",
+                        reason_code=REASON_MATRIX_STRUCTURAL,
+                        reason_text="Matrix structural check failed (param/principle IDs or matrix cell mismatch)",
+                    )
                 continue
 
             case["meta"]["matrix_check_passed"] = True
@@ -175,11 +196,22 @@ def principle_validation_sweep(in_path: Path) -> int:
             result = validate_principles(principles)
 
             if not result["valid"]:
-                for r in result["rejected"]:
+                rejected_details = result.get("rejected", [])
+                for r in rejected_details:
                     logger.info(
                         "[drop/principles] id=%s — rejected '%s': %s",
                         case.get("id", "?"), r["original"], r["reason"],
                     )
+                reason_text = "; ".join(
+                    f"'{r['original']}': {r['reason']}" for r in rejected_details
+                ) or "principle validation failed"
+                append_reject(
+                    case,
+                    stage="principle",
+                    reason_code=REASON_PRINCIPLE_INVALID,
+                    reason_text=reason_text,
+                    extra_meta={"rejected_principles": rejected_details},
+                )
                 count_fail += 1
                 continue
 
@@ -226,6 +258,13 @@ def complexity_validation_sweep(in_path: Path) -> int:
                 logger.info(
                     "[drop/complexity] id=%s — %s",
                     case.get("id", "?"), reason,
+                )
+                append_reject(
+                    case,
+                    stage="complexity",
+                    reason_code=REASON_COMPLEXITY_INVALID,
+                    reason_text=reason,
+                    extra_meta={"complexity_label": case.get("complexity")},
                 )
                 count_fail += 1
                 continue
@@ -285,6 +324,13 @@ def contradiction_copy_sweep(
                 logger.info(
                     "[drop/cp-copy-sweep] id=%s method=%s — %s",
                     case.get("id", "?"), method, reason,
+                )
+                append_reject(
+                    case,
+                    stage="copy_sweep",
+                    reason_code=REASON_CP_COPY,
+                    reason_text=reason,
+                    extra_meta={"method": method, "parent_seed_id": seed_id},
                 )
                 count_fail += 1
                 continue

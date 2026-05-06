@@ -33,7 +33,12 @@ from smartriz.data_generation.config import (
 from smartriz.data_generation.pipeline.io import (
     append_jsonl,
     append_processed_key,
+    append_reject,
     load_processed_keys,
+    REASON_TEACHER_TASK_ERROR,
+    REASON_CP_COPY,
+    REASON_JUDGE_FAIL,
+    REASON_JUDGE_SCORING_ERROR,
 )
 from smartriz.data_generation.pipeline.seeds import (
     SeedScheduler,
@@ -117,6 +122,13 @@ async def _run_teacher_task(
         sys.exit(1)
     except Exception as exc:
         logger.warning("[error] task %s failed: %r", key, exc, exc_info=True)
+        append_reject(
+            None,
+            stage="teacher",
+            reason_code=REASON_TEACHER_TASK_ERROR,
+            reason_text=repr(exc),
+            extra_meta={"key": key, "method": method, "seed_id": seed_id},
+        )
         cases = []
 
     # Hard-gate: drop cases that copied the parent seed's contradiction pair.
@@ -127,6 +139,13 @@ async def _run_teacher_task(
             is_valid, reason = validate_no_contradiction_copying(c, parent_for_copy_check, method)
             if not is_valid:
                 logger.info("[drop/cp-copy] id=%s method=%s — %s", c.get("id", "?"), method, reason)
+                append_reject(
+                    c,
+                    stage="teacher",
+                    reason_code=REASON_CP_COPY,
+                    reason_text=reason,
+                    extra_meta={"method": method, "key": key},
+                )
                 continue
         filtered_cases.append(c)
     cases = filtered_cases
@@ -236,6 +255,12 @@ async def judge_sweep(
         scores = await judge.score(case)
         if scores is None:
             logger.warning("[drop/judge] scoring failed — id=%s", case.get("id", "?"))
+            append_reject(
+                case,
+                stage="judge",
+                reason_code=REASON_JUDGE_SCORING_ERROR,
+                reason_text="Judge API/parse error — scoring returned None",
+            )
             return None, "error"
         case_copy = dict(case)
         case_copy.setdefault("meta", {})["judge_scores"] = scores
@@ -260,6 +285,17 @@ async def judge_sweep(
             "[borderline] id=%s — fail_reasons=%s",
             case.get("id", "?"),
             scores.get("fail_reasons", []),
+        )
+        append_reject(
+            case_copy,
+            stage="judge",
+            reason_code=REASON_JUDGE_FAIL,
+            reason_text="; ".join(scores.get("fail_reasons", [])) or "judge FAIL HIGH confidence",
+            extra_meta={
+                "confidence": scores.get("confidence"),
+                "fail_reasons": scores.get("fail_reasons", []),
+                "verdict": scores.get("verdict"),
+            },
         )
         return case_copy, "fail"
 
@@ -348,7 +384,7 @@ async def run_round(
     async with httpx.AsyncClient(
         base_url=BASE_URL,
         headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
-        timeout=httpx.Timeout(120.0, connect=15.0),
+        timeout=httpx.Timeout(300.0, connect=15.0),
     ) as http_client:
         teacher = TeacherClient(cost_tracker, client=http_client)
 
@@ -416,7 +452,7 @@ async def run_round(
     async with httpx.AsyncClient(
         base_url=BASE_URL,
         headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
-        timeout=httpx.Timeout(90.0, connect=15.0),
+        timeout=httpx.Timeout(120.0, connect=15.0),
     ) as http_client2:
         judge = JudgeClient(cost_tracker, client=http_client2)
         judged_count, borderline_count = await judge_sweep(judge)

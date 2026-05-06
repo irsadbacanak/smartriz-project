@@ -27,11 +27,11 @@ JUDGE_IN_PER_M = 0.35   # Qwen2.5-72B DeepInfra pricing
 JUDGE_OUT_PER_M = 0.40
 
 # ── Hyperparameters ───────────────────────────────────────────────────────────
-MAX_CONCURRENCY = 15
+MAX_CONCURRENCY = 25
 JUDGE_THRESHOLD = 7.0
 DEDUP_COSINE = 0.85
 TEMPERATURES = [0.7, 0.9, 1.1, 1.3]
-HARD_STOP_USD = 30.0
+HARD_STOP_USD = 120.0
 
 # ── Data paths ────────────────────────────────────────────────────────────────
 DATA_DIR = PROJECT_ROOT / "data"
@@ -44,6 +44,7 @@ MATRIX_VALIDATED_JSONL = DATA_DIR / "matrix_validated.jsonl"
 DEDUPED_JSONL = DATA_DIR / "deduplicated.jsonl"
 FINAL_JSON = DATA_DIR / "training_dataset.json"
 PROCESSED_KEYS = DATA_DIR / "processed_keys.txt"
+REJECTED_JSONL = DATA_DIR / "rejected_dataset.jsonl"
 
 
 # ── Cost tracker ──────────────────────────────────────────────────────────────

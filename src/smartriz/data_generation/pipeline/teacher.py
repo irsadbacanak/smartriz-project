@@ -4,9 +4,11 @@ Async teacher client — wraps DeepSeek-V4-Pro via DeepInfra.
 Features:
   - httpx.AsyncClient with connection pooling
   - asyncio.Semaphore for max concurrency
-  - tenacity exponential backoff on 429 / 5xx / timeout
+  - Streaming SSE — server sends headers immediately, eliminating ReadTimeout
+    on slow/queued models; read timeout applies only between chunks (~seconds)
+  - tenacity exponential backoff on 429 / 5xx / timeout (2 attempts)
   - JSON parse failure retry at temperature=0.3 with stricter prompt
-  - Cost tracking on every successful call
+  - Cost tracking on every successful call via stream_options include_usage
 """
 from __future__ import annotations
 
@@ -48,13 +50,13 @@ def _make_retry():
     return retry(
         retry=retry_if_exception(_is_retryable),
         wait=wait_exponential(multiplier=2, min=2, max=60),
-        stop=stop_after_attempt(5),
+        stop=stop_after_attempt(2),
         reraise=True,
     )
 
 
 class TeacherClient:
-    """Async client for DeepSeek-R1-Distill-Llama-70B."""
+    """Async streaming client for DeepSeek-V4-Pro."""
 
     def __init__(self, cost_tracker: CostTracker, client: httpx.AsyncClient | None = None) -> None:
         self._cost_tracker = cost_tracker
@@ -103,6 +105,13 @@ class TeacherClient:
 
     @_make_retry()
     async def _call_api(self, system_msg: str, user_msg: str, temperature: float) -> Any | None:
+        """Call the API using SSE streaming.
+
+        Streaming means the server sends HTTP 200 headers immediately and then
+        streams tokens. The read timeout applies between chunks, not to the full
+        response time — eliminating ReadTimeout on slow/queued models.
+        Usage stats are delivered in the final chunk via stream_options.
+        """
         payload = {
             "model": TEACHER_MODEL,
             "messages": [
@@ -110,19 +119,45 @@ class TeacherClient:
                 {"role": "user", "content": user_msg},
             ],
             "temperature": temperature,
+            "stream": True,
+            "stream_options": {"include_usage": True},
         }
-        resp = await self._client.post("/chat/completions", json=payload)
-        resp.raise_for_status()
-        data = resp.json()
 
-        # Build a minimal message-like object the extractor understands
-        choice = data["choices"][0]
+        content_chunks: list[str] = []
+        reasoning_chunks: list[str] = []
+        usage_dict: dict = {}
+
+        async with self._client.stream("POST", "/chat/completions", json=payload) as resp:
+            resp.raise_for_status()
+            async for line in resp.aiter_lines():
+                if not line.startswith("data: "):
+                    continue
+                data_str = line[6:]
+                if data_str == "[DONE]":
+                    break
+                try:
+                    chunk = json.loads(data_str)
+                    if chunk.get("usage"):
+                        usage_dict = chunk["usage"]
+                    choices = chunk.get("choices", [])
+                    if not choices:
+                        continue
+                    delta = choices[0].get("delta", {})
+                    if delta.get("content"):
+                        content_chunks.append(delta["content"])
+                    if delta.get("reasoning_content"):
+                        reasoning_chunks.append(delta["reasoning_content"])
+                except (json.JSONDecodeError, KeyError, IndexError):
+                    pass
+
+        full_content = "".join(content_chunks)
+        full_reasoning = "".join(reasoning_chunks) or None
+
         message = _MessageProxy(
-            content=choice["message"].get("content", ""),
-            reasoning_content=choice["message"].get("reasoning_content"),
+            content=full_content,
+            reasoning_content=full_reasoning,
         )
-        result = _ResponseProxy(message=message, usage=_UsageProxy(data.get("usage", {})))
-
+        result = _ResponseProxy(message=message, usage=_UsageProxy(usage_dict))
         self._cost_tracker.add(result.usage, model_kind="teacher")
         return result
 

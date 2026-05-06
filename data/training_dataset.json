@@ -1,6 +1,6 @@
 {
   "dataset_name": "SmarTRIZ-Synthetic-v1",
-  "total_cases": 16,
+  "total_cases": 33,
   "cases": [
     {
       "id": "GEN-TG-27-SI-02-R01-2ab37cb5",
@@ -677,6 +677,760 @@
       "meta": {
         "parent_seed_id": "ALT-25",
         "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-01-R01-2a909e84",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "biomedical/electronics",
+      "problem": "A portable insulin pump must deliver medication continuously at a precise basal rate (0.05–0.1 mL/hr), but the miniature peristaltic mechanism exhibits pulsatile flow causing micro-fluctuations in blood glucose. Smoothing the flow requires a bulky accumulator, which contradicts the wearable form factor.",
+      "contradiction_pair": {
+        "improving_parameter": "Device complexity (#36)",
+        "worsening_parameter": "Accuracy of measurement (#28)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#19 Periodic Action",
+        "#15 Dynamics",
+        "#2 Taking Out"
+      ],
+      "reasoning_chain": "1) Identify contradiction: we want simpler mechanism (improve #36) but flow accuracy worsens (#28). 2) TRIZ matrix lookup (36,28) → {2, 13, 28, 32}. 3) Apply #2 Taking Out: separate the pulsation-damping function from the pump body; move it into a disposable microfluidic chip. 4) Apply #19 Periodic Action: instead of continuous rotation, use step-wise motor pulses with an elastic diaphragm that stores and releases fluid between pulses. 5) Apply #15 Dynamics: make the pulse frequency adaptive — higher frequency at higher flow rates to maintain quasi-continuous delivery. 6) Result: a credit-card-sized pump with no external accumulator, flow ripple <2%.",
+      "solution": "A micro-peristaltic pump with a disposable cassette containing a compliant microchannel that acts as a pulse damper. The stepper motor is driven at 10–50 Hz, and the elastic channel walls expand/contract to smooth flow. The cassette is replaced every 3 days, keeping the pump unit simple and reusable.",
+      "complexity": "medium",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-03-R01-d656eda0",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "biomedical/electronics",
+      "problem": "During robotic laparoscopic surgery, the cautery tool generates smoke that obscures the endoscopic camera. The current solution is to pause surgery and withdraw the scope for cleaning, which extends anesthesia time by 15–20 minutes per procedure. A built-in lens washer would add bulk to the 5 mm trocar.",
+      "contradiction_pair": {
+        "improving_parameter": "Loss of Time (#25)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#34 Discarding and Recovering",
+        "#7 Nested Doll",
+        "#35 Parameter Changes"
+      ],
+      "reasoning_chain": "Q: What if we accept the smoke but clean the lens without withdrawing? A: That would require a cleaning mechanism inside the patient. Q: But wouldn't that make the scope too thick for the 5 mm port? A: Yes, that's the contradiction — we want to reduce time loss (#25) but worsen shape/size (#12). Q: What does the matrix say for (25,12)? A: {34, 7, 35, 40}. Q: How can we apply #34 Discarding and Recovering? A: Use a sacrificial transparent film that advances over the lens tip. When it gets smoky, we pull it, exposing a clean segment. The used film is discarded into a collection chamber. Q: And #7 Nested Doll? A: The film roll and take-up spool are nested concentrically around the optical channel, keeping the diameter unchanged. Q: What about #35 Parameter Changes? A: Change the physical state of the cleaning medium — instead of a liquid washer, use a dry, solid film that doesn't require fluid channels. This keeps the shape compact.",
+      "solution": "A 5 mm laparoscope with a built-in film-advance system: a transparent polymer film is stretched over the distal lens. A thumbwheel on the handle advances the film from a supply reel around the inner scope shaft to a take-up reel. Each advance presents a clear section. The system adds 0.3 mm to the scope diameter, staying within the 5 mm trocar limit.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-03-R01-74612ce7",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "Bug Report: Precast concrete bridge girder production line. The forms are steel, 40 m long. After steam curing at 60°C, the girders stick to the form faces. Stripping requires hydraulic jacks applying up to 200 kN, which often cracks the young concrete at lifting points. Cycle time is 18 hours; stripping damage causes 5% rejection rate.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Stress or pressure (#11)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#30 Flexible Shells and Thin Films",
+        "#15 Dynamics",
+        "#32 Color Changes"
+      ],
+      "reasoning_chain": "Q: What if the form itself could change shape slightly to break the bond? A: That's dynamic, but a 40 m steel form is rigid. Q: Could we use a flexible layer? A: Yes, what about a reusable polymer sheet liner? But how to maintain precise geometry? Q: Could the liner be inflated? A: That's #30 Flexible Shells and Thin Films combined with #15 Dynamics. We install a thin, durable PTFE-coated fiberglass sheet on the form face. After curing, we inject a small amount of compressed air between the form and the sheet, creating a uniform micro-gap that breaks adhesion. No jacking force needed. Q: How do we know it's released everywhere? A: Apply #32 Color Changes – embed a thermochromic pigment in the liner that changes color when it separates from the concrete due to the air gap cooling. The operator sees a uniform color shift and knows stripping is safe.",
+      "solution": "A formwork system with a 0.5 mm PTFE/fiberglass composite sheet liner pneumatically actuated post-cure. Compressed air at 0.05 MPa is introduced through a network of micro-channels, expanding the liner uniformly and releasing the concrete. Integrated thermochromic strips (blue below 50°C, white above) provide visual confirmation of full release, eliminating stripping cracks and reducing cycle time to 14 hours.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-04-R01-005fa7ea",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "Customer complaint: We ordered 50 MPa high-performance concrete for our 60-story core walls, but the pump pressure needed to push it up 300 meters is ridiculous. The mix is so sticky and viscous that the pump lines clog every third truck, and the pumping contractor is threatening to walk off. We need the high strength and durability, but we can't pump it.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#40 Composite Materials",
+        "#28 Mechanics Substitution",
+        "#26 Copying",
+        "#37 Thermal Expansion"
+      ],
+      "reasoning_chain": "1) High strength (improve #14) demands low water/cement ratio and silica fume, causing high viscosity that makes pumping nearly impossible (worsen #33). 2) Contradiction matrix (14,33) yields principles {40, 26, 27, 10, 37}. 3) Analogy: This is like trying to squeeze a thick gel through a straw. In the food industry, they use an 'annular flow' trick – a thin layer of water lubricates the pipe wall. 4) Apply #28 Mechanics Substitution: replace the purely mechanical pumping with a magnetorheological (MR) fluid approach? No, too exotic. 5) Apply #40 Composite Materials: design the concrete as a two-component composite at the pumping stage. Use a core of low-slump, high-strength concrete surrounded by a thin annular layer of a lubricating, low-viscosity cement grout. 6) Apply #26 Copying: the grout is a simple copy of the cement paste but with a higher water content and a viscosity-modifying admixture to prevent mixing. 7) Apply #37 Thermal Expansion: slightly chilling the lubricating grout (10°C) increases its viscosity temporarily, preventing it from being absorbed into the core, but it still provides a low-friction film. 8) At the point of placement, the grout is mixed into the concrete by a static mixer at the nozzle, contributing to the overall cementitious content. 9) Result: Pumping pressure drops by 60%, eliminating line blockages.",
+      "solution": "Dual-stream pumping system: a high-strength core mix (w/c 0.25) is co-pumped with a chilled (10°C) lubricating grout (w/c 0.45 with welan gum) injected at the pipe wall through a specially designed manifold. The grout forms a 2 mm annular film, reducing friction. At the end hose, a static mixer blends the two streams, restoring the homogeneous 50 MPa concrete. System reduces pump pressure from 28 MPa to 11 MPa.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-04-R01-005fa7ea-XDOM-R01-6afd8f1e",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "During the design of a next-generation reusable launch vehicle, the thermal protection system (TPS) for the leading edges of the wings must withstand peak re-entry temperatures exceeding 1650°C. The only material system that meets this thermal and oxidative stability requirement is a reinforced carbon-carbon (RCC) composite with a thick, multi-layer coating. However, the high stiffness and thickness of this TPS, combined with its low coefficient of thermal expansion mismatch with the underlying aluminum wing substructure, induces severe interfacial shear stresses during the rapid heat-up and cool-down cycles. These stresses are causing delamination and spallation of the TPS during the first qualification test, threatening the vehicle's structural integrity. We need the extreme thermal protection, but the induced thermal stresses are destroying the bond line.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Stress or pressure (#11)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#35 Parameter Changes",
+        "#3 Local Quality",
+        "#40 Composite Materials",
+        "#15 Dynamics"
+      ],
+      "reasoning_chain": "The core contradiction is that improving the system's ability to withstand extreme Temperature (parameter 17) directly worsens the internal Stress or pressure (parameter 11) due to thermal expansion mismatch. Consulting the TRIZ contradiction matrix for this pair (17 vs 11) yields inventive principles #35 (Parameter Changes), #3 (Local Quality), #40 (Composite Materials), and #15 (Dynamics). Applying these to the TPS problem: Principle #35 suggests changing the physical state or properties, such as altering the TPS material's coefficient of thermal expansion to match the substructure. Principle #3 recommends making the interface non-uniform, perhaps with a functionally graded material layer. Principle #40 points to a composite structure at the macro scale, not just the material itself. Principle #15 introduces a dynamic element, like a segmented TPS that can accommodate differential movement. The solution integrates these by redesigning the TPS as a segmented tile system with a compliant, graded interlayer, transforming the monolithic rigid shell into a flexible, stress-relieving assembly.",
+      "solution": "Replace the monolithic RCC leading-edge TPS with a segmented tile system. Each tile is a C/C-SiC composite with a tailored CTE gradient achieved via a functionally graded material (FGM) bond layer. The FGM transitions from the low-CTE ceramic tile face to a high-CTE metallic felt or spring network bonded to the aluminum substructure. This dynamic, segmented architecture allows each tile to expand and contract independently during the thermal cycle, virtually eliminating interfacial shear stresses while maintaining full thermal protection capability.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-03-R01-74612ce7-XDOM-R01-959c773c",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "During the assembly of large composite wing skins for commercial aircraft, the skins must be cured on a precision Invar tool in an autoclave at 180°C and 6 bar pressure. After the cure cycle, the epoxy resin often bonds the skin to the tool surface, requiring significant force to demold. The demolding process, using overhead cranes and vacuum suction cups, can impose bending moments and point loads on the freshly cured, brittle composite panel, leading to micro-cracking, delamination, or fiber breakage. This results in a 3% rejection rate for panels that have already passed NDT, adding significant rework and material costs.",
+      "contradiction_pair": {
+        "improving_parameter": "Shape (#12)",
+        "worsening_parameter": "Stress or pressure (#11)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#10 Preliminary Action",
+        "#35 Parameter Changes",
+        "#15 Dynamics",
+        "#34 Discarding and Recovering"
+      ],
+      "reasoning_chain": "The contradiction is between improving the 'Shape' (precision and stability of the composite wing skin) and the worsening 'Stress or pressure' (the force needed to demold, which damages the part). The TRIZ matrix suggests principles #10, #35, #15, and #34. Principle #10 (Preliminary Action) suggests applying a release agent or a sacrificial layer before the curing process begins. Principle #35 (Parameter Changes) points to altering the surface energy, temperature, or physical state to reduce adhesion. Principle #15 (Dynamics) implies making the mold or the interface adaptable, allowing it to change its form or properties after curing. Principle #34 (Discarding and Recovering) suggests using a consumable interlayer that is destroyed or dissolved to release the part, absorbing the stress. The solution will integrate these by using a thin, precision-machined, water-soluble mandrel layer applied to the Invar tool prior to layup. This layer provides the exact surface geometry, acts as a release agent, and is washed away with water jets after curing, completely eliminating mechanical demolding forces.",
+      "solution": "A water-soluble composite mandrel system is implemented. Before the wing skin layup, a thin (2-3 mm), high-temperature-resistant, water-soluble polymer composite layer is precisely formed and bonded to the Invar tool. The carbon fiber prepreg is then laid up and cured directly on this soluble layer. After the autoclave cycle, the entire assembly is moved to a washout station. Low-pressure, heated water jets are used to dissolve the soluble mandrel, which flows out through integrated drainage channels. The wing skin is left completely stress-free on the tool, from which it can be simply lifted without any resistance, eliminating demolding forces and subsequent damage.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-02-R01-baa64d34-CONST-R01-13f52956",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "We are pouring a massive concrete raft foundation for a subsea turbine generator at 2000 m depth, where the structure must withstand 200 bar external hydrostatic pressure. The original solution used porous lightweight aggregate pre-saturated with paraffin PCM to control hydration heat. However, under 200 bar pressure, the porous aggregate would collapse, the PCM would be forced out of the pores, and the concrete would lose its thermal control and structural integrity. We need a method to manage the core hydration temperature without slowing the pour, while ensuring the concrete system remains functional under 200 bar hydrostatic pressure.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Productivity (#39)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#40 Composite Materials",
+        "#35 Parameter Changes",
+        "#36 Phase Transitions",
+        "#15 Dynamics"
+      ],
+      "reasoning_chain": "The original contradiction remains: improving Temperature (#17) without worsening Productivity (#39). The TRIZ matrix for (17,39) still suggests principles {2, 36, 10, 39}. However, the constraint of 200 bar hydrostatic pressure invalidates the original porous aggregate approach because the pores would crush under pressure, destroying the PCM containment and weakening the concrete. We need to preserve the heat-absorbing function while ensuring pressure resistance. Principle #40 Composite Materials – we can design a composite at the meso-scale: instead of porous aggregate, use dense, pressure-resistant capsules (e.g., steel or high-strength ceramic microspheres) that contain the PCM. These capsules are strong enough to withstand 200 bar. Principle #35 Parameter Changes – we can alter the physical state of the PCM or its container: using a high-pressure-resistant encapsulated PCM with a flexible but impermeable shell that can deform slightly under pressure without rupturing. Principle #36 Phase Transitions is retained because the PCM is still the core mechanism, but its implementation changes. Principle #10 (Preliminary Action) is less applicable because pre-saturating porous materials is no longer viable; instead, we need to pre-fabricate the capsules. Principle #15 Dynamics is added because the system must adapt to varying pressure during installation and operation – the capsules could be designed with a compressible gas void or a flexible membrane that equalizes internal and external pressure, preventing collapse. The new solution uses pre-manufactured, pressure-resistant composite capsules that are mixed into the concrete as a replacement for a fraction of fine aggregate, achieving thermal control without compromising structural performance under high pressure.",
+      "solution": "Replace 20% of fine aggregate volume with pre-fabricated composite microcapsules (2–4 mm diameter) consisting of a high-strength steel shell (yield strength > 250 MPa, capable of withstanding 200 bar external pressure with safety factor) filled with a paraffin PCM (melting point 55°C, latent heat 180 kJ/kg) and a small nitrogen gas bubble to accommodate thermal expansion. The capsules are mixed uniformly into the concrete during batching. The PCM absorbs hydration heat, limiting core temperature rise to 15°C above ambient, while the steel shells provide pressure resistance and mechanical interlock with the cement matrix, maintaining structural integrity at 2000 m depth.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-01-R01-2a909e84-CONST-R01-d2f6780b",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "biomedical/electronics",
+      "problem": "A portable insulin pump must deliver medication continuously at a precise basal rate (0.05–0.1 mL/hr) while surviving a 10,000 g mechanical shock per MIL-STD-810. The original solution uses a disposable cassette with compliant microchannels to dampen pulsatile flow, but the thin elastic structures and fluidic interconnects are prone to rupture or detachment under extreme shock, risking catastrophic leakage and loss of sterility.",
+      "contradiction_pair": {
+        "improving_parameter": "Device complexity (#36)",
+        "worsening_parameter": "Stress or pressure (#11)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#15 Dynamics",
+        "#19 Periodic Action",
+        "#14 Spheroidality - Curvature",
+        "#31 Porous Materials",
+        "#33 Homogeneity"
+      ],
+      "reasoning_chain": "1) Constraint analysis: MIL-STD-810 10,000 g shock introduces a new failure mode—mechanical rupture of the compliant microchannel damper. The original contradiction (complexity vs. accuracy) is overshadowed by the need for shock survival. The new contradiction is between maintaining low device complexity (improving #36) and avoiding excessive stress/pressure (#11) in fluidic components under shock. 2) TRIZ matrix lookup (36,11) reveals principles {2, 13, 28, 32}. However, the parent's #2 Taking Out (separate damper into disposable chip) worsens shock vulnerability because disposable interfaces are weak points. Thus we discard #2 and seek principles that harden the system without adding bulk. 3) We retain #15 Dynamics and #19 Periodic Action from the parent because adaptive pulse frequency and stepwise delivery reduce instantaneous flow forces, which lowers shock-induced pressure spikes. 4) We add #14 Spheroidality - Curvature: replace flat microchannels with spheroidal or toroidal elastic chambers that evenly distribute stress, eliminating stress concentrators that fail under shock. 5) We add #31 Porous Materials: integrate a rigid, porous metal or ceramic frit as the pulse damper—its interconnected pores provide compliance via gas compression or liquid absorption, but the solid matrix withstands high g-loads. 6) We add #33 Homogeneity: use a single material (e.g., medical-grade titanium) for both the pump housing and the damping element, eliminating material interfaces that separate under shock. 7) Resulting design: a monolithic titanium pump body with an internal porous sintered titanium disc acting as a fixed accumulator. The stepper motor drives peristaltic rollers against a thick-walled elastomeric tube (reinforced with curvature), and adaptive pulse control (10–50 Hz) smooths flow without a disposable weak link.",
+      "solution": "A shock-hardened insulin pump with a monolithic titanium housing containing a sintered porous titanium accumulator disc. The peristaltic mechanism uses a thick-walled, toroidally curved silicone tube that resists kinking and stress concentration under 10,000 g. Adaptive motor control (10–50 Hz) with periodic micro-pulses smooths flow through the porous disc, achieving <2% ripple. The entire fluid path is autoclavable and reusable, eliminating disposable cassette interfaces.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-05-R01-b1a3b951-CONST-R01-3085c692",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "Shotcrete application for rock slope stabilization in a remote mountainous region exhibits a material rebound rate of 30–40% for the coarse aggregate fraction, leading to substantial material waste, in-situ strength variability, and a silica dust hazard. The dry-mix process is mandated by site logistics, but the high impact velocity necessary for adequate compaction directly causes aggregate ricochet. Additionally, the entire shotcrete delivery system—including the nozzle, hoses, and any pre-sprayed capture layers—must be sterilisable by gamma irradiation (minimum 25 kGy per ISO 11137) to prevent microbial contamination when later used in ecologically sensitive watersheds, without degradation of mechanical or functional properties. This sterilization requirement conflicts with the original pulsed-nozzle solution, which relies on a high-tack polymer-modified cement layer that crosslinks and degrades under ionizing radiation, and a rotating barrel feeder whose elastomeric seals would embrittle.",
+      "contradiction_pair": {
+        "improving_parameter": "Force (#10)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#19 Periodic Action",
+        "#13 The Other Way Round",
+        "#20 Continuity of Useful Action",
+        "#40 Composite Materials",
+        "#28 Mechanics Substitution"
+      ],
+      "reasoning_chain": "The original contradiction (improving Force #10 vs. Loss of substance #23) remains, but the gamma sterilization constraint introduces a new material compatibility requirement that invalidates the polymer-based tack layer and elastomeric seals. A fresh TRIZ matrix lookup for (10,23) yields principles {14, 35, 19, 28}. Principle #19 (Periodic Action) is retained because the pulsed, two-phase flow concept remains effective for decoupling transport and compaction. However, Principle #13 (The Other Way Round) must be re-interpreted: instead of a radiation-sensitive polymer capture layer, we invert the approach by making the substrate itself the capture medium—using a pre-wetted, bio-based mineral slurry that is inherently radiation-stable. Principle #20 (Continuity of Useful Action) is adapted by synchronizing the pulsed flow with a radiation-resistant ceramic feed wheel. To address the elastomer seal degradation, Principle #28 (Mechanics Substitution) replaces dynamic elastomeric seals with a ferrofluidic seal that is impervious to gamma radiation. Principle #40 (Composite Materials) is introduced to formulate a radiation-stable, fiber-reinforced cementitious capture layer that uses inorganic fibers (basalt) and a radiation-inert mineral binder instead of organic polymers. These five principles collectively solve the original rebound problem while ensuring full gamma sterilizability.",
+      "solution": "A gamma-sterilizable pulsed dry-mix shotcrete system. The nozzle uses a ceramic rotating barrel feeder with a ferrofluidic seal (Principle #28) to create dense-phase material slugs (50 Hz) at 15 m/s, followed by a 30 m/s air pulse (Principle #19, #20). Instead of a polymer tack layer, the rock surface is pre-sprayed with a radiation-stable, high-tack mineral slurry composed of calcined clay, lime, and basalt microfibers (Principle #40, #13). All system components (hoses, nozzle, feeder) are made of radiation-resistant materials (stainless steel, ceramics, PTFE-free composites) and validated to 25 kGy per ISO 11137. The system achieves 9% rebound, 65% dust reduction, and 28-day compressive strength of 44 MPa, while maintaining full sterilization compatibility.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-02-R01-baa64d34-XDOM-R01-524e1ba3",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "During the orbital assembly of a large space telescope, we are using a UV-curable rigidizing resin to bond and stiffen deployable composite truss segments. The resin must be cured by exposure to intense UV lamps integrated into the assembly robot. However, the exothermic curing reaction, combined with the lamp's thermal output, causes localized overheating in the truss nodes, leading to thermal distortion and micro-cracking in the thin-walled carbon fiber tubes. We need to cure the resin quickly to maintain the assembly timeline, but we must prevent the damaging temperature spike in the adjacent structures.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Temperature (#17)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#2 Taking Out",
+        "#28 Mechanics Substitution",
+        "#35 Parameter Changes",
+        "#36 Phase Transitions"
+      ],
+      "reasoning_chain": "The target contradiction is improving 'Speed (#9)' of the curing process versus the worsening 'Temperature (#17)' that causes structural damage. A TRIZ matrix lookup for this pair suggests principles #2 (Taking Out), #28 (Mechanics Substitution), #35 (Parameter Changes), and #36 (Phase Transitions). \n\n- Principle #2 (Taking Out): The damaging heat is generated within the resin itself. We can 'take out' the heat-generating component by separating the curing trigger from the exothermic binder. \n- Principle #28 (Mechanics Substitution): Replace the purely thermal UV-curing mechanism with a different field to initiate polymerization without bulk heating. \n- Principle #35 (Parameter Changes): Alter the physical state of the resin system, such as changing its thermal conductivity or specific heat capacity to absorb the exothermic peak. \n- Principle #36 (Phase Transitions): Use a material that undergoes a phase change to absorb the excess heat of reaction during the critical curing window. \n\nCombining these, we can reformulate the resin system to include a dispersed phase-change material (PCM) microcapsules. The curing trigger is shifted from a broad-spectrum, heat-intensive UV lamp to a focused, low-thermal-budget LED UV source (#28). The PCM, with a melting point just above the structure's maximum allowable temperature, absorbs the exothermic heat from the curing resin and the residual lamp energy by melting (#36, #35). This effectively 'takes out' the sensible heat spike from the structural elements, keeping them cool (#2) while allowing the resin to cure at full speed.",
+      "solution": "Reformulate the UV-curable resin as a two-part system: a low-exotherm base resin and a hardener containing dispersed microcapsules of a paraffin-based phase-change material (PCM) with a melting point of 30°C. The assembly robot is retrofitted with a bank of high-intensity 365nm LED emitters instead of a broad-spectrum mercury lamp, drastically reducing infrared thermal output. During curing, the LED triggers rapid polymerization, and the PCM microcapsules melt, absorbing the exothermic heat and any residual LED heat, maintaining the local truss node temperature below the distortion threshold. The PCM resolidifies passively later, adding no long-term mass penalty.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-01-R01-2a909e84-XDOM-R01-aad3c6b3",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "consumer-electronics",
+      "problem": "A high-end smartphone's processor requires a metal vapor chamber for heat spreading to maintain peak performance, but the chamber's rigid, flat geometry prevents its integration into a new foldable phone design that must flex repeatedly without damaging the thermal solution.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#15 Dynamics",
+        "#30 Flexible Shells and Thin Films",
+        "#1 Segmentation",
+        "#17 Another Dimension"
+      ],
+      "reasoning_chain": "The target contradiction is improving Adaptability (#35) of the phone's form factor (folding) which worsens Shape (#12), as the rigid vapor chamber cannot conform. Matrix lookup for #35 vs #12 yields principles #15 (Dynamics), #30 (Flexible Shells and Thin Films), #1 (Segmentation), and #17 (Another Dimension). Principle #15 suggests making the rigid chamber dynamic or allowing relative movement. Principle #30 points to replacing the rigid shell with a flexible, thin-film thermal solution. Principle #1 proposes segmenting the vapor chamber into interconnected, articulated sections. Principle #17 implies using a 2.5D or 3D arrangement, such as routing heat through the hinge axis. Combining #1 and #30: segment the vapor chamber into multiple thin, flexible graphene or polymer composite heat spreaders that bridge the hinge, maintaining thermal continuity while allowing folding. Principle #15 is applied by using a dynamic, flexible joint material that can withstand repeated bending.",
+      "solution": "Replace the single rigid vapor chamber with a segmented thermal solution: a series of ultra-thin, flexible graphite heat spreaders (0.1mm thick) bonded to the phone's chassis segments. At the hinge, the spreaders are laminated with a hyperelastic polymer layer to form a dynamic, multi-layer flexible bridge. This maintains a continuous thermal path from the processor on one side to the back cover on the other, achieving effective heat spreading (<5°C rise) while enduring over 200,000 fold cycles.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-04-R01-005fa7ea-DEEP-R01-63d6c532",
+      "source": "evol_deepening_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "Customer complaint: We need 50 MPa high-performance concrete for 60-story core walls, but pumping it 300 meters up requires extreme pressure, causing frequent line blockages. The dual-stream annular lubrication system solved the pumpability issue by co-pumping a chilled lubricating grout. However, the field team now reports a new crisis: the static mixer at the hose end cannot achieve uniform blending of the two streams. The core concrete and lubricating grout remain partially segregated, creating weak, grout-rich layers in the placed concrete that fail to meet the specified 50 MPa strength. The mixer's high shear rate also accelerates cement hydration, causing flash setting in the hose. We need homogeneous high-strength concrete without sacrificing the lubricating effect during pumping.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "secondary_contradiction": {
+        "improving_parameter": "Homogeneity of mixture (#30)",
+        "worsening_parameter": "Duration of action of a moving object (#15)"
+      },
+      "inventive_principles": [
+        "#40 Composite Materials",
+        "#28 Mechanics Substitution",
+        "#25 Self-Service"
+      ],
+      "reasoning_chain": "The parent case resolved the primary contradiction between concrete strength (improve #14) and ease of operation/pumpability (worsen #33) by introducing a dual-stream annular lubrication system (principles #40, #26, #37). However, this solution created a secondary contradiction: achieving mixture homogeneity after pumping (improve #30) now worsens the duration of action or processing time (worsen #15) because the static mixer at the nozzle cannot adequately blend the two streams without excessive shear that causes flash setting. Mapping to the TRIZ matrix, the cell for improving parameter #30 (homogeneity of mixture) and worsening parameter #15 (duration of action of a moving object) suggests principles #28 (Mechanics Substitution), #25 (Self-Service), and #40 (Composite Materials). To resolve both contradictions, we combine these principles. #40 Composite Materials: redesign the concrete as a smart composite where the lubricating layer is not a separate grout but an integral, activatable component of the mix itself. #25 Self-Service: make the concrete self-lubricating during pumping and self-mixing at placement. #28 Mechanics Substitution: replace the mechanical static mixer with a field-activated mixing mechanism. The solution involves encapsulating a lubricating admixture (e.g., a shear-thinning polymer or a phase-change material) within frangible microcapsules dispersed in the concrete. During pumping, the high shear near the pipe wall ruptures the capsules, releasing the lubricant only at the boundary, forming a temporary low-friction film (the 'self-service' lubrication). At the nozzle, the remaining intact capsules are broken by a brief ultrasonic or electromagnetic pulse (mechanics substitution), releasing a set-retarding agent or additional water to uniformly blend the mix without mechanical shear. This eliminates the need for a separate grout stream and static mixer, ensuring homogeneity and preventing flash setting. The primary contradiction (strength vs. pumpability) is also satisfied because the lubricant is only released where needed, preserving the low water/cement ratio in the bulk concrete, and the secondary contradiction (homogeneity vs. processing time) is resolved because mixing is triggered on demand without prolonging the pumping duration.",
+      "solution": "Self-lubricating, field-activated concrete: Microcapsules containing a shear-thinning polymer (e.g., polyethylene oxide) and a set-retarder are pre-mixed into the 50 MPa concrete. During pumping, high shear at the pipe wall ruptures a fraction of capsules, releasing the polymer to form a lubricating film, reducing pressure. At the placement nozzle, a short (2-second) ultrasonic pulse ruptures the remaining capsules, releasing the retarder and additional water to achieve uniform consistency and prevent flash setting. The concrete exits fully blended and homogeneous, meeting strength requirements without any external mixing devices.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_deepening",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-04-R01-005fa7ea-CONST-R01-2c9d57fa",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "We need to pump 50 MPa high-performance concrete for 60-story core walls, but now the structure must be built subsea, with the pumping system operating at 300 m depth under 200 bar external hydrostatic pressure. The original dual-stream pumping solution used a chilled lubricating grout film to reduce friction, but at 200 bar the grout's rheology is drastically altered: the high ambient pressure compresses entrained air, collapses the lubricating film, and increases the effective viscosity of the core mix, making the clogging problem even worse. The pumping contractor requires a system that functions reliably under 200 bar without line blockages, while still delivering 50 MPa strength.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#40 Composite Materials",
+        "#28 Mechanics Substitution",
+        "#26 Copying",
+        "#37 Thermal Expansion",
+        "#35 Parameter Changes",
+        "#29 Pneumatics and Hydraulics"
+      ],
+      "reasoning_chain": "1) Original contradiction remains: high strength (#14) requires low w/c ratio and silica fume, causing high viscosity that worsens ease of operation (#33). The matrix lookup for (14,33) yields principles {40, 26, 27, 10, 37}. 2) The new subsea constraint (200 bar hydrostatic pressure) adds a secondary physical contradiction: the lubricating film must be stable and low-friction under high ambient pressure, but the original chilled grout film collapses because hydrostatic pressure compresses micro-bubbles and alters rheology, making the film ineffective. 3) This changes the applicable principles because the original solution relied on a delicate two-stream system that fails under pressure. 4) Principle #35 Parameter Changes: instead of relying on a separate lubricating grout, we must change the physical state or properties of the concrete itself under pressure. For example, we can use a pressure-thickening or pressure-thinning admixture to control viscosity at depth. 5) Principle #29 Pneumatics and Hydraulics: the high ambient pressure suggests using the surrounding water pressure to our advantage. A pressurized water film (seawater) could replace the grout as a lubricant, but seawater would contaminate the mix. Instead, we can use a closed hydraulic system where the pumping pressure is balanced against the external hydrostatic pressure to reduce the net pressure gradient, easing pumping. 6) Principle #40 Composite Materials: we still need a composite approach, but now the lubricating layer must be pressure-insensitive. A solid, low-friction liner (e.g., polymer) inside the pipe could replace the fluid film, or we can use a core-shell extrusion where the shell is a high-strength, low-friction material that survives pressure. 7) Principle #28 Mechanics Substitution: replace the purely fluid-based lubrication with a mechanical means, such as a moving wall (vibrating pipe) or a magnetic field to reduce friction, but at 200 bar mechanical complexity is risky. 8) Principle #26 Copying: we can copy the concrete mix but modify it with a pressure-activated component that becomes less viscous under shear at high pressure. 9) Principle #37 Thermal Expansion: chilling is still useful, but now we must consider that the high pressure raises the freezing point; we can use a cold seawater heat exchanger to cool the mix and control viscosity. 10) Integrating these, the most robust approach is to use #35 Parameter Changes (pressure-adaptive rheology) combined with #40 Composite Materials (a multi-layer pipe with an internal low-friction liner) and #29 Pneumatics and Hydraulics (pressure-balanced pumping). The new principle set {40, 28, 26, 37, 35, 29} reflects the need to address the pressure collapse of the lubricating film.",
+      "solution": "A pressure-balanced, composite pipe pumping system: The pump is placed at the surface, but the pipeline is a double-walled composite pipe with an inner low-friction polyoxymethylene (POM) liner and an outer steel pressure casing. The annulus between the inner and outer pipes is filled with a pressure-compensating fluid (sea water with corrosion inhibitors) maintained at the same hydrostatic pressure as the outside by a pressure intensifier. This neutralizes the net pressure differential across the inner pipe, preventing collapse and reducing the force needed to push the concrete. The concrete mix itself is modified with a pressure-activated viscosity modifier (e.g., a hydrophobically modified alkali-swellable emulsion) that exhibits shear-thinning behavior enhanced by high ambient pressure, keeping the core pumpable. At the placement nozzle, a static mixer injects a small amount of accelerator to restore early strength. The system operates at 300 m depth, with pumping pressure reduced from 28 MPa to 15 MPa, and no clogging occurs.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-11-SI-02-R01-baa64d34-DEEP-R01-64846c04",
+      "source": "evol_deepening_generated",
+      "language": "en",
+      "domain": "civil/manufacturing",
+      "problem": "We poured a massive concrete raft foundation for a turbine generator, 3 meters thick. The core temperature shot past 80°C from hydration heat while the surface cooled to 20°C at night, causing thermal cracking despite wet burlap. We replaced 25% of coarse aggregate with pre-saturated porous expanded shale containing paraffin PCM that melts at 55°C, absorbing heat and capping the core rise to 20°C above ambient. However, the PCM-filled aggregate has lower density and strength than conventional aggregate, so the concrete's compressive strength dropped below the required 40 MPa for the turbine base. We need to recover that strength without reintroducing thermal cracking or delaying the pour.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Productivity (#39)"
+      },
+      "secondary_contradiction": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Temperature (#17)"
+      },
+      "inventive_principles": [
+        "#40 Composite Materials",
+        "#15 Dynamics",
+        "#10 Preliminary Action"
+      ],
+      "reasoning_chain": "We start with the parent solution: using PCM-impregnated porous aggregate (Principles #36, #31, #10) to resolve the primary contradiction between Temperature (#17) and Productivity (#39). The matrix for (17,39) suggests {2, 36, 10, 39}; we selected #36 Phase Transitions, #31 Porous Materials, and #10 Preliminary Action. This successfully caps core temperature but introduces a secondary contradiction: the concrete's Strength (#14) is now compromised because the PCM aggregate is weaker and less stiff than normal aggregate. The worsening parameter is Temperature (#17) again, because any attempt to increase strength by reducing PCM content or using denser aggregate would reduce the heat absorption capacity, causing the temperature to rise and cracks to return. So the secondary contradiction is (14,17). The TRIZ matrix for improving Strength (#14) and worsening Temperature (#17) gives principles: {40, 15, 30, 35}. We must select 2–3 principles from this set that work with the existing solution. Let's examine trade-offs:\n- #40 Composite Materials: could we create a hybrid aggregate that is both strong and thermally functional? Perhaps a composite particle with a strong core and a PCM-rich shell.\n- #15 Dynamics: maybe the strength requirement is not static; could the concrete be designed to gain strength over time as the PCM solidifies and contributes to the matrix? Or the PCM could be activated only when needed?\n- #30 Flexible Shells and Thin Films: this could be used to encapsulate the PCM in a strong, thin shell that doesn't compromise aggregate strength.\n- #35 Parameter Changes: changing the physical state, like using a PCM that undergoes a phase change that increases strength upon solidification, or altering the aggregate gradation.\n\nI consider combining #40 Composite Materials with #30, but #30 is not in the matrix output for (14,17). However, the parent already uses #10 Preliminary Action, which could be extended. #40 is a strong candidate: we can design a composite aggregate with a high-strength core (e.g., basalt or steel slag) coated with a porous PCM-infused layer. This restores strength because the load-bearing core remains intact. #15 Dynamics suggests making the strength adaptive: perhaps the PCM, after melting and later solidifying, can fill microcracks and provide self-healing, thus improving long-term strength. But the immediate 28-day strength is the concern. We need a solution that works during curing. I select #40 Composite Materials to address the strength loss directly, and #15 Dynamics to make the thermal control active only when needed, thus minimizing the amount of PCM required and allowing more normal aggregate. We also keep #10 Preliminary Action from the parent to pre-saturate the composite aggregate's porous shell with PCM. So the combined principles are: #40 Composite Materials (for strength), #15 Dynamics (for adaptive thermal control), and #10 Preliminary Action (for pre-loading PCM).\n\nHow do they work together? The concrete mix uses a specially engineered composite aggregate: a dense, high-strength core (e.g., crushed granite) coated with a porous, lightweight shell (e.g., sintered fly ash) that is pre-saturated with PCM (#10). The shell thickness and PCM content are designed so that only the outer layer participates in heat absorption, while the strong core carries the load (#40). Additionally, the PCM is microencapsulated with a melting point of 55°C, but the capsules have a variable shell thickness that allows them to rupture and release PCM only when the local temperature exceeds a threshold (#15 Dynamics). This dynamic release ensures that PCM is not wasted in cooler regions, so we can use a smaller total volume of PCM, thereby allowing a higher proportion of normal dense aggregate and boosting overall strength. The pre-saturated composite aggregate is added during mixing, and the PCM remains dormant until hydration heat triggers melting. This resolves both contradictions: temperature is controlled without productivity loss (primary), and strength is maintained at the required 40 MPa (secondary).",
+      "solution": "Concrete mix using composite aggregate with a high-strength basalt core (diameter ~15 mm) coated with a 3 mm thick porous sintered fly ash shell pre-saturated with microencapsulated paraffin PCM (melting point 55°C). The capsules have a frangible shell that ruptures at 55°C, releasing PCM only when local temperature exceeds the threshold, minimizing total PCM content to 10% by volume of aggregate. The strong cores carry load, achieving 42 MPa compressive strength at 28 days, while the dynamic PCM release caps core temperature rise to 20°C above ambient, eliminating thermal cracking and maintaining pour schedule.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-11",
+        "generation_method": "evol_deepening",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-04-R01-585880f4-XDOM-R01-a089600e",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "biomedical",
+      "problem": "An implantable insulin pump must have a large enough reservoir to avoid frequent refills, but a larger reservoir increases the device's size, making surgical implantation more invasive and uncomfortable for the patient.",
+      "contradiction_pair": {
+        "improving_parameter": "Volume of stationary object (#8)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#7 Nested Doll",
+        "#2 Taking Out",
+        "#35 Parameter Changes",
+        "#17 Another Dimension"
+      ],
+      "reasoning_chain": "The contradiction is between improving the volume of the stationary object (insulin reservoir capacity) and worsening the shape (device bulk/complexity). Matrix lookup for improving parameter 'Volume of stationary object' (#8) and worsening parameter 'Shape' (#12) suggests principles #7, #2, #35, and #17. Principle #7 (Nested Doll) suggests placing the reservoir inside another structure in a collapsed or nested manner to reduce bulk. Principle #2 (Taking Out) suggests separating the reservoir from the rest of the device so only the reservoir needs replacement. Principle #35 (Parameter Changes) suggests changing the physical state or concentration of insulin to reduce volume. Principle #17 (Another Dimension) suggests using a multi-layer or folded reservoir geometry. Applying these, the reservoir can be designed as a flexible, multi-layered bag that is folded and nested within the pump housing, and the insulin can be concentrated to reduce volume, while the reservoir is made as a separate, replaceable cartridge to minimize surgical revision.",
+      "solution": "Design the implantable pump with a detachable, flexible reservoir cartridge that uses a concentrated insulin formulation. The reservoir is a multi-layer, folded polymer bag (nested doll principle) that expands as it fills, occupying minimal volume when empty. It is placed in a separate compartment (taking out) within the pump housing, allowing minimally invasive replacement via a subcutaneous port, while the pump electronics remain implanted. The concentrated insulin reduces required volume by 50%, and the folded design further reduces the pump's overall thickness.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-05-R01-45dfcd27-XDOM-R01-90be9df8",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "biomedical",
+      "problem": "Implantable drug delivery pumps must maintain a precise, constant flow rate to ensure therapeutic efficacy and avoid toxicity. However, the viscosity of the drug formulation changes with body temperature fluctuations, causing flow rate variations. Conventional flow regulators add bulk and complexity to the implant, increasing the risk of biofouling and foreign body response.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#15 Dynamics",
+        "#28 Mechanics Substitution",
+        "#35 Parameter Changes"
+      ],
+      "reasoning_chain": "We identify the contradiction: we want to improve the stability of the drug delivery flow rate (which relates to 'Speed' of the process, i.e., maintaining the correct mass transport rate) but doing so with conventional flow regulators worsens 'Device complexity' (size, number of parts, susceptibility to biofouling). Looking up the TRIZ matrix for improving parameter #9 (Speed) and worsening parameter #36 (Device complexity) yields inventive principles #15 (Dynamics), #28 (Mechanics Substitution), and #35 (Parameter Changes). \n\nPrinciple #15 (Dynamics) suggests making a system or its parts adjustable to changing conditions. Instead of a static flow restriction, we can design a flow regulator that dynamically adapts to viscosity changes. \n\nPrinciple #28 (Mechanics Substitution) points toward replacing mechanical means with sensory or field-based methods. Rather than a purely mechanical valve, we can use a non-mechanical sensing and actuation principle. \n\nPrinciple #35 (Parameter Changes) suggests altering physical or chemical state parameters, such as temperature or concentration. Here, we can exploit the very parameter causing the problem (temperature) to drive a compensating mechanism. \n\nCombining these, we design a temperature-sensitive hydrogel valve that expands or contracts with temperature, inversely to the drug viscosity change. As body temperature rises and drug viscosity drops (tending to increase flow), the hydrogel swells, narrowing the flow channel and maintaining a constant flow rate. This replaces a complex mechanical regulator with a smart material that dynamically adapts, reducing device complexity and size.",
+      "solution": "An implantable drug delivery pump with a flow regulation channel coated or filled with a thermo-responsive hydrogel (e.g., poly(N-isopropylacrylamide)). The hydrogel's swelling ratio is engineered to inversely match the viscosity-temperature curve of the specific drug formulation. As body temperature increases, the hydrogel expands, increasing flow resistance to compensate for reduced drug viscosity. This passive, self-regulating mechanism eliminates the need for active flow sensors, control circuits, and bulky mechanical valves, significantly reducing implant volume and minimizing surfaces for protein adsorption and cell adhesion.",
+      "complexity": "medium",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-MOD-13-SI-05-R01-45dfcd27-DEEP-R01-0907705b",
+      "source": "evol_deepening_generated",
+      "language": "en",
+      "domain": "biomedical/electronics",
+      "problem": "In ultra-high-field MRI, a two-cryostat system uses superconducting shim coils to correct patient-induced field inhomogeneities without adding thermal noise. However, the superconducting shim coils require persistent current joints and switches that are prone to quenching during ramping, and the cryogenic infrastructure imposes strict limits on the spatial arrangement and tuning flexibility of the shim array. This leads to a secondary conflict: while we gain B₀ homogeneity (parameter #29), we lose adaptability (parameter #35) and increase system complexity (parameter #36) because the shim coils cannot be easily reconfigured for different patient anatomies or scanning protocols without risking a quench or violating the cryogenic envelope.",
+      "contradiction_pair": {
+        "improving_parameter": "Field homogeneity (#29)",
+        "worsening_parameter": "Noise (#31)"
+      },
+      "secondary_contradiction": {
+        "improving_parameter": "Adaptability (#35)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": [
+        "#15 Dynamics",
+        "#1 Segmentation",
+        "#17 Another Dimension"
+      ],
+      "reasoning_chain": "We begin with the parent solution: a two-cryostat MRI where superconducting shim coils at 4 K eliminate thermal noise in active shimming, resolving the primary contradiction between field homogeneity (#29) and noise (#31). However, this introduces a hidden constraint: the superconducting shim set is a monolithic, hard-wired array inside a cryostat, making it impossible to adapt the shim currents dynamically for different subjects or scan types without risking quench or requiring impractical cryogenic reconfiguration. Thus, a secondary contradiction emerges: we want to improve adaptability (#35) of the shim system to handle varying susceptibility loads, but doing so directly (e.g., by adding more independent coils and adjustable leads) increases device complexity (#36) beyond acceptable limits for a clinical or research setting.\n\nFor the primary contradiction (#29 vs #31), the matrix lookup (not repeated in detail here) gave principles {36,32,39,28}, from which the parent used #36 Phase Transitions, #32 Color Changes, and #39 Inert Atmosphere to justify the superconducting shim concept. Now, for the secondary contradiction (#35 vs #36), we consult the TRIZ matrix. The cell for improving 'Adaptability or versatility' (#35) and worsening 'Device complexity' (#36) yields principles {15, 29, 37, 28}. We select #15 Dynamics and #1 Segmentation (though #1 is not in that exact cell, we combine it as a complementary principle from the broader TRIZ toolkit, noting that segmentation often pairs with dynamics to enable modular reconfiguration). We also introduce #17 Another Dimension to address the spatial constraints.\n\nWe reason as follows: The key insight is that the superconducting shim coils do not need to be permanently fixed in a single cryostat. By segmenting the shim array (#1 Segmentation) into multiple independently controlled, small superconducting loops placed on a flexible substrate, we can achieve dynamic reconfiguration. To avoid quenching during current changes, we use #15 Dynamics: each segmented loop is coupled inductively to a room-temperature driver coil via a superconducting flux pump. The flux pump allows wireless, continuous adjustment of the persistent current in each shim element without physical connections that breach the cryostat. This makes the shim system adaptable to different shimming demands in real time. However, placing many such elements inside the limited space of the secondary cryostat while maintaining thermal isolation is a challenge. We resolve this by applying #17 Another Dimension: the shim elements are arranged in a three-dimensional, nested hemispherical array that conforms to the patient bore, with each element oriented along a different spatial harmonic. This 3D segmentation, combined with the dynamic flux pumping, allows the system to synthesize any required shim field up to high orders without moving parts or rewiring, all while staying within the cryogenic envelope.\n\nThus, the combined principles resolve the secondary contradiction: adaptability is greatly improved (real-time, subject-specific shimming) without a proportional increase in device complexity, because the complexity is shifted to the control electronics outside the cryostat and the inherently modular, contactless design of the superconducting loops. The primary contradiction remains resolved because the shim coils are still superconducting and contribute negligible noise.",
+      "solution": "A dynamically reconfigurable superconducting shim system for 7T MRI. The shim array consists of 64 segmented, high-temperature superconducting (HTS) loops fabricated on a flexible cryogenic substrate, arranged in a nested hemispherical shell that fits inside the secondary cryostat. Each loop is coupled to a room-temperature flux pump driver via a small inductive feedthrough, enabling wireless, continuous adjustment of persistent currents from 0 to 5 A with 0.1 mA resolution. The flux pumps are controlled by a real-time shimming algorithm that pre-emphasizes the shim currents based on a rapid B₀ map acquired at the start of each scan. This design achieves subject-specific shimming with <0.05 ppm homogeneity over a 22 cm DSV, reduces quench risk by eliminating current leads, and maintains the 10× SNR gain from the parent solution, while adding only 15% to the cryostat volume and no additional heat load to the 4 K stage.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "MOD-13",
+        "generation_method": "evol_deepening",
         "generation_temperature": 0.7,
         "generation_round": 1,
         "judge_scores": {
