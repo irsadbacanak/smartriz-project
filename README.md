@@ -48,3 +48,18 @@ pip install -e .
 ```bash
 .venv/bin/python -m pytest -q
 ```
+
+## TRIZ Matrix Regeneration
+
+`src/smartriz/data_generation/quality/matrix.py` içindeki `MATRIX` bloğunu
+`data/triz_matrix.xls` kaynağından tek seferlik yeniden üretmek için:
+
+```bash
+.venv/bin/python scripts/generate_matrix_from_xls.py
+```
+
+Dosyanın güncel olup olmadığını doğrulamak için:
+
+```bash
+.venv/bin/python scripts/generate_matrix_from_xls.py --check
+```

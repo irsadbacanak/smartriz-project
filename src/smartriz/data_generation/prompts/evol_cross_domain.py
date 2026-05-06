@@ -93,17 +93,17 @@ def build_prompt(variation: dict) -> tuple[str, str]:
   "complexity": "<realistic for the target problem>"
 }"""
 
-    # Show parent problem description ONLY — not its principles or solution
+    # Show parent context WITHOUT contradiction_pair, principles, or solution.
+    # The cross-domain generator must derive all three independently for the target domain.
     parent_problem_only = {
         "id": variation.get("id"),
         "domain": variation.get("domain"),
         "problem": variation.get("problem"),
         "complexity": variation.get("complexity"),
-        "contradiction_pair": variation.get("contradiction_pair"),
-        # Deliberately omit inventive_principles and solution
+        # Deliberately omit: contradiction_pair, inventive_principles, solution
     }
 
-    user = f"""PARENT CASE (use for structural inspiration ONLY — do NOT copy principles or solution):
+    user = f"""PARENT CASE (structural context ONLY — do NOT copy contradiction, principles, or solution):
 {json.dumps(parent_problem_only, ensure_ascii=False, indent=2)}
 
 TARGET DOMAIN: {target_domain}

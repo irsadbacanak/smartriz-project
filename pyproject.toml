@@ -25,6 +25,7 @@ dependencies = [
     "tenacity",
     "sentence-transformers",
     "numpy",
+    "xlrd",
     "pytest",
 ]
 
