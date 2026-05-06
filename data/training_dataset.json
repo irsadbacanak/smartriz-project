@@ -1,6 +1,6 @@
 {
   "dataset_name": "SmarTRIZ-Synthetic-v1",
-  "total_cases": 6,
+  "total_cases": 16,
   "cases": [
     {
       "id": "GEN-TG-27-SI-02-R01-2ab37cb5",
@@ -255,6 +255,445 @@
           "reasoning_coherence": null,
           "solution_feasibility": null,
           "average": 10.0
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-01-R01-daf1c87a",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "Specification: In a continuous hot-dip galvanizing line, steel strip exits the zinc bath at 460°C and must be cooled to <50°C before recoiling. Forced-air cooling towers are used, but the rapid cooling rate induces thermal stresses causing strip shape defects (crossbow, edge wave). Requirement: cool the strip at ≥80°C/s while maintaining flatness within 5 I-units.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#15 Dynamics",
+        "#35 Parameter Changes",
+        "#3 Local Quality"
+      ],
+      "reasoning_chain": "1) Cooling rate must be high to maintain line speed, but uniform cooling is difficult. 2) Improve Speed (#9), worsen Shape (#12). 3) Matrix (9,12) → {15, 35, 3, 10}. 4) Apply #15 Dynamics: use variable-speed fans and movable air nozzles that adjust in real-time based on strip flatness feedback. 5) Apply #35 Parameter Changes: switch from turbulent air jets to a laminar gas-jet impingement field with controlled nozzle-to-strip distance to achieve more uniform heat transfer coefficient. 6) Apply #3 Local Quality: install edge-masking baffles that selectively reduce cooling at strip edges to prevent over-cooling and edge wave.",
+      "solution": "A dynamic cooling system with individually controlled laminar jet modules, edge-masking shutters, and closed-loop flatness control. Strip flatness maintained within 3 I-units at 90°C/s cooling rate.",
+      "complexity": "medium",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-04-R01-5a945c64",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "In roll-to-roll manufacturing of flexible perovskite solar cells, a 100 nm-thick transparent conductive oxide (TCO) layer is sputtered onto a 50 µm PET web. The web is transported over a cooled drum at 30 m/min. Despite drum cooling, the PET expands due to plasma heating, causing wrinkles that lead to non-uniform coating and short circuits. Increasing web tension reduces wrinkles but stretches the PET beyond its elastic limit, causing permanent deformation and misalignment in downstream processes.",
+      "contradiction_pair": {
+        "improving_parameter": "Area of moving object (#5)",
+        "worsening_parameter": "Length of moving object (#3)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#14 Spheroidality - Curvature",
+        "#26 Copying",
+        "#28 Mechanics Substitution",
+        "#37 Thermal Expansion",
+        "#10 Preliminary Action"
+      ],
+      "reasoning_chain": "1) The problem: we want a large uniform coated area (improving Area of moving object, #5) but the web length changes due to thermal expansion, causing wrinkles (worsening Length of moving object, #3). 2) Matrix (5,3) gives principles 14, 26, 28, 37, 10. 3) Cross-domain analogy: in offset printing, a blanket cylinder compensates for substrate irregularities. 4) Apply #14 Spheroidality - Curvature: instead of a flat web path, curve the web over a convex drum so that thermal expansion is taken up by a change in wrap angle rather than buckling. 5) Apply #26 Copying: use a sacrificial, dimensionally stable carrier web (e.g., thin stainless steel foil) that the PET is temporarily laminated to before sputtering; the carrier handles tension, and the PET is just a passenger. 6) Apply #28 Mechanics Substitution: replace mechanical tension control with electrostatic clamping — charge the drum to hold the web flat without stretching it. 7) Apply #37 Thermal Expansion: pre-heat the PET web in a controlled manner just before the sputtering zone so all thermal expansion occurs before coating, then sputter on a dimensionally stable, pre-shrunk web. 8) Apply #10 Preliminary Action: pre-stress the web in the cross-direction by passing it over a curved spreader roller before it enters the sputtering zone, creating a slight tension that prevents wrinkle formation when heat is applied.",
+      "solution": "A hybrid system: PET web is pre-heated to 80°C and passed over a bowed spreader roller, then electrostatically clamped to a water-cooled, convex drum. Sputtering occurs on the curved surface. A thin stainless steel carrier web is used for tension control and later delaminated. Wrinkle defects eliminated, TCO uniformity improved to ±2%.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-05-R01-16e66919",
+      "source": "self_instruct_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "Laser powder bed fusion (LPBF) of Inconel 718 components for aerospace requires a support structure to anchor overhanging features to the build plate and conduct heat away. Post-process removal of these supports by machining is time-consuming and can damage the part surface. Weaker, easy-to-remove supports are desirable but they compromise heat transfer, leading to localized overheating, residual stress, and geometric distortion of the overhang.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Temperature (#17)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#2 Taking Out",
+        "#25 Self-Service",
+        "#13 The Other Way Round"
+      ],
+      "reasoning_chain": "The inherent trade-off in LPBF supports is between mechanical/thermal anchoring (for process stability) and ease of removal (for post-processing efficiency). Improving Ease of operation (#33) by making supports weaker directly worsens Temperature (#17) control at the overhang, causing distortion. Consulting the contradiction matrix for (33,17) yields inventive principles 2, 25, 13, 16. Principle #2 Taking Out suggests separating the conflicting functions: decouple the support's mechanical anchoring function from its heat conduction function. Principle #25 Self-Service proposes that the part itself, or the process, should solve the problem. Principle #13 The Other Way Round implies inverting the conventional approach: instead of making supports weaker, make them strong but self-removing. A practical synthesis is to design supports with a built-in thermal fuse: a thin, continuous section of a lower-melting-point alloy co-printed at the support-part interface. During a post-build heat treatment (which is required anyway for stress relief), this interface melts and the supports detach under their own weight or with minimal force, while the bulk support structure remains robust during the build for heat dissipation.",
+      "solution": "Multi-material LPBF: print the support-part interface using a bronze alloy (CuSn10, melting point ~850°C) co-deposited with Inconel 718. The bulk support is standard Inconel 718. During standard solution heat treatment at 980°C, the bronze interface melts, releasing the supports cleanly without machining. Overhang distortion reduced by 60% compared to weak, thin supports, and support removal time cut by 90%.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "self_instruct",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-05-R01-16e66919-CONST-R01-d56aef75",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "Laser powder bed fusion (LPBF) of Inconel 718 components for aerospace requires a support structure to anchor overhanging features and conduct heat away. Post-process removal by machining is time-consuming and can damage the part. The previous multi-material solution used a bronze (CuSn10) interface that melts during heat treatment to release supports, but the resulting waste stream contains a mixed Inconel/bronze residue that cannot be easily separated, violating the EU Ecodesign for Sustainable Products Regulation (ESPR) 2024 requirement that all materials in the product must be fully recyclable at end-of-life. The bronze contaminates the Inconel scrap, preventing closed-loop recycling, while the removed supports themselves are a mixed-metal waste. The need for easy support removal (improving ease of operation) must now be balanced against the worsening recyclability (worsening parameter: Loss of substance (#23) due to material contamination).",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#34 Discarding and Recovering",
+        "#25 Self-Service",
+        "#13 The Other Way Round",
+        "#2 Taking Out"
+      ],
+      "reasoning_chain": "The original contradiction pair (33,17) focused on temperature control, leading to principles 2, 25, 13. The recyclability constraint shifts the worsening parameter from Temperature (#17) to Loss of substance (#23) because the bronze interface contaminates the Inconel stream, making material recovery impossible. This changes the matrix lookup. For the new pair (33,23), the TRIZ contradiction matrix recommends principles 34, 25, 13, 2. Principle #34 (Discarding and Recovering) directly addresses the need to recover materials after function is performed. Principle #25 (Self-Service) remains relevant but now must be applied to the recycling process. Principle #13 (The Other Way Round) suggests inverting the approach: instead of a sacrificial interface, make the support removal reversible. Principle #2 (Taking Out) is retained to separate the support's thermal function from its attachment function. The new solution must eliminate mixed-metal waste by ensuring all materials are either the same alloy or can be perfectly separated without contamination.",
+      "solution": "Design supports with a geometric 'thermal fuse' using only Inconel 718: print a thin, perforated breakaway notch at the support-part interface using the same powder. The notch is designed with stress-concentrating features (e.g., sharp V-grooves) that fracture cleanly during a post-build cryogenic treatment (liquid nitrogen immersion). The thermal contraction mismatch between the thick part and thin notch creates sufficient stress to snap the supports off without machining. The bulk support remains robust during the build for heat conduction. All removed material is pure Inconel 718 and can be directly recycled into powder feedstock, meeting ESPR 2024 closed-loop requirements. Overhang distortion is minimized by optimizing notch geometry for thermal conductance, and support removal time is reduced by 85% compared to machining, with no cross-contamination.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-02-R01-d0ed21f0-XDOM-R01-af3859fc",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "chemical",
+      "problem": "In a continuous stirred-tank reactor (CSTR) producing a specialty polymer, the exothermic polymerization reaction requires precise temperature control at 150°C to achieve target molecular weight distribution. The reaction mixture has high viscosity, and heat removal relies on a cooling jacket. Increasing the agitator speed improves bulk mixing and heat transfer from the core, but the higher shear rate at the impeller tips causes localized overheating and polymer degradation, leading to off-spec product color and reduced yield.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Local temperature uniformity (#31)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#3 Local Quality",
+        "#15 Dynamics",
+        "#35 Parameter Changes"
+      ],
+      "reasoning_chain": "The improving parameter is Temperature (#17) – we want to increase heat removal capacity to control the bulk reaction temperature. The worsening parameter is local temperature uniformity (#31) – higher agitator speed creates intense shear zones with viscous heating, causing hot spots. From the TRIZ matrix, the intersection of #17 (Temperature) and #31 (Object-generated harmful factors, often mapped to local non-uniformity) suggests principles #3 (Local Quality), #15 (Dynamics), and #35 (Parameter Changes). #3 Local Quality suggests making the impeller surface non-uniform to distribute shear energy differently. #15 Dynamics suggests varying the impeller speed or geometry during operation. #35 Parameter Changes suggests altering the physical state (e.g., viscosity) of the fluid to reduce shear heating. Combining these: we can design an impeller with zones of different surface roughness or blade angles (Local Quality) that rotates at a variable speed pattern (Dynamics) and introduce a small amount of inert solvent to temporarily lower viscosity near the impeller (Parameter Changes), thus decoupling bulk mixing from local shear heating.",
+      "solution": "Install a dual-mode impeller system: the impeller blades have a polished, low-shear surface on the leading edge and a textured, high-shear surface on the trailing edge, with the pitch angle adjustable via a hub mechanism. During operation, the impeller alternates between a low-speed/high-pitch mode for bulk turnover and a high-speed/low-pitch mode for brief intense mixing, controlled by a feedback loop from in-situ viscometer and thermocouple array. Additionally, a small, controlled injection of a volatile, inert co-solvent is pulsed near the impeller shaft to locally reduce viscosity during high-shear phases, then stripped and recovered in a downstream flash tank. This breaks the contradiction by providing high overall heat transfer without creating persistent hot spots.",
+      "complexity": "medium",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-01-R01-daf1c87a-CONST-R01-dc2106f8",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "In a continuous hot-dip galvanizing line, steel strip exits the zinc bath at 460°C and must be cooled to <50°C before recoiling. The original dynamic cooling system with laminar jet modules, edge-masking shutters, and closed-loop flatness control achieved 90°C/s cooling and 3 I-units flatness. However, the entire cooling tower assembly must now survive 10,000 g mechanical shock per MIL-STD-810H Method 516.8 (e.g., due to nearby explosive ordnance disposal operations). The delicate movable nozzles, edge-masking shutters, and feedback sensors are vulnerable to permanent misalignment or fracture under this shock, compromising cooling uniformity and flatness. Requirement: cool the strip at ≥80°C/s while maintaining flatness within 5 I-units, with the system surviving 10,000 g shock without functional degradation.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#13 The Other Way Round",
+        "#35 Parameter Changes",
+        "#28 Mechanics Substitution",
+        "#7 Nested Doll"
+      ],
+      "reasoning_chain": "1) The constraint introduces a new failure mode: dynamic mechanical components (movable nozzles, shutters) cannot survive 10,000 g shock without adding massive, speed-reducing reinforcement. The original contradiction (Speed vs. Shape) remains, but the solution space is now restricted because principles #15 Dynamics and #3 Local Quality rely on fragile moving parts. 2) Matrix lookup for (9,12) yields {15, 35, 3, 10}. However, under the shock constraint, #15 (Dynamics) and #3 (Local Quality) become impractical unless they are implemented without moving parts. #10 (Preliminary Action) is less directly applicable. We must reinterpret the principles to eliminate vulnerability. 3) Principle #13 The Other Way Round: Instead of moving the cooling elements to match strip shape, move the strip path to achieve uniform cooling in a fixed, ruggedized cooling zone. 4) Principle #35 Parameter Changes: Replace mechanical edge masking with a non-mechanical method—use a magnetic field to locally alter the heat transfer coefficient of the gas jet at the edges, or use a gas mixture with variable thermal conductivity. 5) Principle #28 Mechanics Substitution: Replace mechanical shutters with a solid-state, shock-resistant system—use electrostatically controlled gas flow or a fixed, non-moving porous wall that inherently shapes the cooling profile. 6) Principle #7 Nested Doll: To protect the entire system from shock, nest the critical cooling components inside a shock-absorbing structure with multiple layers of damping, but do this in a way that does not impede the cooling function (e.g., integrate the shock mounts into the cooling plenum design).",
+      "solution": "A fixed-geometry cooling plenum with no moving parts, mounted on tuned mass dampers and wire rope isolators to survive 10,000 g shock. The plenum uses a spatially varying porous plate (thicker at edges) to passively create a non-uniform heat transfer coefficient that prevents edge wave. Instead of movable nozzles, the entire plenum is segmented into individually controlled zones, but each zone is a rigid, shock-hardened module with embedded solid-state mass flow controllers. Strip flatness is maintained by a pre-calculated, fixed cooling profile validated for the product mix, eliminating the need for real-time feedback sensors. Achieves 85°C/s cooling and 4 I-units flatness, surviving MIL-STD-810H shock.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-03-R01-791164bb-XDOM-R01-b1f6cdec",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "chemical",
+      "problem": "Continuous production of high-density polyethylene (HDPE) in a slurry loop reactor. The reactor operates at high pressure (35 bar) with a slurry of growing polymer particles suspended in isobutane. A key challenge is the continuous removal of the polymer slurry through settling legs, which rely on gravity to concentrate the solids before discharge. The concentrated slurry is intermittently ejected via a valve into a flash tank. During this rapid depressurization, residual liquid isobutane violently flashes to gas, causing polymer particles to agglomerate and stick to the valve internals and downstream piping, leading to frequent blockages and requiring shutdowns every 2-3 days for cleaning. This limits the overall plant availability to 85%.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#10 Preliminary Action",
+        "#35 Parameter Changes",
+        "#28 Mechanics Substitution",
+        "#36 Phase Transitions"
+      ],
+      "reasoning_chain": "Step 1: Identify the contradiction in the HDPE slurry discharge process. We want to improve Productivity (#39) by increasing the frequency and speed of slurry removal from the reactor to maintain high throughput. Step 2: However, doing so worsens Object-generated harmful factors (#31), as the rapid depressurization and flashing of liquid isobutane causes severe polymer agglomeration and fouling on valve internals. Step 3: Look up the TRIZ contradiction matrix for Improving #39 (Productivity) vs. Worsening #31 (Object-generated harmful factors). The suggested principles are #10 (Preliminary Action), #35 (Parameter Changes), #28 (Mechanics Substitution), and #36 (Phase Transitions). Step 4: Interpret these principles in the chemical domain. #10 (Preliminary Action) suggests conditioning the slurry before it reaches the critical valve to prevent flashing. #35 (Parameter Changes) points to altering the physical state, such as temperature or pressure, of the slurry. #28 (Mechanics Substitution) encourages replacing the mechanical valve with a different physical field or mechanism. #36 (Phase Transitions) directly addresses using a change of state to manage the problem, perhaps by inducing a controlled phase change rather than a violent one. Step 5: Synthesize a solution. Combine #10 and #35: pre-cool the concentrated slurry in the settling leg before discharge to lower its enthalpy, so less isobutane flashes upon depressurization. Combine #28 and #36: replace the intermittent mechanical valve with a continuous pressure let-down device, such as a heated progressive-cavity pump or a series of capillary tubes, that allows the liquid to transition to gas gradually over a controlled path, preventing explosive flashing and keeping polymer particles entrained and cool.",
+      "solution": "Install a jacketed, actively cooled settling leg section immediately upstream of the discharge valve to sub-cool the concentrated slurry by 5-10°C below its bubble point at the flash tank pressure. Replace the single-shot discharge valve with a progressive-cavity pump that acts as a continuous pressure let-down device. The pump's cavities progressively reduce pressure, allowing the liquid isobutane to vaporize in a controlled manner along the pump's length, keeping the polymer particles suspended and cool enough to prevent agglomeration. The pump discharges a gas-solid stream directly into the flash tank without a pressure shock, eliminating valve fouling and enabling continuous, blockage-free operation.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-04-R01-5a945c64-CONST-R01-9a69f5a7",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "In roll-to-roll manufacturing of flexible perovskite solar cells for medical implant power supplies, a 100 nm-thick transparent conductive oxide (TCO) layer is sputtered onto a 50 µm PET web. The web is transported over a cooled drum at 30 m/min. Despite drum cooling, the PET expands due to plasma heating, causing wrinkles that lead to non-uniform coating and short circuits. The entire process must comply with ISO 11137 for terminal sterilization by gamma irradiation (25 kGy minimum). The original solution used a sacrificial stainless steel carrier web, electrostatic clamping, and pre-heating, but gamma radiation degrades PET through chain scission and embrittlement, and the carrier web delamination step introduces particulate contamination that violates sterility assurance. Increasing web tension to control wrinkles now risks permanent deformation that becomes critical after irradiation, as degraded PET loses ductility and fails under downstream handling.",
+      "contradiction_pair": {
+        "improving_parameter": "Area of moving object (#5)",
+        "worsening_parameter": "Length of moving object (#3)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#14 Spheroidality - Curvature",
+        "#28 Mechanics Substitution",
+        "#35 Parameter Changes",
+        "#24 Intermediary",
+        "#40 Composite Materials"
+      ],
+      "reasoning_chain": "1) The core contradiction remains: we want a large uniform coated area (improving Area of moving object, #5) but the web length changes due to thermal expansion, causing wrinkles (worsening Length of moving object, #3). The gamma sterilization constraint introduces new failure modes: PET radiation damage and contamination risk from delamination. 2) The original matrix lookup for (5,3) gave principles 14, 26, 28, 37, 10. However, the constraint invalidates certain principles: #26 Copying (sacrificial carrier web) fails because delamination generates particles, violating sterility; #37 Thermal Expansion (pre-heating) is still viable but must be paired with a radiation-resistant substrate; #10 Preliminary Action (pre-stressing with spreader roller) risks embrittlement after irradiation. 3) To address radiation stability, we need to change the material system. This suggests #35 Parameter Changes: alter the PET to a radiation-tolerant polymer like polyimide (Kapton) or PEN, which withstand gamma doses without significant mechanical degradation. This changes the physical state of the substrate. 4) The contamination issue from carrier removal points to #24 Intermediary: instead of a separate carrier, use an intermediary layer that remains part of the final device—a radiation-stable, flexible glass or ceramic ultra-thin barrier layer that acts as both a dimensional stabilizer during sputtering and a permanent hermetic seal. 5) The original #14 Spheroidality - Curvature (convex drum) and #28 Mechanics Substitution (electrostatic clamping) remain valid because they reduce mechanical stress on the web, which is even more critical with a radiation-stiffened substrate. 6) We replace #26 Copying and #10 Preliminary Action with #35 Parameter Changes and #24 Intermediary. Additionally, we introduce #40 Composite Materials: build the substrate as a co-extruded multilayer of radiation-stable polymers with different thermal expansion coefficients, so the composite self-compensates thermal distortion without external tension. 7) The updated principle set addresses both the original wrinkle problem and the new sterilization constraint by eliminating particle-generating steps and using inherently radiation-hard materials.",
+      "solution": "Replace PET with a 25 µm thick co-extruded multilayer of polyimide and PEN, engineered to have near-zero in-plane thermal expansion mismatch. The web is electrostatically clamped to a water-cooled convex drum during sputtering. No carrier web is used; instead, a permanent 5 µm thick flexible glass layer is deposited on the backside before sputtering, acting as a dimensional stabilizer and gamma barrier. After TCO deposition, the entire roll is terminally sterilized by 25 kGy gamma irradiation without delamination steps, maintaining ISO 11137 sterility. Wrinkle defects are eliminated, TCO uniformity ±1.5%, and the device survives irradiation with <5% loss in mechanical flexibility.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-04-R01-5a945c64-XDOM-R01-fbb415ef",
+      "source": "evol_cross_domain_generated",
+      "language": "en",
+      "domain": "biomedical",
+      "problem": "In transcatheter aortic valve implantation (TAVI), a self-expanding nitinol stent-valve is crimped onto a delivery catheter and navigated through tortuous iliac arteries. To reduce the delivery profile and prevent vessel trauma, the stent is cooled with saline flush during insertion, keeping it martensitic and compressed. However, upon reaching the aortic annulus, the stent must rapidly expand and anchor securely. The saline flush lowers the local tissue temperature, which can induce vasospasm and reduce blood flow, while insufficient cooling risks premature expansion and misdeployment. Increasing the flush flow rate improves cooling and maintains a small profile but excessively chills the vessel wall, causing endothelial damage and arrhythmia.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#35 Parameter Changes",
+        "#16 Partial or Excessive Actions",
+        "#28 Mechanics Substitution",
+        "#24 Intermediary"
+      ],
+      "reasoning_chain": "1. Parameter mapping: The improving parameter is Temperature (#17) – we want a lower stent temperature to maintain the martensitic (compressed) state for a smaller delivery profile. The worsening parameter is Object-generated harmful factors (#31) – the cold saline flush damages the vessel wall (vasospasm, endothelial injury, arrhythmia). 2. Matrix lookup: For the pair (17 vs. 31), the TRIZ matrix suggests principles #35 (Parameter Changes), #16 (Partial or Excessive Actions), #28 (Mechanics Substitution), and #24 (Intermediary). 3. Principle interpretation: #35 suggests changing the physical state or a parameter of the system – instead of cooling the entire blood volume, we could change the thermal property of the stent or the local environment. #16 suggests using slightly less cooling than optimal to avoid harm, or applying cooling only where absolutely needed. #28 suggests replacing the thermal-mechanical control with another field, such as a magnetic or electrical mechanism to hold the stent compressed. #24 suggests using an intermediary that protects the vessel from the cold while still allowing heat transfer from the stent. 4. Solution synthesis: We can coat the inner lumen of the delivery sheath with a thin, flexible, thermally insulating hydrogel layer (#24 Intermediary) that prevents direct contact of cold saline with the arterial wall. Simultaneously, we design the sheath with a coaxial dual-lumen: an inner lumen for the stent and cold saline flush, and an outer return lumen that recirculates the chilled saline only around the stent, not into the bloodstream (#16 Partial Action). The hydrogel coating acts as a thermal barrier, while the recirculation loop maintains stent cooling with minimal cold fluid escaping into the vessel. Additionally, we incorporate a phase-change material (PCM) microsphere slurry in the recirculating saline (#35 Parameter Changes) to absorb heat more efficiently at the stent interface without requiring a large temperature gradient, thus reducing the overall cooling demand.",
+      "solution": "A TAVI delivery system featuring a coaxial dual-lumen catheter with a closed-loop chilled saline circuit. The inner sheath surrounding the crimped nitinol stent is lined with a thin, compliant hydrogel thermal barrier. Cold saline mixed with biocompatible phase-change microspheres circulates through the inner lumen, directly cooling the stent to maintain martensitic state, then returns via the outer lumen to a chiller console. This prevents cold fluid from entering the bloodstream, limiting vessel wall cooling to a negligible amount, and the PCM slurry maintains stent temperature within a narrow window with minimal thermal shock to the tissue.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_cross_domain",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
+        },
+        "matrix_check_passed": true
+      }
+    },
+    {
+      "id": "GEN-ALT-25-SI-03-R01-791164bb-CONST-R01-6df12453",
+      "source": "evol_constraint_generated",
+      "language": "en",
+      "domain": "manufacturing/materials",
+      "problem": "Injection molding of a glass-fiber-reinforced nylon automotive intake manifold. The part has a complex core that must be extracted after molding. The current tool uses a collapsible core with multiple sliding segments. During ejection, the still-warm part often sticks to the core segments, causing distortion or cracking. Cycle time is 55 seconds, and scrap rate is 4.2% due to ejection damage. The entire core extraction system must operate reliably over an automotive-grade temperature range of -40°C to +125°C, which causes thermal expansion mismatches between the nested steel shells and binding or excessive clearance in the sliding interfaces, leading to seizure at low temperatures or loss of collapse precision at high temperatures.",
+      "contradiction_pair": {
+        "improving_parameter": "Device complexity (#36)",
+        "worsening_parameter": "Stress or pressure (#11)"
+      },
+      "secondary_contradiction": null,
+      "inventive_principles": [
+        "#35 Parameter Changes",
+        "#37 Thermal Expansion",
+        "#15 Dynamics",
+        "#34 Discarding and Recovering"
+      ],
+      "reasoning_chain": "Q: How does the -40°C to +125°C constraint affect the original solution of nested thin-walled steel shells? A: The nested shells rely on precise sliding fits to collapse sequentially. Over a 165°C temperature range, differential thermal expansion between shells, guide pins, and the mold base will cause binding at low temperatures and excessive clearance at high temperatures, increasing extraction force (stress) and risking part damage. The original inventive principles (#34, #30, #7) addressed complexity reduction through sacrificial or collapsible structures but did not account for thermal effects on mechanical reliability. Q: What TRIZ parameter is most impacted by thermal expansion? A: Length of stationary object (#4) is not directly in the contradiction matrix, but thermal expansion introduces unwanted stress due to constrained expansion. The worsening parameter remains 'Stress or pressure (#11)' because thermal stresses add to ejection stresses. The improving parameter 'Device complexity (#36)' still applies because we want a simpler, more reliable extraction system. Q: How can we use TRIZ to resolve thermal expansion conflicts? A: Principle #37 Thermal Expansion: Use materials or designs that compensate for or exploit thermal expansion. For example, make the core from a material whose thermal expansion coefficient matches the mold base, or design expansion gaps that close at operating temperature. Principle #35 Parameter Changes: Change the physical state or properties, such as using a fluid or elastomeric core that is insensitive to thermal expansion mismatches. Principle #15 Dynamics: Introduce a dynamic element that adapts to temperature changes, like a compliant mechanism or a temperature-compensating actuator. Q: What about the original sacrificial core idea? A: Principle #34 Discarding and Recovering remains valid but must be implemented in a way that withstands the temperature range without leaving residue or requiring solvent removal that may not work at -40°C. A low-melting alloy core that melts out at 150°C is feasible but would require a separate heating station; however, a soluble core that dissolves in water would freeze at -40°C. Instead, a core made of a rigid foam that can be crushed and evacuated after molding could work, but it must not degrade at 125°C. Q: How to combine these? A: Use a core that is solid during injection but becomes easily removable by a phase change triggered by temperature, eliminating sliding mechanical parts entirely. A fusible core (low-melting alloy) is a known technique for automotive intake manifolds. The alloy (e.g., tin-bismuth) melts at ~138°C, so it is solid at 125°C. After molding, the part with the metal core is placed in a hot bath to melt out the core, which is then recovered. This eliminates all sliding segments and thermal expansion issues. The core material can be recycled (Discarding and Recovering). The contraction pair remains Device complexity vs. Stress: the fusible core is a single piece (low complexity) and exerts no extraction stress on the part because it melts away.",
+      "solution": "Replace the collapsible segmented core with a fusible core made of a low-melting eutectic alloy (e.g., Sn-Bi, melting point 138°C). The alloy core is cast separately, inserted into the mold, and overmolded with nylon. After demolding, the manifold with the metal core is immersed in a hot oil bath at 150°C, melting the core without affecting the nylon (HDT ~200°C). The alloy is drained, filtered, and reused. This eliminates all mechanical sliding parts, operates across the full -40°C to +125°C range without binding or clearance issues, and reduces scrap rate to near zero. Cycle time increases to 65 seconds due to core casting and melt-out, but the process can be parallelized.",
+      "complexity": "complex",
+      "meta": {
+        "parent_seed_id": "ALT-25",
+        "generation_method": "evol_constraint",
+        "generation_temperature": 0.7,
+        "generation_round": 1,
+        "judge_scores": {
+          "verdict": "PASS",
+          "Q1": "YES",
+          "Q2": "YES",
+          "Q3": "YES",
+          "Q4": "YES",
+          "Q5": "YES",
+          "Q6": "YES",
+          "fail_reasons": [],
+          "contradiction_validity": null,
+          "principle_correctness": null,
+          "reasoning_coherence": null,
+          "solution_feasibility": null,
+          "average": 10.0,
+          "confidence": "HIGH"
         },
         "matrix_check_passed": true
       }

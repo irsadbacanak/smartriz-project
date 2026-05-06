@@ -207,9 +207,10 @@ async def judge_sweep(
 
     Returns (pass_count, borderline_count).
 
-    - PASS cases  → out_path (judged.jsonl)
-    - FAIL cases  → borderline_path (borderline.jsonl) with fail_reasons for later analysis
-    - None (API/parse error) → dropped entirely, not written anywhere
+    - PASS cases                          → out_path (judged.jsonl)
+    - FAIL + confidence==BORDERLINE cases → out_path (judged.jsonl) with complexity downgraded
+    - FAIL + confidence==HIGH cases       → borderline_path (borderline.jsonl)
+    - None (API/parse error)              → dropped entirely, not written anywhere
     """
     if not in_path.exists():
         logger.warning("No raw generations file at %s", in_path)
@@ -229,6 +230,8 @@ async def judge_sweep(
     borderline_count = 0
     CHUNK = 50
 
+    _COMPLEXITY_DOWNGRADE = {"complex": "medium", "medium": "simple", "simple": "simple"}
+
     async def _judge_one(case: dict) -> tuple[dict | None, str]:
         scores = await judge.score(case)
         if scores is None:
@@ -238,6 +241,21 @@ async def judge_sweep(
         case_copy.setdefault("meta", {})["judge_scores"] = scores
         if scores.get("verdict") == "PASS":
             return case_copy, "pass"
+
+        # BORDERLINE FAIL: salvage by downgrading complexity instead of discarding
+        if scores.get("confidence") == "BORDERLINE":
+            old_complexity = case_copy.get("complexity", "medium")
+            new_complexity = _COMPLEXITY_DOWNGRADE.get(old_complexity, "simple")
+            case_copy["complexity"] = new_complexity
+            logger.info(
+                "[borderline-soft] id=%s — complexity %s→%s, fail_reasons=%s",
+                case.get("id", "?"),
+                old_complexity,
+                new_complexity,
+                scores.get("fail_reasons", []),
+            )
+            return case_copy, "soft_pass"
+
         logger.info(
             "[borderline] id=%s — fail_reasons=%s",
             case.get("id", "?"),
@@ -253,7 +271,7 @@ async def judge_sweep(
         for case_out, outcome in results:
             if case_out is None:
                 continue
-            if outcome == "pass":
+            if outcome in ("pass", "soft_pass"):
                 append_jsonl(case_out, out_path)
                 pc += 1
             else:

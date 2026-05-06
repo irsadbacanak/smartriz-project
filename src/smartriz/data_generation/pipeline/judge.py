@@ -2,9 +2,10 @@
 Async judge client — wraps Qwen2.5-72B-Instruct via DeepInfra.
 
 Features:
-  - Binary pass/fail rubric (6 YES/NO questions: Q1-Q6)
-  - Returns verdict dict with PASS/FAIL and per-question answers
-  - None returned for FAIL cases — caller drops them from dataset
+  - Binary pass/fail rubric (6 YES/NO questions: Q1-Q6) with confidence level
+  - BORDERLINE FAIL cases are flagged for complexity downgrade rather than discard
+  - Returns verdict dict with PASS/FAIL, per-question answers, and confidence
+  - None returned only on API/parse error — not on judge rejection
   - Same retry / concurrency / cost-tracking setup as teacher
   - Backward-compat fallback: old 0-10 numeric responses treated with 7.0 threshold
 """
@@ -44,21 +45,30 @@ _OLD_REQUIRED_KEYS = {
     "solution_feasibility",
 }
 
-# New binary question keys
+# New binary question keys — includes both old and new Q5 name for detection
 _NEW_QUESTION_KEYS = {
     "Q1_principles_canonical",
     "Q2_reasoning_uses_all_principles",
     "Q3_contradiction_domain_match",
     "Q4_solution_not_forced_fit",
-    "Q5_reasoning_not_template",
+    "Q5_reasoning_domain_specific",   # current name
+    "Q5_reasoning_not_template",      # legacy name — kept for detection
     "Q6_domain_terminology_accurate",
 }
+
+# Legacy score keys that should not appear in the final training data as null
+_OLD_SCORE_KEYS = frozenset({
+    "contradiction_validity",
+    "principle_correctness",
+    "reasoning_coherence",
+    "solution_feasibility",
+})
 
 
 def _is_retryable(exc: BaseException) -> bool:
     if isinstance(exc, httpx.HTTPStatusError):
         return exc.response.status_code in (429, 500, 502, 503, 504)
-    return isinstance(exc, (httpx.TimeoutException, httpx.ConnectError, httpx.RemoteProtocolError))
+    return isinstance(exc, (httpx.TimeoutException, httpx.ConnectError, httpx.RemoteProtocolError, TimeoutError))
 
 
 def _make_retry():
@@ -70,6 +80,25 @@ def _make_retry():
     )
 
 
+def _clean_judge_scores(scores: dict) -> dict:
+    """Strip legacy 0-10 numeric score fields when they are null.
+
+    The new binary schema never populates contradiction_validity, principle_correctness,
+    reasoning_coherence, or solution_feasibility. When these appear as null values they
+    pollute the training dataset schema. Numeric values from the backward-compat path
+    are preserved for debugging.
+    """
+    return {k: v for k, v in scores.items() if not (k in _OLD_SCORE_KEYS and v is None)}
+
+
+def _get_q5(result: dict) -> str:
+    """Get Q5 answer supporting both old and new key names."""
+    return (
+        result.get("Q5_reasoning_domain_specific")
+        or result.get("Q5_reasoning_not_template", "?")
+    )
+
+
 class JudgeClient:
     """Async client for the binary pass/fail Qwen2.5-72B judge."""
 
@@ -78,7 +107,7 @@ class JudgeClient:
         self._client = client or httpx.AsyncClient(
             base_url=BASE_URL,
             headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
-            timeout=httpx.Timeout(90.0, connect=15.0),
+            timeout=httpx.Timeout(120.0, connect=15.0),
         )
 
     async def aclose(self) -> None:
@@ -88,9 +117,12 @@ class JudgeClient:
         """Score a case dict.
 
         Returns:
-            - dict with 'verdict' == 'PASS' and per-question answers on success.
-            - dict with 'verdict' == 'FAIL', per-question answers, and 'fail_reasons'
-              when the judge rejects the case (used for borderline logging).
+            - dict with 'verdict' == 'PASS', per-question answers, and
+              'confidence' == 'HIGH' or 'BORDERLINE' on success.
+            - dict with 'verdict' == 'FAIL', per-question answers, 'confidence',
+              and 'fail_reasons' when the judge rejects the case.
+              BORDERLINE FAIL cases can be salvaged by the caller (e.g. by
+              downgrading complexity and accepting into the dataset).
             - None only when the API call or JSON parsing fails entirely (not a
               judge rejection — a genuine communication/format error).
         """
@@ -139,48 +171,53 @@ class JudgeClient:
         # ── New binary verdict schema ────────────────────────────────────────
         if "verdict" in result or _NEW_QUESTION_KEYS.intersection(result.keys()):
             verdict = result.get("verdict", "FAIL").upper().strip()
+            confidence = result.get("confidence", "HIGH").upper().strip()
+            if confidence not in ("HIGH", "BORDERLINE"):
+                confidence = "HIGH"
 
             if verdict == "FAIL":
                 fail_reasons = result.get("fail_reasons", [])
                 logger.info(
-                    "[judge-fail] case rejected — reasons: %s",
+                    "[judge-fail] case rejected — confidence=%s reasons: %s",
+                    confidence,
                     fail_reasons if fail_reasons else "(none provided)",
                 )
-                # Return FAIL verdict dict so callers can route to borderline.jsonl.
-                # None is reserved for genuine API/parse errors, not judge rejections.
-                return {
+                return _clean_judge_scores({
                     "verdict": "FAIL",
                     "Q1": result.get("Q1_principles_canonical", "?"),
                     "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
                     "Q3": result.get("Q3_contradiction_domain_match", "?"),
                     "Q4": result.get("Q4_solution_not_forced_fit", "?"),
-                    "Q5": result.get("Q5_reasoning_not_template", "?"),
+                    "Q5": _get_q5(result),
                     "Q6": result.get("Q6_domain_terminology_accurate", "?"),
+                    "confidence": confidence,
                     "fail_reasons": fail_reasons,
                     "average": 0.0,
-                }
+                })
 
             if verdict == "PASS":
-                return {
+                return _clean_judge_scores({
                     "verdict": "PASS",
                     "Q1": result.get("Q1_principles_canonical", "?"),
                     "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
                     "Q3": result.get("Q3_contradiction_domain_match", "?"),
                     "Q4": result.get("Q4_solution_not_forced_fit", "?"),
-                    "Q5": result.get("Q5_reasoning_not_template", "?"),
+                    "Q5": _get_q5(result),
                     "Q6": result.get("Q6_domain_terminology_accurate", "?"),
+                    "confidence": confidence,
                     "fail_reasons": result.get("fail_reasons", []),
                     "average": 10.0,  # Backward compat: PASS cases get 10.0 for downstream meta
-                }
+                })
 
             # Unknown verdict value — treat as FAIL for safety
             logger.warning("[judge] unknown verdict value %r — treating as FAIL", verdict)
-            return {
+            return _clean_judge_scores({
                 "verdict": "FAIL",
                 "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                "confidence": "HIGH",
                 "fail_reasons": [f"unrecognized verdict value: {verdict!r}"],
                 "average": 0.0,
-            }
+            })
 
         # ── Backward-compat fallback: old 0-10 numeric format ────────────────
         if _OLD_REQUIRED_KEYS.issubset(result.keys()):
@@ -193,6 +230,7 @@ class JudgeClient:
                     return {
                         "verdict": "FAIL",
                         "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                        "confidence": "HIGH",
                         "fail_reasons": [f"old-format out-of-range score: {key}={val}"],
                         "average": 0.0,
                     }
@@ -207,11 +245,12 @@ class JudgeClient:
                 return {
                     "verdict": "FAIL",
                     "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                    "confidence": "HIGH",
                     "fail_reasons": [f"old-format average {average:.2f} below 7.0 threshold"],
                     "average": average,
                 }
 
-            return {
+            return _clean_judge_scores({
                 **result,  # Keep original numeric scores for debugging
                 "verdict": "PASS",
                 "Q1": "YES",  # Inferred from passing threshold
@@ -220,9 +259,10 @@ class JudgeClient:
                 "Q4": "YES",
                 "Q5": "YES",
                 "Q6": "YES",
+                "confidence": "HIGH",
                 "fail_reasons": [],
                 "average": average,
-            }
+            })
 
         # No recognized schema
         missing_new = _NEW_QUESTION_KEYS - result.keys()
