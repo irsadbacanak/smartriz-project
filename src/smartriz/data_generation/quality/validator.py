@@ -33,7 +33,7 @@ class JudgeScores(BaseModel):
         solution_feasibility, average
 
     New binary format fields (current judge):
-        verdict ("PASS"/"FAIL"), Q1-Q5 ("YES"/"NO"), fail_reasons, average
+        verdict ("PASS"/"FAIL"), Q1-Q6 ("YES"/"NO"), fail_reasons, average
     """
 
     model_config = ConfigDict(extra="allow")
@@ -45,6 +45,7 @@ class JudgeScores(BaseModel):
     Q3: str | None = None
     Q4: str | None = None
     Q5: str | None = None
+    Q6: str | None = None
     fail_reasons: list[str] = []
 
     # Old numeric format (backward compat)
@@ -81,6 +82,7 @@ class Case(BaseModel):
     domain: str = Field(..., min_length=1)
     problem: str = Field(..., min_length=10)
     contradiction_pair: ContradictionPair
+    secondary_contradiction: ContradictionPair | None = None
     inventive_principles: list[str] = Field(..., min_length=1)
     reasoning_chain: str = Field(..., min_length=10)
     solution: str = Field(..., min_length=10)

@@ -30,6 +30,14 @@ def build_prompt(variation: dict) -> tuple[str, str]:
         "You MUST select principles ONLY from this exact list:\n"
         f"{canonical_list}\n\n"
         "Do NOT invent principle names. Do NOT exceed #40.\n\n"
+        "CRITICAL — MATRIX LOOKUPS:\n"
+        "The TRIZ contradiction matrix is a FIXED table. You must NOT invent or "
+        "approximate matrix results. In your reasoning_chain, when you cite a "
+        "matrix lookup for the secondary contradiction, state the parameter "
+        "numbers and only claim principles that actually appear at that cell. "
+        "If you are not certain of the exact cell contents, describe the "
+        "secondary contradiction clearly but do NOT fabricate specific principle "
+        "numbers as matrix outputs.\n\n"
         "REASONING CHAIN: For medium and complex cases, the simple numbered template "
         "'1)Problem 2)Parameters 3)Matrix 4)Apply' is BANNED. "
         "Instead use: Q&A dialogue exploring counterfactuals, "
@@ -77,6 +85,7 @@ Critical rules:
 - Keep the original contradiction_pair intact; add secondary_contradiction.
 - inventive_principles list must contain 2 or 3 principles total.
 - reasoning_chain must cite matrix cells for BOTH contradictions.
+- Do NOT fabricate matrix outputs for any cited contradiction pair.
 - Do NOT lower complexity.
 - All inventive_principles must use exact canonical names from the list provided.
 """

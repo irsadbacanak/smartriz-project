@@ -2,7 +2,7 @@
 Async judge client — wraps Qwen2.5-72B-Instruct via DeepInfra.
 
 Features:
-  - Binary pass/fail rubric (5 YES/NO questions: Q1-Q5)
+  - Binary pass/fail rubric (6 YES/NO questions: Q1-Q6)
   - Returns verdict dict with PASS/FAIL and per-question answers
   - None returned for FAIL cases — caller drops them from dataset
   - Same retry / concurrency / cost-tracking setup as teacher
@@ -51,6 +51,7 @@ _NEW_QUESTION_KEYS = {
     "Q3_contradiction_domain_match",
     "Q4_solution_not_forced_fit",
     "Q5_reasoning_not_template",
+    "Q6_domain_terminology_accurate",
 }
 
 
@@ -152,6 +153,7 @@ class JudgeClient:
                     "Q3": result.get("Q3_contradiction_domain_match", "?"),
                     "Q4": result.get("Q4_solution_not_forced_fit", "?"),
                     "Q5": result.get("Q5_reasoning_not_template", "?"),
+                    "Q6": result.get("Q6_domain_terminology_accurate", "?"),
                     "fail_reasons": result.get("fail_reasons", []),
                     "average": 10.0,  # Backward compat: PASS cases get 10.0 for downstream meta
                 }
@@ -187,6 +189,7 @@ class JudgeClient:
                 "Q3": "YES",
                 "Q4": "YES",
                 "Q5": "YES",
+                "Q6": "YES",
                 "fail_reasons": [],
                 "average": average,
             }

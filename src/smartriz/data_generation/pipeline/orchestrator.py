@@ -439,7 +439,37 @@ def _run_matrix_check(case: dict) -> bool:
         logger.warning("[drop/matrix] no parseable principle ids — id=%s", case.get("id", "?"))
         return False
 
-    return check(imp_id, wor_id, principle_ids)
+    primary_passed = check(imp_id, wor_id, principle_ids)
+    if not primary_passed:
+        return False
+
+    sec = case.get("secondary_contradiction", {})
+    if not isinstance(sec, dict):
+        return True
+
+    sec_imp_str = sec.get("improving_parameter", "").strip()
+    sec_wor_str = sec.get("worsening_parameter", "").strip()
+    if not (sec_imp_str and sec_wor_str):
+        return True
+
+    sec_imp_id = parse_param_id(sec_imp_str)
+    sec_wor_id = parse_param_id(sec_wor_str)
+    if sec_imp_id is None or sec_wor_id is None:
+        logger.warning(
+            "[drop/matrix] cannot parse secondary param ids — imp=%r wor=%r id=%s",
+            sec_imp_str, sec_wor_str, case.get("id", "?"),
+        )
+        return False
+
+    sec_passed = check(sec_imp_id, sec_wor_id, principle_ids)
+    if not sec_passed:
+        logger.info(
+            "[drop/matrix] secondary matrix check failed — id=%s cell=(%d,%d)",
+            case.get("id", "?"), sec_imp_id, sec_wor_id,
+        )
+        return False
+
+    return True
 
 
 # ── Principle validation sweep ────────────────────────────────────────────────

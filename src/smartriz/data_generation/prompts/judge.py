@@ -1,5 +1,5 @@
 """
-LLM-as-a-Judge prompt — binary pass/fail with 5 YES/NO questions.
+LLM-as-a-Judge prompt — binary pass/fail with 6 YES/NO questions.
 
 Any NO answer fails the example immediately. No partial credit.
 A failed example is never added to the dataset.
@@ -15,6 +15,7 @@ _SCHEMA = """{
   "Q3_contradiction_domain_match": "YES or NO",
   "Q4_solution_not_forced_fit": "YES or NO",
   "Q5_reasoning_not_template": "YES or NO",
+  "Q6_domain_terminology_accurate": "YES or NO",
   "verdict": "PASS or FAIL",
   "fail_reasons": ["<reason if any question is NO — empty list if all YES>"]
 }"""
@@ -24,7 +25,7 @@ def build_prompt(case: dict) -> tuple[str, str]:
     """Return (system, user) prompt for binary pass/fail judge."""
     system = (
         "You are a TRIZ expert and quality-control judge.\n"
-        "Evaluate the provided TRIZ case study by answering 5 binary questions.\n"
+        "Evaluate the provided TRIZ case study by answering 6 binary questions.\n"
         "ANY 'NO' answer means the case FAILS. No partial credit.\n"
         "Be strict — a principle that is close but wrong in name or number is a NO for Q1.\n"
         "RESPOND ONLY WITH VALID JSON matching the schema exactly — no prose.\n\n"
@@ -53,6 +54,11 @@ Q4. Is the solution domain-native — NOT a forced copy of a parent seed's solut
 Q5. Is the reasoning_chain non-formulaic?
     (The exact pattern "1)Problem 2)Parameters 3)Matrix 4)Apply" for a medium/complex case = NO)
     (Simple cases with 4-6 step numbered reasoning are acceptable.)
+
+Q6. Are all material names, process terms, and physical properties in the solution/reasoning
+    technically accurate for the stated domain?
+    (e.g., claiming a ceramic/carbon composite has a "glass transition temperature",
+     or citing a standard number that belongs to a different field = NO)
 
 OUTPUT SCHEMA (respond with exactly this JSON — no other text):
 {_SCHEMA}
