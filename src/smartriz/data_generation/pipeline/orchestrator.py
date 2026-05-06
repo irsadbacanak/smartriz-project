@@ -16,7 +16,8 @@ import json
 import logging
 import random
 import sys
-from collections import defaultdict
+import uuid
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import AsyncIterator
 
@@ -176,6 +177,12 @@ async def _run_teacher_task(
         else:
             raw = await teacher.generate(sys_msg, user_msg, temperature, seed_id, method, gen_round)
             cases = [raw] if raw is not None else []
+            # Stabilize IDs — append round+UUID to prevent collisions across runs
+            for c in cases:
+                if isinstance(c, dict):
+                    existing_id = c.get("id", "")
+                    short_uuid = str(uuid.uuid4())[:8]
+                    c["id"] = f"{existing_id}-R{gen_round:02d}-{short_uuid}" if existing_id else f"GEN-UNKNOWN-R{gen_round:02d}-{short_uuid}"
     except RuntimeError as exc:
         # Hard-stop from cost tracker
         logger.critical("HARD STOP: %s", exc)
@@ -239,7 +246,8 @@ def _split_self_instruct(raw: dict | None, seed: dict, gen_round: int, temperatu
         if not isinstance(var, dict):
             logger.warning("[drop] variation %d is not a dict — seed=%s", i, seed_id)
             continue
-        var.setdefault("id", f"GEN-{seed_id}-SI-{i}")
+        short_uuid = str(uuid.uuid4())[:8]
+        var["id"] = f"GEN-{seed_id}-SI-{i:02d}-R{gen_round:02d}-{short_uuid}"
         var.setdefault("source", "self_instruct_generated")
         var["meta"] = {
             "parent_seed_id": seed_id,
@@ -571,6 +579,21 @@ async def run_round(
     # Stage 5.2: principle name validation (hard gate — drops hallucinated principles)
     logger.info("Stage 5.2: principle validation sweep")
     principle_count = principle_validation_sweep()
+
+    # Stage 5.3: Duplicate ID assertion (hard fail if IDs collide)
+    if MATRIX_VALIDATED_JSONL.exists():
+        all_ids_in_file: list[str] = []
+        for line in MATRIX_VALIDATED_JSONL.read_text(encoding="utf-8").splitlines():
+            try:
+                d = json.loads(line)
+                all_ids_in_file.append(d.get("id", ""))
+            except json.JSONDecodeError:
+                pass
+        if len(all_ids_in_file) != len(set(all_ids_in_file)):
+            dups = [id_ for id_, cnt in Counter(all_ids_in_file).items() if cnt > 1]
+            logger.error("DUPLICATE IDs in matrix_validated.jsonl: %s", dups)
+            raise RuntimeError(f"Duplicate IDs detected — fix before saving: {dups}")
+        logger.info("Stage 5.3: ID uniqueness check passed (%d unique IDs)", len(all_ids_in_file))
 
     stats = {
         "round": generation_round,
