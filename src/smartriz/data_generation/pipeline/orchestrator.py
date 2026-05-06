@@ -573,10 +573,22 @@ async def run_round(
     temperature: float,
     smoke: bool = False,
     smoke_n: int = 5,
+    seed_ids: list[str] | None = None,
 ) -> dict:
-    """Run a full pipeline round. Returns stats dict."""
+    """Run a full pipeline round. Returns stats dict.
+
+    Args:
+        seed_ids: If provided, restrict run to exactly these seed IDs (overrides
+                  smoke random selection while still running in smoke-style mode).
+    """
     all_seeds = load_seeds()
-    if smoke:
+    if seed_ids:
+        seeds = [s for s in all_seeds if s["id"] in seed_ids]
+        missing = set(seed_ids) - {s["id"] for s in seeds}
+        if missing:
+            logger.warning("Requested seed IDs not found in dataset: %s", missing)
+        logger.info("TARGETED MODE: using %d specified seeds %s", len(seeds), seed_ids)
+    elif smoke:
         # Pick smoke_n seeds RANDOMLY — not always the first ones
         seeds = random.sample(all_seeds, min(smoke_n, len(all_seeds)))
         logger.info("SMOKE MODE: using %d randomly selected seeds from %d total",

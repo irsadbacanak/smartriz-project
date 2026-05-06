@@ -37,6 +37,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--auto", action="store_true", help="Run rounds until --target examples reached")
     p.add_argument("--target", type=int, default=10000, help="Target example count")
     p.add_argument("--dedup-only", action="store_true", help="Skip generation; run dedup+validate only")
+    p.add_argument("--seeds", type=str, default=None,
+                   help="Comma-separated seed IDs to run (e.g. AT-01,AT-02). Overrides random smoke selection.")
     return p.parse_args()
 
 
@@ -53,13 +55,17 @@ async def _run(args: argparse.Namespace) -> None:
         logger.info("Dedup → %d, Final → %d", dedup_count, final_count)
         return
 
+    seed_ids = [s.strip() for s in args.seeds.split(",")] if args.seeds else None
+
     if args.smoke:
-        logger.info("=== SMOKE TEST (n=%d seeds) ===", args.n)
+        logger.info("=== SMOKE TEST (n=%d seeds%s) ===", args.n,
+                    f", seeds={seed_ids}" if seed_ids else "")
         stats = await run_round(
             generation_round=args.gen_round,
             temperature=args.temperature,
             smoke=True,
             smoke_n=args.n,
+            seed_ids=seed_ids,
         )
         logger.info("Smoke stats: %s", json.dumps(stats, indent=2))
         dedup_count = deduplicate()
