@@ -50,6 +50,9 @@ _VALID_CASE_JSON = json.dumps({
     "complexity": "simple",
 })
 
+# self_instruct method expects {"variations": [...]} wrapper
+_VALID_SELF_INSTRUCT_JSON = json.dumps({"variations": [json.loads(_VALID_CASE_JSON)]})
+
 
 # ── Scenario 1: only <think> tag ─────────────────────────────────────────────
 
@@ -57,6 +60,9 @@ class TestScenario1OnlyThinkTag:
     def setup_method(self):
         raw_content = f"<think>step-by-step reasoning here</think>\n{_VALID_CASE_JSON}"
         self.msg = _make_message(content=raw_content)
+        self.si_msg = _make_message(
+            content=f"<think>step-by-step reasoning here</think>\n{_VALID_SELF_INSTRUCT_JSON}"
+        )
 
     def test_reasoning_extracted(self):
         reasoning, _ = extract_reasoning_and_content(self.msg)
@@ -74,11 +80,12 @@ class TestScenario1OnlyThinkTag:
         assert data["id"] == "TEST-01"
 
     def test_full_extract_case_succeeds(self):
-        resp = _make_response(self.msg)
+        resp = _make_response(self.si_msg)
         result = extract_case(resp, "SEED-01", "self_instruct", 1, 0.7)
         assert result is not None
         assert result["reasoning_chain"] == "step-by-step reasoning here"
-        assert result["meta"]["parent_seed_id"] == "SEED-01"
+        assert "variations" in result
+        assert result["variations"][0]["id"] == "TEST-01"
 
 
 # ── Scenario 2: only reasoning_content field ──────────────────────────────────

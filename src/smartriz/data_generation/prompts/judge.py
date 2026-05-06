@@ -45,7 +45,7 @@ Q2. Does the reasoning_chain ACTUALLY USE every principle in inventive_principle
     (A principle listed but not mentioned or applied in reasoning = NO)
 
 Q3. Are the contradiction parameters logically consistent with the problem domain?
-    (e.g., a chemistry problem using "cushioning" principle with no thermal justification = NO)
+    (e.g., an electronics problem applying #29 Pneumatics and Hydraulics with no fluid system = NO)
 
 Q4. Is the solution domain-native — NOT a forced copy of a parent seed's solution pattern?
     (Generic re-application of the same principle in a new domain without new logic = NO)

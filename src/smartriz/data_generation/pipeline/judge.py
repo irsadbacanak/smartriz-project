@@ -180,6 +180,7 @@ class JudgeClient:
                 return None
 
             return {
+                **result,  # Keep original numeric scores for debugging
                 "verdict": "PASS",
                 "Q1": "YES",  # Inferred from passing threshold
                 "Q2": "YES",
@@ -188,7 +189,6 @@ class JudgeClient:
                 "Q5": "YES",
                 "fail_reasons": [],
                 "average": average,
-                **result,  # Keep original numeric scores for debugging
             }
 
         # No recognized schema

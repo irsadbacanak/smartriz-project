@@ -284,7 +284,7 @@ async def judge_sweep(
         if scores["average"] < JUDGE_THRESHOLD:
             logger.info("[drop/judge] avg=%.2f < %.1f — id=%s", scores["average"], JUDGE_THRESHOLD, case.get("id", "?"))
             return None
-        case["meta"]["judge_scores"] = scores
+        case.setdefault("meta", {})["judge_scores"] = scores
         return case
 
     buffer: list[dict] = []
@@ -467,8 +467,9 @@ async def run_round(
         logger.info("SMOKE MODE: using %d randomly selected seeds from %d total",
                     len(seeds), len(all_seeds))
     else:
-        seeds = all_seeds
-        logger.info("Full round: using all %d seeds", len(seeds))
+        scheduler = SeedScheduler(all_seeds, max_per_seed=1)  # 1 SI call per seed per round
+        seeds = scheduler.all_seeds_for_round()
+        logger.info("Full round: %d seeds selected via SeedScheduler", len(seeds))
 
     processed_keys = load_processed_keys()
     cost_tracker = CostTracker()
