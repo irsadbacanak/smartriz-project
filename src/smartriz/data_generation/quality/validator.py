@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from smartriz.data_generation.config import DEDUPED_JSONL, FINAL_JSON
 
@@ -26,11 +26,43 @@ class ContradictionPair(BaseModel):
 
 
 class JudgeScores(BaseModel):
-    contradiction_validity: float
-    principle_correctness: float
-    reasoning_coherence: float
-    solution_feasibility: float
-    average: float
+    """Accepts both old numeric format and new binary verdict format.
+
+    Old format fields (pre-binary judge):
+        contradiction_validity, principle_correctness, reasoning_coherence,
+        solution_feasibility, average
+
+    New binary format fields (current judge):
+        verdict ("PASS"/"FAIL"), Q1-Q5 ("YES"/"NO"), fail_reasons, average
+    """
+
+    model_config = ConfigDict(extra="allow")
+
+    # New binary format
+    verdict: str | None = None
+    Q1: str | None = None
+    Q2: str | None = None
+    Q3: str | None = None
+    Q4: str | None = None
+    Q5: str | None = None
+    fail_reasons: list[str] = []
+
+    # Old numeric format (backward compat)
+    contradiction_validity: float | None = None
+    principle_correctness: float | None = None
+    reasoning_coherence: float | None = None
+    solution_feasibility: float | None = None
+    average: float | None = None
+
+    @property
+    def passed(self) -> bool:
+        """True if the judge approved this case."""
+        if self.verdict is not None:
+            return self.verdict == "PASS"
+        # Old format: threshold was 7.0
+        if self.average is not None:
+            return self.average >= 7.0
+        return False
 
 
 class Meta(BaseModel):
@@ -54,6 +86,18 @@ class Case(BaseModel):
     solution: str = Field(..., min_length=10)
     complexity: Literal["simple", "medium", "complex"]
     meta: Meta | None = None
+
+    @field_validator("complexity", mode="before")
+    @classmethod
+    def normalize_complexity(cls, v: str) -> str:
+        """Normalize LLM synonym values to the canonical three-value set."""
+        _NORMALIZE = {
+            "high": "complex",
+            "moderate": "medium",
+        }
+        if isinstance(v, str):
+            return _NORMALIZE.get(v.lower(), v)
+        return v
 
     @field_validator("inventive_principles")
     @classmethod
