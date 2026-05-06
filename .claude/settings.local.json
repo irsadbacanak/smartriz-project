@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(ls -lh /Users/sevketugurel/Desktop/LIFTUP/smartriz-project/data/*.json /Users/sevketugurel/Desktop/LIFTUP/smartriz-project/data/*.jsonl)",
+      "Bash(.venv/bin/python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(python:*)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('data/training_dataset.json'\\)\\); print\\(f'training_dataset.json: {d[\\\\\"total_cases\\\\\"]} cases'\\)\")",
+      "Bash(.venv/bin/python3:*)",
+      "Bash(xargs ls:*)",
+      "Bash(python3 -c ':*)",
+      "Bash(python3 -c \"import sys,json; [print\\(json.dumps\\(json.loads\\(l\\).get\\('meta',{}\\).get\\('judge_scores'\\), indent=2\\)\\) for l in sys.stdin]\")",
+      "Bash(python3:*)",
+      "Bash(grep --line-buffered -E \"\\(Stage [0-9]|cp-copy|Smoke complete|final examples|Round [0-9]+ done|TARGETED|complete:|passed$|cp_copy|Contradiction-copy|Principle validation|Matrix check|Judge sweep|Schema validation|Final dataset\\)\")"
+    ]
+  }
+}
