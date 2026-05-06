@@ -141,7 +141,7 @@ class TestVariationHistoryInit:
 
     def test_variation_history_preseeded_helper_produces_correct_entry(self):
         """The helper that builds the initial variation_history dict works correctly."""
-        from smartriz.data_generation.pipeline.orchestrator import build_initial_variation_history
+        from smartriz.data_generation.pipeline.seeds import build_initial_variation_history
         seeds = [
             {
                 "id": "AT-01",
@@ -178,7 +178,7 @@ class TestContradictionCopySweep:
 
     def test_sweep_removes_copied_cp_cases_for_si(self, tmp_path):
         """SI cases with same CP as parent seed must be removed by sweep."""
-        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        from smartriz.data_generation.pipeline.sweeps import contradiction_copy_sweep
         import json
 
         seed_lookup = {
@@ -210,7 +210,7 @@ class TestContradictionCopySweep:
 
     def test_sweep_keeps_deepening_cases_with_same_cp(self, tmp_path):
         """evol_deepening cases are allowed to keep parent CP."""
-        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        from smartriz.data_generation.pipeline.sweeps import contradiction_copy_sweep
         import json
 
         seed_lookup = {
@@ -232,7 +232,7 @@ class TestContradictionCopySweep:
 
     def test_sweep_removes_xdom_with_copied_cp(self, tmp_path):
         """evol_cross_domain cases with same CP as parent must be dropped."""
-        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        from smartriz.data_generation.pipeline.sweeps import contradiction_copy_sweep
         import json
 
         seed_lookup = {

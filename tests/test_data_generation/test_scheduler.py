@@ -1,6 +1,6 @@
 """Tests for SeedScheduler round-robin logic."""
 import random
-from smartriz.data_generation.pipeline.orchestrator import SeedScheduler
+from smartriz.data_generation.pipeline.seeds import SeedScheduler
 
 SEEDS = [{"id": f"AT-{i:02d}"} for i in range(1, 10)]  # 9 seeds
 

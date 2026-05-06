@@ -9,6 +9,7 @@ __pycache__/
 build/
 dist/
 data/chroma_db/
+data/artifacts/
 data/raw_generations.jsonl
 data/judged.jsonl
 data/matrix_validated.jsonl

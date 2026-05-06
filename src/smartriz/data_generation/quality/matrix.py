@@ -449,3 +449,99 @@ def check(improving_id: int, worsening_id: int, principle_ids: list[int]) -> boo
 
     overlap = normalized & set(cell)
     return bool(overlap)
+
+
+# ── Matrix citation extraction + verification ────────────────────────────────
+#
+# Detects in-text claims like:
+#   "matrix lookup for (27,36) yields principles #13, #35, #1"
+#   "matrix for (#9, #31) suggests #15 and #35"
+#   "cell (12, 32) recommends #1, #2, #27"
+#
+# A sentence is considered a citation when it contains BOTH:
+#   (a) a parameter pair in range 1–39  (captured as imp, wor)
+#   (b) at least one principle number in range 1–40 claimed as the cell output
+#
+# False-positive guard: citation capture is anchored to "yield/suggest/recommend"
+# or explicit "matrix lookup for (...)" phrasing so generic mentions like
+# "parameter (1,2) must satisfy principle #3" are not caught.
+
+_CITATION_TRIGGER = re.compile(
+    r"(?:matrix|cell|lookup)\b[^.;]{0,60}"   # leading keyword
+    r"\(\s*#?(\d{1,2})\s*[,;]\s*#?(\d{1,2})\s*\)"  # (imp, wor)
+    r"[^.;]{0,120}",                           # rest of the clause
+    re.IGNORECASE,
+)
+
+# Matches isolated "#N" principle references (not part of "(N,N)" pairs)
+_CITED_PRINCIPLE_RE = re.compile(r"#(\d{1,2})(?!\s*[,;]\s*#?\d{1,2}\))")
+
+
+def extract_matrix_citations(text: str) -> list[tuple[int, int, list[int]]]:
+    """Extract explicit matrix lookup claims from a reasoning_chain string.
+
+    Returns a list of (improving_param_id, worsening_param_id, cited_principle_ids).
+    Only citations where both parameter IDs are in range 1–39 are returned.
+    Principle IDs outside 1–40 are silently discarded from the cited list.
+    """
+    citations: list[tuple[int, int, list[int]]] = []
+    for match in _CITATION_TRIGGER.finditer(text):
+        imp = int(match.group(1))
+        wor = int(match.group(2))
+        if not (_PARAM_ID_MIN <= imp <= _PARAM_ID_MAX):
+            continue
+        if not (_PARAM_ID_MIN <= wor <= _PARAM_ID_MAX):
+            continue
+        clause = match.group(0)
+        cited = [
+            int(m.group(1))
+            for m in _CITED_PRINCIPLE_RE.finditer(clause)
+            if _PRINCIPLE_ID_MIN <= int(m.group(1)) <= _PRINCIPLE_ID_MAX
+        ]
+        if cited:
+            citations.append((imp, wor, cited))
+    return citations
+
+
+def check_matrix_citations(case: dict) -> tuple[bool, list[str]]:
+    """Verify that in-text matrix lookup claims in reasoning_chain match the actual matrix.
+
+    Returns (ok, error_messages).
+    - ok=True  → no hallucinated citations detected; case may proceed.
+    - ok=False → at least one claim cites a principle not in the real matrix cell.
+
+    Rules:
+    - If no citation triggers are found → ok=True (no claim, nothing to verify).
+    - If a claim cites an empty cell OR the cell is empty in the matrix → skip that
+      citation (the model may honestly note "the matrix has no entry here").
+    - If the claimed principle list contains ANY principle NOT in the real cell → FAIL.
+    """
+    reasoning = case.get("reasoning_chain", "")
+    citations = extract_matrix_citations(reasoning)
+    if not citations:
+        return True, []
+
+    errors: list[str] = []
+    for imp, wor, cited in citations:
+        try:
+            real_cell = set(MATRIX[imp][wor])
+        except KeyError:
+            logger.debug(
+                "[matrix-cite] cell (%d,%d) not in MATRIX dict — skipping citation check",
+                imp, wor,
+            )
+            continue
+
+        if not real_cell:
+            # Empty cell in real matrix — skip (no principles to verify against)
+            continue
+
+        hallucinated = [p for p in cited if p not in real_cell]
+        if hallucinated:
+            errors.append(
+                f"cell ({imp},{wor}): claimed {cited} but real cell is {sorted(real_cell)}; "
+                f"hallucinated: {hallucinated}"
+            )
+
+    ok = len(errors) == 0
+    return ok, errors

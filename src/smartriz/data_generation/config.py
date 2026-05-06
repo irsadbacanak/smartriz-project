@@ -35,9 +35,11 @@ HARD_STOP_USD = 30.0
 
 # ── Data paths ────────────────────────────────────────────────────────────────
 DATA_DIR = PROJECT_ROOT / "data"
-SEED_PATH = DATA_DIR / "seed_dataset.json"
+KNOWLEDGE_DIR = DATA_DIR / "knowledge"
+SEED_PATH = KNOWLEDGE_DIR / "seed_dataset.json"
 RAW_JSONL = DATA_DIR / "raw_generations.jsonl"
 JUDGED_JSONL = DATA_DIR / "judged.jsonl"
+BORDERLINE_JSONL = DATA_DIR / "borderline.jsonl"
 MATRIX_VALIDATED_JSONL = DATA_DIR / "matrix_validated.jsonl"
 DEDUPED_JSONL = DATA_DIR / "deduplicated.jsonl"
 FINAL_JSON = DATA_DIR / "training_dataset.json"

@@ -1,5 +1,5 @@
 """
-Pipeline orchestrator — wires teacher → judge → matrix → JSONL streaming.
+Pipeline orchestrator — wires teacher → judge → quality sweeps → JSONL streaming.
 
 Design principles:
   - asyncio.gather for teacher calls (up to MAX_CONCURRENCY concurrent)
@@ -18,130 +18,39 @@ import random
 import sys
 import uuid
 from collections import Counter, defaultdict
-from pathlib import Path
-from typing import AsyncIterator
 
 import httpx
 
 from smartriz.data_generation.config import (
     BASE_URL,
-    DATA_DIR,
+    BORDERLINE_JSONL,
     DEEPINFRA_API_KEY,
-    JUDGE_THRESHOLD,
-    PROCESSED_KEYS,
-    RAW_JSONL,
     JUDGED_JSONL,
     MATRIX_VALIDATED_JSONL,
-    SEED_PATH,
+    RAW_JSONL,
     CostTracker,
+)
+from smartriz.data_generation.pipeline.io import (
+    append_jsonl,
+    append_processed_key,
+    load_processed_keys,
+)
+from smartriz.data_generation.pipeline.seeds import (
+    SeedScheduler,
+    build_initial_variation_history,
+    load_seeds,
+)
+from smartriz.data_generation.pipeline.sweeps import (
+    complexity_validation_sweep,
+    contradiction_copy_sweep,
+    matrix_check_sweep,
+    principle_validation_sweep,
 )
 from smartriz.data_generation.pipeline.teacher import TeacherClient
 from smartriz.data_generation.pipeline.judge import JudgeClient
-from smartriz.data_generation.quality.matrix import check, parse_param_id, parse_principle_id
-from smartriz.data_generation.quality.triz_kb import validate_principles, validate_no_contradiction_copying
+from smartriz.data_generation.quality.triz_kb import validate_no_contradiction_copying
 
 logger = logging.getLogger(__name__)
-
-
-# ── Seed loading ──────────────────────────────────────────────────────────────
-
-def load_seeds(path: Path = SEED_PATH) -> list[dict]:
-    with open(path, encoding="utf-8") as f:
-        data = json.load(f)
-    cases = data.get("cases", data) if isinstance(data, dict) else data
-    logger.info("Loaded %d seed cases from %s", len(cases), path)
-    return cases
-
-
-# ── Checkpoint helpers ────────────────────────────────────────────────────────
-
-def load_processed_keys(path: Path = PROCESSED_KEYS) -> set[str]:
-    if not path.exists():
-        return set()
-    return {line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()}
-
-
-def append_processed_key(key: str, path: Path = PROCESSED_KEYS) -> None:
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(key + "\n")
-
-
-def append_jsonl(record: dict, path: Path) -> None:
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
-
-
-# ── Seed scheduler (round-robin selector) ─────────────────────────────────────
-
-class SeedScheduler:
-    """Round-robin seed selector with per-seed usage cap.
-
-    Ensures uniform seed coverage before any seed is selected a second time.
-    Uses least-used-first policy within each tier.
-    """
-
-    def __init__(self, seeds: list[dict], max_per_seed: int = 3) -> None:
-        self.seeds = seeds
-        self.max_per_seed = max_per_seed
-        self.usage: dict[str, int] = defaultdict(int)
-
-    def next_seed(self) -> dict | None:
-        """Return next seed. Returns None when all seeds have reached max_per_seed."""
-        available = [s for s in self.seeds if self.usage[s["id"]] < self.max_per_seed]
-        if not available:
-            return None
-        min_usage = min(self.usage[s["id"]] for s in available)
-        candidates = [s for s in available if self.usage[s["id"]] == min_usage]
-        chosen = random.choice(candidates)
-        self.usage[chosen["id"]] += 1
-        return chosen
-
-    def all_seeds_for_round(self) -> list[dict]:
-        """Return all available seeds for one full round (each selected once)."""
-        available = [s for s in self.seeds if self.usage[s["id"]] < self.max_per_seed]
-        random.shuffle(available)
-        for s in available:
-            self.usage[s["id"]] += 1
-        return available
-
-
-# ── Variation history initialisation ─────────────────────────────────────────
-
-def build_initial_variation_history(seeds: list[dict]) -> dict[str, list[str]]:
-    """
-    Pre-seed variation_history so the very first SI call per seed already
-    treats the seed's own contradiction pair as 'used'.
-
-    Without this, the first call has an empty used_contradictions list and the
-    generator sees the seed's contradiction pair in the JSON payload with nothing
-    blocking it from copying it verbatim.
-
-    Returns: seed_id → list of "imp|wor" strings (one entry per seed).
-    """
-    history: dict[str, list[str]] = defaultdict(list)
-    for seed in seeds:
-        cp = seed.get("contradiction_pair", {})
-        imp = cp.get("improving_parameter", "").strip()
-        wor = cp.get("worsening_parameter", "").strip()
-        if imp and wor:
-            history[seed["id"]].append(f"{imp}|{wor}")
-    return history
-
-
-# ── Task generation ────────────────────────────────────────────────────────────
-
-def build_tasks(seeds: list[dict], generation_round: int) -> list[dict]:
-    """Return list of task descriptors for one pipeline round."""
-    tasks = []
-    for seed in seeds:
-        # Stage 1: self-instruct (5 variations generated in one call, split below)
-        tasks.append({
-            "seed": seed,
-            "method": "self_instruct",
-            "round": generation_round,
-        })
-        # Stages 2A/2B/2C are scheduled after self-instruct results arrive
-    return tasks
 
 
 # ── Single teacher call ────────────────────────────────────────────────────────
@@ -161,7 +70,7 @@ async def _run_teacher_task(
     seed = task["seed"]
     method = task["method"]
     gen_round = task["round"]
-    variation = task.get("variation")  # present for evol tasks
+    variation = task.get("variation")
 
     seed_id = seed.get("id", "UNKNOWN")
     key = f"{seed_id}_{method}_{gen_round}"
@@ -172,7 +81,6 @@ async def _run_teacher_task(
         logger.debug("[skip] already processed: %s", key)
         return []
 
-    # Build prompt
     if method == "self_instruct":
         used_c = task.get("used_contradictions", [])
         used_s = task.get("used_solutions", [])
@@ -194,28 +102,24 @@ async def _run_teacher_task(
 
     try:
         if method == "self_instruct":
-            # Teacher returns {"variations": [...]} — split into individual cases
             raw = await teacher.generate(sys_msg, user_msg, temperature, seed_id, method, gen_round)
             cases = _split_self_instruct(raw, seed, gen_round, temperature)
         else:
             raw = await teacher.generate(sys_msg, user_msg, temperature, seed_id, method, gen_round)
             cases = [raw] if raw is not None else []
-            # Stabilize IDs — append round+UUID to prevent collisions across runs
             for c in cases:
                 if isinstance(c, dict):
                     existing_id = c.get("id", "")
                     short_uuid = str(uuid.uuid4())[:8]
                     c["id"] = f"{existing_id}-R{gen_round:02d}-{short_uuid}" if existing_id else f"GEN-UNKNOWN-R{gen_round:02d}-{short_uuid}"
     except RuntimeError as exc:
-        # Hard-stop from cost tracker
         logger.critical("HARD STOP: %s", exc)
         sys.exit(1)
     except Exception as exc:
-        logger.warning("[error] task %s failed: %s", key, exc)
+        logger.warning("[error] task %s failed: %r", key, exc, exc_info=True)
         cases = []
 
     # Hard-gate: drop cases that copied the parent seed's contradiction pair.
-    # Applies only to self_instruct and evol_cross_domain (not deepening/constraint).
     parent_for_copy_check = variation if variation is not None else seed
     filtered_cases = []
     for c in cases:
@@ -231,7 +135,7 @@ async def _run_teacher_task(
         append_jsonl(c, RAW_JSONL)
 
     if cases:
-        append_processed_key(key, PROCESSED_KEYS)
+        append_processed_key(key)
     return cases
 
 
@@ -240,23 +144,13 @@ def _split_self_instruct(raw: dict | None, seed: dict, gen_round: int, temperatu
     if raw is None:
         return []
 
-    # The extractor already ran on the outer JSON — but for self-instruct the
-    # model returns a wrapper object. We need to handle both cases:
-    # Case A: extractor found a top-level "variations" key in the JSON content
-    # Case B: extractor returned the raw dict (which may contain "variations")
-
     seed_id = seed.get("id", "UNKNOWN")
 
-    # If the dict itself has "variations", use that
     if "variations" in raw:
         variations = raw["variations"]
     else:
-        # Wrap it as a single variation
         variations = [raw]
 
-    # Normalize model output shape drift:
-    # - {"variations": {...}}  -> wrap single object into list
-    # - {"variations": "<json>"} -> best-effort parse JSON string payload
     if isinstance(variations, dict):
         variations = [variations]
     elif isinstance(variations, str):
@@ -294,7 +188,6 @@ def _split_self_instruct(raw: dict | None, seed: dict, gen_round: int, temperatu
             "matrix_check_passed": None,
         }
         if "reasoning_chain" not in var:
-            # reasoning may be in the outer raw's reasoning_chain if extractor put it there
             rc = raw.get("reasoning_chain", "")
             var["reasoning_chain"] = rc
         results.append(var)
@@ -306,39 +199,67 @@ def _split_self_instruct(raw: dict | None, seed: dict, gen_round: int, temperatu
 
 async def judge_sweep(
     judge: JudgeClient,
-    in_path: Path = RAW_JSONL,
-    out_path: Path = JUDGED_JSONL,
-) -> int:
-    """Read raw_generations.jsonl line-by-line, judge, write to judged.jsonl. Returns count."""
+    in_path=RAW_JSONL,
+    out_path=JUDGED_JSONL,
+    borderline_path=BORDERLINE_JSONL,
+) -> tuple[int, int]:
+    """Read raw_generations.jsonl line-by-line, judge, route to judged.jsonl or borderline.jsonl.
+
+    Returns (pass_count, borderline_count).
+
+    - PASS cases  → out_path (judged.jsonl)
+    - FAIL cases  → borderline_path (borderline.jsonl) with fail_reasons for later analysis
+    - None (API/parse error) → dropped entirely, not written anywhere
+    """
     if not in_path.exists():
         logger.warning("No raw generations file at %s", in_path)
-        return 0
+        return 0, 0
 
-    # Track which case IDs have already been judged
-    already_judged: set[str] = set()
-    if out_path.exists():
-        for line in out_path.read_text(encoding="utf-8").splitlines():
-            try:
-                d = json.loads(line)
-                already_judged.add(d.get("id", ""))
-            except json.JSONDecodeError:
-                pass
+    already_processed: set[str] = set()
+    for path in (out_path, borderline_path):
+        if path.exists():
+            for line in path.read_text(encoding="utf-8").splitlines():
+                try:
+                    d = json.loads(line)
+                    already_processed.add(d.get("id", ""))
+                except json.JSONDecodeError:
+                    pass
 
-    count = 0
-    CHUNK = 50  # judge in batches of 50
+    pass_count = 0
+    borderline_count = 0
+    CHUNK = 50
 
-    async def _judge_one(case: dict) -> dict | None:
+    async def _judge_one(case: dict) -> tuple[dict | None, str]:
         scores = await judge.score(case)
         if scores is None:
             logger.warning("[drop/judge] scoring failed — id=%s", case.get("id", "?"))
-            return None
-        if scores["average"] < JUDGE_THRESHOLD:
-            logger.info("[drop/judge] avg=%.2f < %.1f — id=%s", scores["average"], JUDGE_THRESHOLD, case.get("id", "?"))
-            return None
-        case.setdefault("meta", {})["judge_scores"] = scores
-        return case
+            return None, "error"
+        case_copy = dict(case)
+        case_copy.setdefault("meta", {})["judge_scores"] = scores
+        if scores.get("verdict") == "PASS":
+            return case_copy, "pass"
+        logger.info(
+            "[borderline] id=%s — fail_reasons=%s",
+            case.get("id", "?"),
+            scores.get("fail_reasons", []),
+        )
+        return case_copy, "fail"
 
     buffer: list[dict] = []
+
+    async def _flush(buf: list[dict]) -> tuple[int, int]:
+        results = await asyncio.gather(*[_judge_one(c) for c in buf])
+        pc = bc = 0
+        for case_out, outcome in results:
+            if case_out is None:
+                continue
+            if outcome == "pass":
+                append_jsonl(case_out, out_path)
+                pc += 1
+            else:
+                append_jsonl(case_out, borderline_path)
+                bc += 1
+        return pc, bc
 
     with open(in_path, encoding="utf-8") as f:
         for line in f:
@@ -350,250 +271,23 @@ async def judge_sweep(
             except json.JSONDecodeError:
                 continue
 
-            case_id = case.get("id", "")
-            if case_id in already_judged:
+            if case.get("id", "") in already_processed:
                 continue
 
             buffer.append(case)
             if len(buffer) >= CHUNK:
-                results = await asyncio.gather(*[_judge_one(c) for c in buffer])
-                for r in results:
-                    if r is not None:
-                        append_jsonl(r, out_path)
-                        count += 1
+                pc, bc = await _flush(buffer)
+                pass_count += pc
+                borderline_count += bc
                 buffer = []
 
     if buffer:
-        results = await asyncio.gather(*[_judge_one(c) for c in buffer])
-        for r in results:
-            if r is not None:
-                append_jsonl(r, out_path)
-                count += 1
+        pc, bc = await _flush(buffer)
+        pass_count += pc
+        borderline_count += bc
 
-    logger.info("Judge sweep: %d cases passed", count)
-    return count
-
-
-# ── Matrix check sweep ────────────────────────────────────────────────────────
-
-def matrix_check_sweep(
-    in_path: Path = JUDGED_JSONL,
-    out_path: Path = MATRIX_VALIDATED_JSONL,
-) -> int:
-    """Apply Altshuller matrix sanity check. Returns count of passing cases."""
-    if not in_path.exists():
-        return 0
-
-    already_validated: set[str] = set()
-    if out_path.exists():
-        for line in out_path.read_text(encoding="utf-8").splitlines():
-            try:
-                d = json.loads(line)
-                already_validated.add(d.get("id", ""))
-            except json.JSONDecodeError:
-                pass
-
-    count = 0
-    with open(in_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                case = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-
-            if case.get("id", "") in already_validated:
-                continue
-
-            if not _run_matrix_check(case):
-                logger.info("[drop/matrix] matrix check failed — id=%s", case.get("id", "?"))
-                continue
-
-            case["meta"]["matrix_check_passed"] = True
-            append_jsonl(case, out_path)
-            count += 1
-
-    logger.info("Matrix check: %d cases passed", count)
-    return count
-
-
-def _run_matrix_check(case: dict) -> bool:
-    cp = case.get("contradiction_pair", {})
-    imp_str = cp.get("improving_parameter", "")
-    wor_str = cp.get("worsening_parameter", "")
-    imp_id = parse_param_id(imp_str)
-    wor_id = parse_param_id(wor_str)
-
-    if imp_id is None or wor_id is None:
-        logger.warning("[drop/matrix] cannot parse param ids — imp=%r wor=%r id=%s",
-                       imp_str, wor_str, case.get("id", "?"))
-        return False
-
-    principles_raw = case.get("inventive_principles", [])
-    principle_ids = [parse_principle_id(p) for p in principles_raw]
-    principle_ids = [p for p in principle_ids if p is not None]
-
-    if not principle_ids:
-        logger.warning("[drop/matrix] no parseable principle ids — id=%s", case.get("id", "?"))
-        return False
-
-    primary_passed = check(imp_id, wor_id, principle_ids)
-    if not primary_passed:
-        return False
-
-    sec = case.get("secondary_contradiction", {})
-    if not isinstance(sec, dict):
-        return True
-
-    sec_imp_str = sec.get("improving_parameter", "").strip()
-    sec_wor_str = sec.get("worsening_parameter", "").strip()
-    if not (sec_imp_str and sec_wor_str):
-        return True
-
-    sec_imp_id = parse_param_id(sec_imp_str)
-    sec_wor_id = parse_param_id(sec_wor_str)
-    if sec_imp_id is None or sec_wor_id is None:
-        logger.warning(
-            "[drop/matrix] cannot parse secondary param ids — imp=%r wor=%r id=%s",
-            sec_imp_str, sec_wor_str, case.get("id", "?"),
-        )
-        return False
-
-    sec_passed = check(sec_imp_id, sec_wor_id, principle_ids)
-    if not sec_passed:
-        logger.info(
-            "[drop/matrix] secondary matrix check failed — id=%s cell=(%d,%d)",
-            case.get("id", "?"), sec_imp_id, sec_wor_id,
-        )
-        return False
-
-    return True
-
-
-# ── Principle validation sweep ────────────────────────────────────────────────
-
-def principle_validation_sweep(
-    in_path: Path = None,
-    out_path: Path = None,
-) -> int:
-    """
-    Hard-gate: reject any case where inventive_principles contain hallucinated
-    or incorrectly named principles. Overwrites in_path in-place (temp file swap).
-    Returns count of cases that passed.
-    """
-    from smartriz.data_generation.config import MATRIX_VALIDATED_JSONL as _DEFAULT_PATH
-    if in_path is None:
-        in_path = _DEFAULT_PATH
-    if out_path is None:
-        out_path = in_path  # in-place
-
-    if not in_path.exists():
-        logger.warning("principle_validation_sweep: no file at %s", in_path)
-        return 0
-
-    tmp_path = in_path.with_suffix(".tmp")
-    count_pass = 0
-    count_fail = 0
-
-    with open(in_path, encoding="utf-8") as fin, \
-         open(tmp_path, "w", encoding="utf-8") as fout:
-        for line in fin:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                case = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-
-            principles = case.get("inventive_principles", [])
-            result = validate_principles(principles)
-
-            if not result["valid"]:
-                for r in result["rejected"]:
-                    logger.info(
-                        "[drop/principles] id=%s — rejected '%s': %s",
-                        case.get("id", "?"), r["original"], r["reason"],
-                    )
-                count_fail += 1
-                continue
-
-            # Normalize principle strings in-place
-            case["inventive_principles"] = result["normalized"]
-            case.setdefault("meta", {})["principles_validated"] = True
-            fout.write(json.dumps(case, ensure_ascii=False) + "\n")
-            count_pass += 1
-
-    # Atomic replace
-    tmp_path.replace(in_path)
-    logger.info("Principle validation: %d passed, %d rejected", count_pass, count_fail)
-    return count_pass
-
-
-# ── Contradiction-copy sweep ──────────────────────────────────────────────────
-
-def contradiction_copy_sweep(
-    in_path: Path | None = None,
-    seed_lookup: dict | None = None,
-) -> int:
-    """
-    Post-hoc hard-gate: remove cases where SI/XDOM generator copied the
-    parent seed's contradiction pair verbatim.
-
-    Runs in-place (atomic temp-file swap) on matrix_validated.jsonl by default.
-    Accepts an optional seed_lookup dict (seed_id → seed dict) for testing;
-    loads seeds from SEED_PATH if not provided.
-
-    Returns count of surviving cases.
-    """
-    from smartriz.data_generation.config import MATRIX_VALIDATED_JSONL as _DEFAULT_PATH
-    if in_path is None:
-        in_path = _DEFAULT_PATH
-
-    if not in_path.exists():
-        logger.warning("contradiction_copy_sweep: no file at %s", in_path)
-        return 0
-
-    if seed_lookup is None:
-        seed_lookup = {s["id"]: s for s in load_seeds()}
-
-    tmp_path = in_path.with_suffix(".tmp")
-    count_pass = 0
-    count_fail = 0
-
-    with open(in_path, encoding="utf-8") as fin, \
-         open(tmp_path, "w", encoding="utf-8") as fout:
-        for line in fin:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                case = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-
-            meta = case.get("meta", {})
-            seed_id = meta.get("parent_seed_id", "")
-            method = meta.get("generation_method", "")
-            parent_seed = seed_lookup.get(seed_id, {})
-
-            is_valid, reason = validate_no_contradiction_copying(case, parent_seed, method)
-            if not is_valid:
-                logger.info(
-                    "[drop/cp-copy-sweep] id=%s method=%s — %s",
-                    case.get("id", "?"), method, reason,
-                )
-                count_fail += 1
-                continue
-
-            fout.write(json.dumps(case, ensure_ascii=False) + "\n")
-            count_pass += 1
-
-    tmp_path.replace(in_path)
-    logger.info("Contradiction-copy sweep: %d passed, %d rejected", count_pass, count_fail)
-    return count_pass
+    logger.info("Judge sweep: %d passed, %d borderline", pass_count, borderline_count)
+    return pass_count, borderline_count
 
 
 # ── Main orchestration entry point ────────────────────────────────────────────
@@ -619,22 +313,19 @@ async def run_round(
             logger.warning("Requested seed IDs not found in dataset: %s", missing)
         logger.info("TARGETED MODE: using %d specified seeds %s", len(seeds), seed_ids)
     elif smoke:
-        # Pick smoke_n seeds RANDOMLY — not always the first ones
         seeds = random.sample(all_seeds, min(smoke_n, len(all_seeds)))
         logger.info("SMOKE MODE: using %d randomly selected seeds from %d total",
                     len(seeds), len(all_seeds))
     else:
-        scheduler = SeedScheduler(all_seeds, max_per_seed=1)  # 1 SI call per seed per round
+        scheduler = SeedScheduler(all_seeds, max_per_seed=1)
         seeds = scheduler.all_seeds_for_round()
         logger.info("Full round: %d seeds selected via SeedScheduler", len(seeds))
 
     processed_keys = load_processed_keys()
     cost_tracker = CostTracker()
 
-    # Pre-seed variation_history with each seed's own contradiction pair so the
-    # first SI call per seed already has it listed as "used" — preventing copying.
     variation_history: dict[str, list[str]] = build_initial_variation_history(seeds)
-    solution_history: dict[str, list[str]] = defaultdict(list)    # seed_id → [solution_summary, ...]
+    solution_history: dict[str, list[str]] = defaultdict(list)
 
     async with httpx.AsyncClient(
         base_url=BASE_URL,
@@ -643,7 +334,6 @@ async def run_round(
     ) as http_client:
         teacher = TeacherClient(cost_tracker, client=http_client)
 
-        # Stage 1: self-instruct (all seeds in parallel)
         logger.info("Stage 1: self-instruct for %d seeds (T=%.1f, round=%d)",
                     len(seeds), temperature, generation_round)
         si_tasks = [
@@ -679,7 +369,6 @@ async def run_round(
 
         logger.info("Stage 1 complete: %d variations", len(si_variations))
 
-        # Stage 2: evol tasks (deepening, constraint, cross-domain) per variation
         evol_tasks = []
         for var in si_variations:
             seed_id = var.get("meta", {}).get("parent_seed_id", "UNKNOWN")
@@ -703,9 +392,8 @@ async def run_round(
 
         logger.info("Stage 2 complete: %d evol cases raw", evol_count)
 
-    total_raw = si_variations.__len__() + evol_count
+    total_raw = len(si_variations) + evol_count
 
-    # Stage 4: judge sweep
     logger.info("Stage 4: judge sweep")
     async with httpx.AsyncClient(
         base_url=BASE_URL,
@@ -713,19 +401,19 @@ async def run_round(
         timeout=httpx.Timeout(90.0, connect=15.0),
     ) as http_client2:
         judge = JudgeClient(cost_tracker, client=http_client2)
-        judged_count = await judge_sweep(judge)
+        judged_count, borderline_count = await judge_sweep(judge)
 
-    # Stage 5.1: matrix check
     logger.info("Stage 5.1: matrix check")
-    matrix_count = matrix_check_sweep()
+    matrix_count, matrix_citation_drops = matrix_check_sweep(JUDGED_JSONL, MATRIX_VALIDATED_JSONL)
 
-    # Stage 5.2: principle name validation (hard gate — drops hallucinated principles)
     logger.info("Stage 5.2: principle validation sweep")
-    principle_count = principle_validation_sweep()
+    principle_count = principle_validation_sweep(MATRIX_VALIDATED_JSONL)
 
-    # Stage 5.2b: contradiction-copy sweep (hard gate — drops SI/XDOM that copied parent CP)
     logger.info("Stage 5.2b: contradiction-copy sweep")
-    cp_copy_count = contradiction_copy_sweep()
+    cp_copy_count = contradiction_copy_sweep(MATRIX_VALIDATED_JSONL)
+
+    logger.info("Stage 5.2c: complexity validation sweep")
+    complexity_count = complexity_validation_sweep(MATRIX_VALIDATED_JSONL)
 
     # Stage 5.3: Duplicate ID assertion (hard fail if IDs collide)
     if MATRIX_VALIDATED_JSONL.exists():
@@ -742,15 +430,40 @@ async def run_round(
             raise RuntimeError(f"Duplicate IDs detected — fix before saving: {dups}")
         logger.info("Stage 5.3: ID uniqueness check passed (%d unique IDs)", len(all_ids_in_file))
 
+    seed_dist: dict[str, int] = {}
+    domain_dist: dict[str, int] = {}
+    complexity_dist: dict[str, int] = {}
+    if MATRIX_VALIDATED_JSONL.exists():
+        for line in MATRIX_VALIDATED_JSONL.read_text(encoding="utf-8").splitlines():
+            try:
+                d = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            seed_id = d.get("meta", {}).get("parent_seed_id", "unknown")
+            seed_dist[seed_id] = seed_dist.get(seed_id, 0) + 1
+            domain = d.get("domain", "unknown")
+            domain_dist[domain] = domain_dist.get(domain, 0) + 1
+            comp = d.get("complexity", "unknown")
+            complexity_dist[comp] = complexity_dist.get(comp, 0) + 1
+
+    top_seeds = sorted(seed_dist.items(), key=lambda x: -x[1])[:5]
+    top_domains = sorted(domain_dist.items(), key=lambda x: -x[1])[:5]
+
     stats = {
         "round": generation_round,
         "temperature": temperature,
         "seeds_used": len(seeds),
         "raw_generated": total_raw,
         "judge_passed": judged_count,
+        "borderline_count": borderline_count,
         "matrix_passed": matrix_count,
+        "matrix_citation_drops": matrix_citation_drops,
         "principle_passed": principle_count,
         "cp_copy_passed": cp_copy_count,
+        "complexity_passed": complexity_count,
+        "complexity_distribution": complexity_dist,
+        "top5_seeds": dict(top_seeds),
+        "top5_domains": dict(top_domains),
         "total_cost_usd": cost_tracker.total,
         "total_calls": cost_tracker.call_count,
     }

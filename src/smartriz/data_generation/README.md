@@ -1,8 +1,8 @@
 # SmarTRIZ — Synthetic Data Generation Pipeline
 
 Generates ≥10,000 high-quality TRIZ training examples from the 86-case seed dataset using
-Self-Instruct + Evol-Instruct with DeepSeek-R1-Distill-Llama-70B (teacher) and
-DeepSeek-V3 (judge) via DeepInfra.
+Self-Instruct + Evol-Instruct with DeepSeek-V4-Pro (teacher) and Qwen2.5-72B-Instruct
+(judge) via DeepInfra.
 
 ## Quick Start
 
@@ -37,40 +37,68 @@ src/smartriz/data_generation/
 │   ├── evol_deepening.py  # Add secondary contradiction (+complexity)
 │   ├── evol_constraint.py # Add real-world constraint
 │   ├── evol_cross_domain.py  # Transfer to different domain
-│   └── judge.py           # 4-criterion rubric (no single-number scoring)
+│   └── judge.py           # 4-criterion rubric prompt (schema + text)
 ├── pipeline/
 │   ├── extractor.py       # reasoning_content + <think> extraction
-│   ├── teacher.py         # DeepSeek-R1 async client
-│   ├── judge.py           # DeepSeek-V3 async client
-│   └── orchestrator.py    # Full pipeline with checkpointing
-├── quality/
-│   ├── matrix.py          # 39×39 Altshuller matrix + parse helpers
-│   ├── deduplicator.py    # MiniLM cosine dedup at 0.85 threshold
-│   └── validator.py       # Pydantic schema validation + final JSON write
-└── ../tests/test_data_generation/
-    └── test_extractor.py  # 17 unit tests (4 scenarios + edge cases)
+│   ├── teacher.py         # DeepSeek async HTTP client
+│   ├── judge.py           # Qwen async HTTP client
+│   ├── io.py              # JSONL append + processed_keys checkpoint helpers
+│   ├── seeds.py           # Seed loading, SeedScheduler, variation-history init
+│   ├── sweeps.py          # Post-judge quality sweeps (matrix, principles, complexity, cp-copy)
+│   └── orchestrator.py    # Teacher tasks, judge sweep, run_round (flow coordinator)
+└── quality/
+    ├── matrix.py          # 39×39 Altshuller matrix + parse helpers
+    ├── triz_kb.py         # Canonical 40 principles + validate_principles
+    ├── complexity.py      # Complexity label validator
+    ├── deduplicator.py    # MiniLM cosine dedup at 0.85 threshold
+    └── validator.py       # Pydantic schema validation + final JSON write
 ```
+
+### Naming note: `prompts/judge.py` vs `pipeline/judge.py`
+
+| File | Role |
+|------|------|
+| `prompts/judge.py` | Pure text — builds the 4-criterion rubric prompt string |
+| `pipeline/judge.py` | HTTP client — sends requests to the judge model API |
+
+## Data Files
+
+Reference/knowledge files live in `data/knowledge/`; backup artifacts in `data/artifacts/`.
+Active pipeline output files are written to `data/` (root).
+
+| Path | Description |
+|------|-------------|
+| `data/knowledge/seed_dataset.json` | 86 hand-curated seed cases (input) |
+| `data/knowledge/39_parameters.yaml` | 39 engineering parameters (reference) |
+| `data/knowledge/40_principles.yaml` | 40 inventive principles (reference) |
+| `data/knowledge/parameters.json` | Parameter data for ChromaDB init |
+| `data/knowledge/principles.json` | Principle data for ChromaDB init |
+| `data/knowledge/triz_matrix.xls` | Source XLS for matrix.py generation |
+| `data/raw_generations.jsonl` | All teacher outputs (streamed, append-only) |
+| `data/judged.jsonl` | Cases passing judge (PASS verdict) |
+| `data/matrix_validated.jsonl` | Cases passing Altshuller matrix check |
+| `data/deduplicated.jsonl` | Cases after cosine dedup |
+| `data/processed_keys.txt` | Completed task keys (crash-safe restart) |
+| `data/training_dataset.json` | Final ≥10K dataset (pipeline output) |
+| `data/artifacts/` | Backup snapshots (not tracked by git) |
 
 ## Pipeline Stages
 
 | Stage | Description | Pass Gate |
 |-------|-------------|-----------|
-| 1 | Self-Instruct: 86 seeds × 5 variations | — |
+| 1 | Self-Instruct: seeds × 5 variations | — |
 | 2A | Evol-Deepening: add secondary contradiction | — |
 | 2B | Evol-Constraint: add real-world constraint | — |
 | 2C | Evol-Cross-Domain: transfer to new domain | — |
 | 3 | Reasoning extraction (reasoning_content / \<think\>) | Drop if no reasoning |
-| 4 | LLM-as-a-Judge (4 criteria, avg ≥ 7.0) | avg < 7.0 → drop |
-| 5.1 | Altshuller matrix sanity check | No matrix match → drop |
-| 5.2 | MiniLM cosine deduplication (> 0.85) | Lower-scoring duplicate → drop |
-| 5.3 | Pydantic schema validation | Invalid schema → drop |
-
-## Math
-
-- 86 seeds × 5 SI × 3 evol = **1,720 raw / round**
-- Expected pass rate 50–60% → **~860–1,030 net / round**
-- Temperature rotation: `[0.7, 0.9, 1.1, 1.3]`
-- **10–12 rounds** to reach ≥10,000 examples
+| 4 | LLM-as-a-Judge (4 criteria, PASS/FAIL verdict) | FAIL → borderline.jsonl |
+| 5.1 | Altshuller matrix sanity check + citation check | No matrix match → drop |
+| 5.2 | Principle name validation (hard gate) | Hallucinated name → drop |
+| 5.2b | Contradiction-copy sweep | CP copied from parent → drop |
+| 5.2c | Complexity label validation | Mislabelled complexity → drop |
+| 5.3 | Duplicate ID assertion | Collision → hard fail |
+| 6 | MiniLM cosine deduplication (> 0.85) | Lower-scoring duplicate → drop |
+| 7 | Pydantic schema validation | Invalid schema → drop |
 
 ## Cost Estimate
 
@@ -82,18 +110,6 @@ src/smartriz/data_generation/
 | **11 rounds** | **~$19.25** |
 
 Hard-stop at $30 enforced in `config.py::CostTracker`.
-
-## Data Files (in `data/`)
-
-| File | Description |
-|------|-------------|
-| `seed_dataset.json` | 86 hand-curated seed cases (input) |
-| `raw_generations.jsonl` | All teacher outputs (streamed, append-only) |
-| `judged.jsonl` | Cases passing judge avg ≥ 7.0 |
-| `matrix_validated.jsonl` | Cases passing Altshuller matrix check |
-| `deduplicated.jsonl` | Cases after cosine dedup |
-| `processed_keys.txt` | Completed task keys (crash-safe restart) |
-| `training_dataset.json` | Final ≥10K dataset (pipeline output) |
 
 ## Hard Constraints
 

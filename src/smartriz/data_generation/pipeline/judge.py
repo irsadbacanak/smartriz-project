@@ -88,8 +88,11 @@ class JudgeClient:
         """Score a case dict.
 
         Returns:
-            dict with 'verdict' == 'PASS' and per-question answers, or
-            None if the case FAILS or the API call fails entirely.
+            - dict with 'verdict' == 'PASS' and per-question answers on success.
+            - dict with 'verdict' == 'FAIL', per-question answers, and 'fail_reasons'
+              when the judge rejects the case (used for borderline logging).
+            - None only when the API call or JSON parsing fails entirely (not a
+              judge rejection — a genuine communication/format error).
         """
         async with _semaphore:
             system_msg, user_msg = build_prompt(case)
@@ -143,7 +146,19 @@ class JudgeClient:
                     "[judge-fail] case rejected — reasons: %s",
                     fail_reasons if fail_reasons else "(none provided)",
                 )
-                return None  # Drop the case
+                # Return FAIL verdict dict so callers can route to borderline.jsonl.
+                # None is reserved for genuine API/parse errors, not judge rejections.
+                return {
+                    "verdict": "FAIL",
+                    "Q1": result.get("Q1_principles_canonical", "?"),
+                    "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
+                    "Q3": result.get("Q3_contradiction_domain_match", "?"),
+                    "Q4": result.get("Q4_solution_not_forced_fit", "?"),
+                    "Q5": result.get("Q5_reasoning_not_template", "?"),
+                    "Q6": result.get("Q6_domain_terminology_accurate", "?"),
+                    "fail_reasons": fail_reasons,
+                    "average": 0.0,
+                }
 
             if verdict == "PASS":
                 return {
@@ -160,7 +175,12 @@ class JudgeClient:
 
             # Unknown verdict value — treat as FAIL for safety
             logger.warning("[judge] unknown verdict value %r — treating as FAIL", verdict)
-            return None
+            return {
+                "verdict": "FAIL",
+                "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                "fail_reasons": [f"unrecognized verdict value: {verdict!r}"],
+                "average": 0.0,
+            }
 
         # ── Backward-compat fallback: old 0-10 numeric format ────────────────
         if _OLD_REQUIRED_KEYS.issubset(result.keys()):
@@ -170,7 +190,12 @@ class JudgeClient:
                 val = result[key]
                 if not isinstance(val, (int, float)) or not (0 <= val <= 10):
                     logger.warning("[judge] out-of-range score %s=%s", key, val)
-                    return None
+                    return {
+                        "verdict": "FAIL",
+                        "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                        "fail_reasons": [f"old-format out-of-range score: {key}={val}"],
+                        "average": 0.0,
+                    }
 
             average = round(
                 sum(result[k] for k in _OLD_REQUIRED_KEYS) / len(_OLD_REQUIRED_KEYS), 2
@@ -179,7 +204,12 @@ class JudgeClient:
 
             if average < 7.0:
                 logger.info("[judge-fail] old-format case rejected — average=%.2f < 7.0", average)
-                return None
+                return {
+                    "verdict": "FAIL",
+                    "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                    "fail_reasons": [f"old-format average {average:.2f} below 7.0 threshold"],
+                    "average": average,
+                }
 
             return {
                 **result,  # Keep original numeric scores for debugging

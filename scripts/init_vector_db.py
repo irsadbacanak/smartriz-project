@@ -12,7 +12,7 @@ def initialize_chromadb() -> None:
     client = chromadb.PersistentClient(path=db_path)
     collection = client.get_or_create_collection(name="triz_principles")
 
-    json_path = os.path.join("data", "principles.json")
+    json_path = os.path.join("data", "knowledge", "principles.json")
     try:
         with open(json_path, "r", encoding="utf-8") as file:
             raw_data = json.load(file)

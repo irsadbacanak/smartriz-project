@@ -1,11 +1,10 @@
 """
-Async teacher client — wraps DeepSeek-R1-Distill-Llama-70B via DeepInfra.
+Async teacher client — wraps DeepSeek-V4-Pro via DeepInfra.
 
 Features:
   - httpx.AsyncClient with connection pooling
   - asyncio.Semaphore for max concurrency
   - tenacity exponential backoff on 429 / 5xx / timeout
-  - JSON-mode (response_format={"type": "json_object"})
   - JSON parse failure retry at temperature=0.3 with stricter prompt
   - Cost tracking on every successful call
 """
@@ -42,7 +41,7 @@ _semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 def _is_retryable(exc: BaseException) -> bool:
     if isinstance(exc, httpx.HTTPStatusError):
         return exc.response.status_code in (429, 500, 502, 503, 504)
-    return isinstance(exc, (httpx.TimeoutException, httpx.ConnectError, httpx.RemoteProtocolError))
+    return isinstance(exc, (httpx.TimeoutException, httpx.ConnectError, httpx.RemoteProtocolError, TimeoutError))
 
 
 def _make_retry():
@@ -62,7 +61,7 @@ class TeacherClient:
         self._client = client or httpx.AsyncClient(
             base_url=BASE_URL,
             headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
-            timeout=httpx.Timeout(120.0, connect=15.0),
+            timeout=httpx.Timeout(300.0, connect=15.0),
         )
 
     async def aclose(self) -> None:
@@ -111,7 +110,6 @@ class TeacherClient:
                 {"role": "user", "content": user_msg},
             ],
             "temperature": temperature,
-            "response_format": {"type": "json_object"},
         }
         resp = await self._client.post("/chat/completions", json=payload)
         resp.raise_for_status()

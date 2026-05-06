@@ -206,7 +206,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--xls",
-        default="data/triz_matrix.xls",
+        default="data/knowledge/triz_matrix.xls",
         help="Path to source XLS matrix file",
     )
     parser.add_argument(
