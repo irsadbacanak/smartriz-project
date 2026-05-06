@@ -150,7 +150,14 @@ async def _run_teacher_task(
 
     # Build prompt
     if method == "self_instruct":
-        sys_msg, user_msg = si_prompt(seed, temperature_hint=temperature)
+        used_c = task.get("used_contradictions", [])
+        used_s = task.get("used_solutions", [])
+        sys_msg, user_msg = si_prompt(
+            seed,
+            temperature_hint=temperature,
+            used_contradictions=used_c,
+            used_solutions=used_s,
+        )
     elif method == "evol_deepening":
         sys_msg, user_msg = deep_prompt(variation)
     elif method == "evol_constraint":
@@ -474,6 +481,10 @@ async def run_round(
     processed_keys = load_processed_keys()
     cost_tracker = CostTracker()
 
+    # Track contradiction pairs and solution summaries used per seed (for diversity)
+    variation_history: dict[str, list[str]] = defaultdict(list)  # seed_id → ["imp|wor", ...]
+    solution_history: dict[str, list[str]] = defaultdict(list)    # seed_id → [solution_summary, ...]
+
     async with httpx.AsyncClient(
         base_url=BASE_URL,
         headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
@@ -486,7 +497,13 @@ async def run_round(
                     len(seeds), temperature, generation_round)
         si_tasks = [
             _run_teacher_task(
-                {"seed": s, "method": "self_instruct", "round": generation_round},
+                {
+                    "seed": s,
+                    "method": "self_instruct",
+                    "round": generation_round,
+                    "used_contradictions": variation_history[s["id"]],
+                    "used_solutions": solution_history[s["id"]],
+                },
                 teacher, processed_keys, temperature,
             )
             for s in seeds
@@ -498,6 +515,16 @@ async def run_round(
                 logger.warning("[error] self-instruct task exception: %s", r)
             else:
                 si_variations.extend(r)
+                for case in r:
+                    seed_id = case.get("meta", {}).get("parent_seed_id", "")
+                    cp = case.get("contradiction_pair", {})
+                    imp = cp.get("improving_parameter", "")
+                    wor = cp.get("worsening_parameter", "")
+                    if imp and wor:
+                        variation_history[seed_id].append(f"{imp}|{wor}")
+                    sol = case.get("solution", "")[:80]
+                    if sol:
+                        solution_history[seed_id].append(sol)
 
         logger.info("Stage 1 complete: %d variations", len(si_variations))
 
