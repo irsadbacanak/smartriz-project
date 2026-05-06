@@ -38,7 +38,7 @@ from smartriz.data_generation.config import (
 from smartriz.data_generation.pipeline.teacher import TeacherClient
 from smartriz.data_generation.pipeline.judge import JudgeClient
 from smartriz.data_generation.quality.matrix import check, parse_param_id, parse_principle_id
-from smartriz.data_generation.quality.triz_kb import validate_principles
+from smartriz.data_generation.quality.triz_kb import validate_principles, validate_no_contradiction_copying
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +103,29 @@ class SeedScheduler:
         for s in available:
             self.usage[s["id"]] += 1
         return available
+
+
+# ── Variation history initialisation ─────────────────────────────────────────
+
+def build_initial_variation_history(seeds: list[dict]) -> dict[str, list[str]]:
+    """
+    Pre-seed variation_history so the very first SI call per seed already
+    treats the seed's own contradiction pair as 'used'.
+
+    Without this, the first call has an empty used_contradictions list and the
+    generator sees the seed's contradiction pair in the JSON payload with nothing
+    blocking it from copying it verbatim.
+
+    Returns: seed_id → list of "imp|wor" strings (one entry per seed).
+    """
+    history: dict[str, list[str]] = defaultdict(list)
+    for seed in seeds:
+        cp = seed.get("contradiction_pair", {})
+        imp = cp.get("improving_parameter", "").strip()
+        wor = cp.get("worsening_parameter", "").strip()
+        if imp and wor:
+            history[seed["id"]].append(f"{imp}|{wor}")
+    return history
 
 
 # ── Task generation ────────────────────────────────────────────────────────────
@@ -190,6 +213,19 @@ async def _run_teacher_task(
     except Exception as exc:
         logger.warning("[error] task %s failed: %s", key, exc)
         cases = []
+
+    # Hard-gate: drop cases that copied the parent seed's contradiction pair.
+    # Applies only to self_instruct and evol_cross_domain (not deepening/constraint).
+    parent_for_copy_check = variation if variation is not None else seed
+    filtered_cases = []
+    for c in cases:
+        if isinstance(c, dict):
+            is_valid, reason = validate_no_contradiction_copying(c, parent_for_copy_check, method)
+            if not is_valid:
+                logger.info("[drop/cp-copy] id=%s method=%s — %s", c.get("id", "?"), method, reason)
+                continue
+        filtered_cases.append(c)
+    cases = filtered_cases
 
     for c in cases:
         append_jsonl(c, RAW_JSONL)
@@ -489,8 +525,9 @@ async def run_round(
     processed_keys = load_processed_keys()
     cost_tracker = CostTracker()
 
-    # Track contradiction pairs and solution summaries used per seed (for diversity)
-    variation_history: dict[str, list[str]] = defaultdict(list)  # seed_id → ["imp|wor", ...]
+    # Pre-seed variation_history with each seed's own contradiction pair so the
+    # first SI call per seed already has it listed as "used" — preventing copying.
+    variation_history: dict[str, list[str]] = build_initial_variation_history(seeds)
     solution_history: dict[str, list[str]] = defaultdict(list)    # seed_id → [solution_summary, ...]
 
     async with httpx.AsyncClient(
