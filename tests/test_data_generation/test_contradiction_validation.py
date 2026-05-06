@@ -169,3 +169,85 @@ class TestVariationHistoryInit:
         assert "Stability of composition (#13)|Loss of substance (#23)" in at01_used
         at02_used = history["AT-02"]
         assert "Weight of moving object (#1)|Force (#10)" in at02_used
+
+
+# ── Sweep-phase filter: contradiction_copy_sweep ──────────────────────────────
+
+class TestContradictionCopySweep:
+    """contradiction_copy_sweep() must filter copied-CP cases from matrix_validated.jsonl."""
+
+    def test_sweep_removes_copied_cp_cases_for_si(self, tmp_path):
+        """SI cases with same CP as parent seed must be removed by sweep."""
+        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        import json
+
+        seed_lookup = {
+            "AT-01": {"contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"}},
+        }
+
+        in_file = tmp_path / "in.jsonl"
+        # Two SI cases: one copies CP, one doesn't
+        cases = [
+            {
+                "id": "GEN-AT-01-SI-1",
+                "contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"},
+                "meta": {"parent_seed_id": "AT-01", "generation_method": "self_instruct"},
+            },
+            {
+                "id": "GEN-AT-01-SI-2",
+                "contradiction_pair": {"improving_parameter": "C (#3)", "worsening_parameter": "D (#4)"},
+                "meta": {"parent_seed_id": "AT-01", "generation_method": "self_instruct"},
+            },
+        ]
+        in_file.write_text("\n".join(json.dumps(c) for c in cases))
+
+        passed = contradiction_copy_sweep(in_path=in_file, seed_lookup=seed_lookup)
+        assert passed == 1
+
+        remaining = [json.loads(l) for l in in_file.read_text().splitlines() if l.strip()]
+        assert len(remaining) == 1
+        assert remaining[0]["id"] == "GEN-AT-01-SI-2"
+
+    def test_sweep_keeps_deepening_cases_with_same_cp(self, tmp_path):
+        """evol_deepening cases are allowed to keep parent CP."""
+        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        import json
+
+        seed_lookup = {
+            "AT-01": {"contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"}},
+        }
+
+        in_file = tmp_path / "in.jsonl"
+        cases = [
+            {
+                "id": "GEN-AT-01-SI-1-DEEP",
+                "contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"},
+                "meta": {"parent_seed_id": "AT-01", "generation_method": "evol_deepening"},
+            },
+        ]
+        in_file.write_text("\n".join(json.dumps(c) for c in cases))
+
+        passed = contradiction_copy_sweep(in_path=in_file, seed_lookup=seed_lookup)
+        assert passed == 1
+
+    def test_sweep_removes_xdom_with_copied_cp(self, tmp_path):
+        """evol_cross_domain cases with same CP as parent must be dropped."""
+        from smartriz.data_generation.pipeline.orchestrator import contradiction_copy_sweep
+        import json
+
+        seed_lookup = {
+            "AT-01": {"contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"}},
+        }
+
+        in_file = tmp_path / "in.jsonl"
+        cases = [
+            {
+                "id": "GEN-AT-01-SI-1-XDOM",
+                "contradiction_pair": {"improving_parameter": "A (#1)", "worsening_parameter": "B (#2)"},
+                "meta": {"parent_seed_id": "AT-01", "generation_method": "evol_cross_domain"},
+            },
+        ]
+        in_file.write_text("\n".join(json.dumps(c) for c in cases))
+
+        passed = contradiction_copy_sweep(in_path=in_file, seed_lookup=seed_lookup)
+        assert passed == 0

@@ -502,6 +502,70 @@ def principle_validation_sweep(
     return count_pass
 
 
+# ── Contradiction-copy sweep ──────────────────────────────────────────────────
+
+def contradiction_copy_sweep(
+    in_path: Path | None = None,
+    seed_lookup: dict | None = None,
+) -> int:
+    """
+    Post-hoc hard-gate: remove cases where SI/XDOM generator copied the
+    parent seed's contradiction pair verbatim.
+
+    Runs in-place (atomic temp-file swap) on matrix_validated.jsonl by default.
+    Accepts an optional seed_lookup dict (seed_id → seed dict) for testing;
+    loads seeds from SEED_PATH if not provided.
+
+    Returns count of surviving cases.
+    """
+    from smartriz.data_generation.config import MATRIX_VALIDATED_JSONL as _DEFAULT_PATH
+    if in_path is None:
+        in_path = _DEFAULT_PATH
+
+    if not in_path.exists():
+        logger.warning("contradiction_copy_sweep: no file at %s", in_path)
+        return 0
+
+    if seed_lookup is None:
+        seed_lookup = {s["id"]: s for s in load_seeds()}
+
+    tmp_path = in_path.with_suffix(".tmp")
+    count_pass = 0
+    count_fail = 0
+
+    with open(in_path, encoding="utf-8") as fin, \
+         open(tmp_path, "w", encoding="utf-8") as fout:
+        for line in fin:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                case = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+            meta = case.get("meta", {})
+            seed_id = meta.get("parent_seed_id", "")
+            method = meta.get("generation_method", "")
+            parent_seed = seed_lookup.get(seed_id, {})
+
+            is_valid, reason = validate_no_contradiction_copying(case, parent_seed, method)
+            if not is_valid:
+                logger.info(
+                    "[drop/cp-copy-sweep] id=%s method=%s — %s",
+                    case.get("id", "?"), method, reason,
+                )
+                count_fail += 1
+                continue
+
+            fout.write(json.dumps(case, ensure_ascii=False) + "\n")
+            count_pass += 1
+
+    tmp_path.replace(in_path)
+    logger.info("Contradiction-copy sweep: %d passed, %d rejected", count_pass, count_fail)
+    return count_pass
+
+
 # ── Main orchestration entry point ────────────────────────────────────────────
 
 async def run_round(
@@ -617,6 +681,10 @@ async def run_round(
     logger.info("Stage 5.2: principle validation sweep")
     principle_count = principle_validation_sweep()
 
+    # Stage 5.2b: contradiction-copy sweep (hard gate — drops SI/XDOM that copied parent CP)
+    logger.info("Stage 5.2b: contradiction-copy sweep")
+    cp_copy_count = contradiction_copy_sweep()
+
     # Stage 5.3: Duplicate ID assertion (hard fail if IDs collide)
     if MATRIX_VALIDATED_JSONL.exists():
         all_ids_in_file: list[str] = []
@@ -640,6 +708,7 @@ async def run_round(
         "judge_passed": judged_count,
         "matrix_passed": matrix_count,
         "principle_passed": principle_count,
+        "cp_copy_passed": cp_copy_count,
         "total_cost_usd": cost_tracker.total,
         "total_calls": cost_tracker.call_count,
     }
