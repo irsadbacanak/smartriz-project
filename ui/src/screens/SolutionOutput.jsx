@@ -63,7 +63,7 @@ export default function SolutionOutput({
           <h3>Confidence indicators</h3>
           <ConfidenceBar label="Contradiction clarity" value={confidence.contradictionClarity} />
           <ConfidenceBar label="Principle relevance" value={confidence.principleRelevance} />
-          {confidence.caseSimilarity !== null ? (
+          {confidence.caseSimilarity != null ? (
             <ConfidenceBar label="Case similarity" value={confidence.caseSimilarity} />
           ) : null}
         </div>
