@@ -45,6 +45,7 @@ DEDUPED_JSONL = DATA_DIR / "deduplicated.jsonl"
 FINAL_JSON = DATA_DIR / "training_dataset.json"
 PROCESSED_KEYS = DATA_DIR / "processed_keys.txt"
 REJECTED_JSONL = DATA_DIR / "rejected_dataset.jsonl"
+SUMMARY_LOG = DATA_DIR / "pipeline_summary.log"
 
 
 # ── Cost tracker ──────────────────────────────────────────────────────────────

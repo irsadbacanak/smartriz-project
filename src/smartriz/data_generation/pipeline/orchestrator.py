@@ -16,6 +16,7 @@ import json
 import logging
 import random
 import sys
+import time
 import uuid
 from collections import Counter, defaultdict
 
@@ -390,6 +391,7 @@ async def run_round(
 
         logger.info("Stage 1: self-instruct for %d seeds (T=%.1f, round=%d)",
                     len(seeds), temperature, generation_round)
+        _t_stage1 = time.monotonic()
         si_tasks = [
             _run_teacher_task(
                 {
@@ -420,8 +422,8 @@ async def run_round(
                     sol = case.get("solution", "")[:80]
                     if sol:
                         solution_history[seed_id].append(sol)
-
-        logger.info("Stage 1 complete: %d variations", len(si_variations))
+        stage1_sec = time.monotonic() - _t_stage1
+        logger.info("Stage 1 complete: %d variations (%.1fs)", len(si_variations), stage1_sec)
 
         evol_tasks = []
         for var in si_variations:
@@ -436,6 +438,7 @@ async def run_round(
                 )
 
         logger.info("Stage 2: %d evol tasks (T=%.1f)", len(evol_tasks), temperature)
+        _t_stage2 = time.monotonic()
         evol_results_nested = await asyncio.gather(*evol_tasks, return_exceptions=True)
         evol_count = 0
         for r in evol_results_nested:
@@ -443,12 +446,13 @@ async def run_round(
                 logger.warning("[error] evol task exception: %s", r)
             else:
                 evol_count += len(r)
-
-        logger.info("Stage 2 complete: %d evol cases raw", evol_count)
+        stage2_sec = time.monotonic() - _t_stage2
+        logger.info("Stage 2 complete: %d evol cases raw (%.1fs)", evol_count, stage2_sec)
 
     total_raw = len(si_variations) + evol_count
 
     logger.info("Stage 4: judge sweep")
+    _t_judge = time.monotonic()
     async with httpx.AsyncClient(
         base_url=BASE_URL,
         headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
@@ -456,18 +460,28 @@ async def run_round(
     ) as http_client2:
         judge = JudgeClient(cost_tracker, client=http_client2)
         judged_count, borderline_count = await judge_sweep(judge)
+    judge_sec = time.monotonic() - _t_judge
+    logger.info("Stage 4 complete: judge (%.1fs)", judge_sec)
 
     logger.info("Stage 5.1: matrix check")
+    _t_matrix = time.monotonic()
     matrix_count, matrix_citation_drops = matrix_check_sweep(JUDGED_JSONL, MATRIX_VALIDATED_JSONL)
+    matrix_sec = time.monotonic() - _t_matrix
 
     logger.info("Stage 5.2: principle validation sweep")
+    _t_principle = time.monotonic()
     principle_count = principle_validation_sweep(MATRIX_VALIDATED_JSONL)
+    principle_sec = time.monotonic() - _t_principle
 
     logger.info("Stage 5.2b: contradiction-copy sweep")
+    _t_copy = time.monotonic()
     cp_copy_count = contradiction_copy_sweep(MATRIX_VALIDATED_JSONL)
+    copy_sec = time.monotonic() - _t_copy
 
     logger.info("Stage 5.2c: complexity validation sweep")
+    _t_complexity = time.monotonic()
     complexity_count = complexity_validation_sweep(MATRIX_VALIDATED_JSONL)
+    complexity_sec = time.monotonic() - _t_complexity
 
     # Stage 5.3: Duplicate ID assertion (hard fail if IDs collide)
     if MATRIX_VALIDATED_JSONL.exists():
@@ -520,6 +534,14 @@ async def run_round(
         "top5_domains": dict(top_domains),
         "total_cost_usd": cost_tracker.total,
         "total_calls": cost_tracker.call_count,
+        # stage timing metrics
+        "stage1_sec": round(stage1_sec, 2),
+        "stage2_sec": round(stage2_sec, 2),
+        "judge_sec": round(judge_sec, 2),
+        "matrix_sec": round(matrix_sec, 2),
+        "principle_sec": round(principle_sec, 2),
+        "copy_sec": round(copy_sec, 2),
+        "complexity_sec": round(complexity_sec, 2),
     }
     logger.info("Round %d done — %s", generation_round, stats)
     return stats

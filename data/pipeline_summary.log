@@ -1,0 +1,8 @@
+2026-05-07 10:09:17,232 [RUN_START] mode=smoke n=3
+2026-05-07 10:09:30,477 [ROUND_SUMMARY] round=1 temp=0.7 raw=0 judge_passed=0 borderline=0 matrix_passed=27 final=474 rejected=2024 cost_usd=0.0000 calls=0 duration_sec=13.2 stage_sec={"stage1_sec": 0.0, "stage2_sec": 0.0, "judge_sec": 0.07, "matrix_sec": 0.15, "principle_sec": 0.03, "copy_sec": 0.03, "complexity_sec": 0.03}
+2026-05-07 10:09:30,478 [RUN_END] mode=smoke final=474 cost_usd=0.0000 duration_sec=13.2
+2026-05-07 10:09:39,679 [RUN_START] mode=smoke n=2
+2026-05-07 10:09:50,817 [ROUND_SUMMARY] round=1 temp=0.7 raw=0 judge_passed=0 borderline=0 matrix_passed=27 final=474 rejected=3024 cost_usd=0.0000 calls=0 duration_sec=11.1 stage_sec={"stage1_sec": 0.0, "stage2_sec": 0.0, "judge_sec": 0.07, "matrix_sec": 0.15, "principle_sec": 0.03, "copy_sec": 0.03, "complexity_sec": 0.03}
+2026-05-07 10:09:50,818 [RUN_END] mode=smoke final=474 cost_usd=0.0000 duration_sec=11.1
+2026-05-07 10:21:51,986 [RUN_START] mode=auto target=2000 current=474
+2026-05-07 10:22:04,526 [ROUND_SUMMARY] round=1 temp=0.7 raw=0 judge_passed=0 borderline=0 matrix_passed=27 final=474 rejected=4024 cost_usd=0.0000 calls=0 duration_sec=12.5 stage_sec={"stage1_sec": 0.0, "stage2_sec": 0.0, "judge_sec": 0.07, "matrix_sec": 0.17, "principle_sec": 0.03, "copy_sec": 0.03, "complexity_sec": 0.03}
