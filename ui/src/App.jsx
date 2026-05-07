@@ -105,7 +105,7 @@ export default function App() {
         </>
       ) : null}
 
-      {status === 'running' ? <AgentPipeline agentStates={agentStates} /> : null}
+      {status === 'running' ? <AgentPipeline agentStates={agentStates} problem={problem} /> : null}
 
       {status === 'complete' ? (
         <main className="results-page">
