@@ -4,7 +4,8 @@ function range(start, end) {
   return arr
 }
 
-export function ReferenceMatrix({ parameters, improvingId, worseningId, matrixMap, principleIds }) {
+// eslint-disable-next-line no-unused-vars
+export function ReferenceMatrix({ parameters: _parameters, improvingId, worseningId, matrixMap, principleIds: _principleIds }) {
   if (!improvingId || !worseningId) return null
 
   const rowMin = Math.max(1, improvingId - 3)
