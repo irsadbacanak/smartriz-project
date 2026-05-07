@@ -1,0 +1,281 @@
+"""
+Async judge client — wraps Qwen2.5-72B-Instruct via DeepInfra.
+
+Features:
+  - Binary pass/fail rubric (6 YES/NO questions: Q1-Q6) with confidence level
+  - BORDERLINE FAIL cases are flagged for complexity downgrade rather than discard
+  - Returns verdict dict with PASS/FAIL, per-question answers, and confidence
+  - None returned only on API/parse error — not on judge rejection
+  - Same retry / concurrency / cost-tracking setup as teacher
+  - Backward-compat fallback: old 0-10 numeric responses treated with 7.0 threshold
+"""
+from __future__ import annotations
+
+import asyncio
+import json
+import logging
+from typing import Any
+
+import httpx
+from tenacity import (
+    retry,
+    retry_if_exception,
+    stop_after_attempt,
+    wait_exponential,
+)
+
+from smartriz.data_generation.config import (
+    BASE_URL,
+    DEEPINFRA_API_KEY,
+    JUDGE_MODEL,
+    MAX_CONCURRENCY,
+    CostTracker,
+)
+from smartriz.data_generation.prompts.judge import build_prompt
+
+logger = logging.getLogger(__name__)
+
+_semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
+
+# Old-format keys (0-10 numeric scores) — used for backward-compat fallback
+_OLD_REQUIRED_KEYS = {
+    "contradiction_validity",
+    "principle_correctness",
+    "reasoning_coherence",
+    "solution_feasibility",
+}
+
+# New binary question keys — includes both old and new Q5 name for detection
+_NEW_QUESTION_KEYS = {
+    "Q1_principles_canonical",
+    "Q2_reasoning_uses_all_principles",
+    "Q3_contradiction_domain_match",
+    "Q4_solution_not_forced_fit",
+    "Q5_reasoning_domain_specific",   # current name
+    "Q5_reasoning_not_template",      # legacy name — kept for detection
+    "Q6_domain_terminology_accurate",
+}
+
+# Legacy score keys that should not appear in the final training data as null
+_OLD_SCORE_KEYS = frozenset({
+    "contradiction_validity",
+    "principle_correctness",
+    "reasoning_coherence",
+    "solution_feasibility",
+})
+
+
+def _is_retryable(exc: BaseException) -> bool:
+    if isinstance(exc, httpx.HTTPStatusError):
+        return exc.response.status_code in (429, 500, 502, 503, 504)
+    return isinstance(exc, (httpx.TimeoutException, httpx.ConnectError, httpx.RemoteProtocolError, TimeoutError))
+
+
+def _make_retry():
+    return retry(
+        retry=retry_if_exception(_is_retryable),
+        wait=wait_exponential(multiplier=2, min=2, max=60),
+        stop=stop_after_attempt(5),
+        reraise=True,
+    )
+
+
+def _clean_judge_scores(scores: dict) -> dict:
+    """Strip legacy 0-10 numeric score fields when they are null.
+
+    The new binary schema never populates contradiction_validity, principle_correctness,
+    reasoning_coherence, or solution_feasibility. When these appear as null values they
+    pollute the training dataset schema. Numeric values from the backward-compat path
+    are preserved for debugging.
+    """
+    return {k: v for k, v in scores.items() if not (k in _OLD_SCORE_KEYS and v is None)}
+
+
+def _get_q5(result: dict) -> str:
+    """Get Q5 answer supporting both old and new key names."""
+    return (
+        result.get("Q5_reasoning_domain_specific")
+        or result.get("Q5_reasoning_not_template", "?")
+    )
+
+
+class JudgeClient:
+    """Async client for the binary pass/fail Qwen2.5-72B judge."""
+
+    def __init__(self, cost_tracker: CostTracker, client: httpx.AsyncClient | None = None) -> None:
+        self._cost_tracker = cost_tracker
+        self._client = client or httpx.AsyncClient(
+            base_url=BASE_URL,
+            headers={"Authorization": f"Bearer {DEEPINFRA_API_KEY}"},
+            timeout=httpx.Timeout(120.0, connect=15.0),
+        )
+
+    async def aclose(self) -> None:
+        await self._client.aclose()
+
+    async def score(self, case: dict) -> dict | None:
+        """Score a case dict.
+
+        Returns:
+            - dict with 'verdict' == 'PASS', per-question answers, and
+              'confidence' == 'HIGH' or 'BORDERLINE' on success.
+            - dict with 'verdict' == 'FAIL', per-question answers, 'confidence',
+              and 'fail_reasons' when the judge rejects the case.
+              BORDERLINE FAIL cases can be salvaged by the caller (e.g. by
+              downgrading complexity and accepting into the dataset).
+            - None only when the API call or JSON parsing fails entirely (not a
+              judge rejection — a genuine communication/format error).
+        """
+        async with _semaphore:
+            system_msg, user_msg = build_prompt(case)
+            result = await self._call_api(system_msg, user_msg)
+            if result is None:
+                # One retry with stricter instruction
+                logger.info("[judge-retry] retrying at T=0.1 for case %s", case.get("id", "?"))
+                result = await self._call_api(
+                    system_msg,
+                    "RESPOND ONLY WITH VALID JSON. NO PROSE.\n\n" + user_msg,
+                    temperature=0.1,
+                )
+            if result is None:
+                logger.warning("[judge-drop] failed to score case %s", case.get("id", "?"))
+            return result
+
+    @_make_retry()
+    async def _call_api(
+        self, system_msg: str, user_msg: str, temperature: float = 0.3
+    ) -> dict | None:
+        payload = {
+            "model": JUDGE_MODEL,
+            "messages": [
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": user_msg},
+            ],
+            "temperature": temperature,
+            "response_format": {"type": "json_object"},
+        }
+        resp = await self._client.post("/chat/completions", json=payload)
+        resp.raise_for_status()
+        data = resp.json()
+
+        usage = data.get("usage", {})
+        self._cost_tracker.add(_UsageProxy(usage), model_kind="judge")
+
+        raw_content = data["choices"][0]["message"].get("content", "")
+        try:
+            result = json.loads(raw_content)
+        except (json.JSONDecodeError, TypeError):
+            logger.warning("[judge] JSON parse failed — content=%.80r", raw_content)
+            return None
+
+        # ── New binary verdict schema ────────────────────────────────────────
+        if "verdict" in result or _NEW_QUESTION_KEYS.intersection(result.keys()):
+            verdict = result.get("verdict", "FAIL").upper().strip()
+            confidence = result.get("confidence", "HIGH").upper().strip()
+            if confidence not in ("HIGH", "BORDERLINE"):
+                confidence = "HIGH"
+
+            if verdict == "FAIL":
+                fail_reasons = result.get("fail_reasons", [])
+                logger.info(
+                    "[judge-fail] case rejected — confidence=%s reasons: %s",
+                    confidence,
+                    fail_reasons if fail_reasons else "(none provided)",
+                )
+                return _clean_judge_scores({
+                    "verdict": "FAIL",
+                    "Q1": result.get("Q1_principles_canonical", "?"),
+                    "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
+                    "Q3": result.get("Q3_contradiction_domain_match", "?"),
+                    "Q4": result.get("Q4_solution_not_forced_fit", "?"),
+                    "Q5": _get_q5(result),
+                    "Q6": result.get("Q6_domain_terminology_accurate", "?"),
+                    "confidence": confidence,
+                    "fail_reasons": fail_reasons,
+                    "average": 0.0,
+                })
+
+            if verdict == "PASS":
+                return _clean_judge_scores({
+                    "verdict": "PASS",
+                    "Q1": result.get("Q1_principles_canonical", "?"),
+                    "Q2": result.get("Q2_reasoning_uses_all_principles", "?"),
+                    "Q3": result.get("Q3_contradiction_domain_match", "?"),
+                    "Q4": result.get("Q4_solution_not_forced_fit", "?"),
+                    "Q5": _get_q5(result),
+                    "Q6": result.get("Q6_domain_terminology_accurate", "?"),
+                    "confidence": confidence,
+                    "fail_reasons": result.get("fail_reasons", []),
+                    "average": 10.0,  # Backward compat: PASS cases get 10.0 for downstream meta
+                })
+
+            # Unknown verdict value — treat as FAIL for safety
+            logger.warning("[judge] unknown verdict value %r — treating as FAIL", verdict)
+            return _clean_judge_scores({
+                "verdict": "FAIL",
+                "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                "confidence": "HIGH",
+                "fail_reasons": [f"unrecognized verdict value: {verdict!r}"],
+                "average": 0.0,
+            })
+
+        # ── Backward-compat fallback: old 0-10 numeric format ────────────────
+        if _OLD_REQUIRED_KEYS.issubset(result.keys()):
+            logger.info("[judge] received old 0-10 format response — applying 7.0 threshold")
+
+            for key in _OLD_REQUIRED_KEYS:
+                val = result[key]
+                if not isinstance(val, (int, float)) or not (0 <= val <= 10):
+                    logger.warning("[judge] out-of-range score %s=%s", key, val)
+                    return {
+                        "verdict": "FAIL",
+                        "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                        "confidence": "HIGH",
+                        "fail_reasons": [f"old-format out-of-range score: {key}={val}"],
+                        "average": 0.0,
+                    }
+
+            average = round(
+                sum(result[k] for k in _OLD_REQUIRED_KEYS) / len(_OLD_REQUIRED_KEYS), 2
+            )
+            result["average"] = average
+
+            if average < 7.0:
+                logger.info("[judge-fail] old-format case rejected — average=%.2f < 7.0", average)
+                return {
+                    "verdict": "FAIL",
+                    "Q1": "?", "Q2": "?", "Q3": "?", "Q4": "?", "Q5": "?", "Q6": "?",
+                    "confidence": "HIGH",
+                    "fail_reasons": [f"old-format average {average:.2f} below 7.0 threshold"],
+                    "average": average,
+                }
+
+            return _clean_judge_scores({
+                **result,  # Keep original numeric scores for debugging
+                "verdict": "PASS",
+                "Q1": "YES",  # Inferred from passing threshold
+                "Q2": "YES",
+                "Q3": "YES",
+                "Q4": "YES",
+                "Q5": "YES",
+                "Q6": "YES",
+                "confidence": "HIGH",
+                "fail_reasons": [],
+                "average": average,
+            })
+
+        # No recognized schema
+        missing_new = _NEW_QUESTION_KEYS - result.keys()
+        missing_old = _OLD_REQUIRED_KEYS - result.keys()
+        logger.warning(
+            "[judge] unrecognized response schema — missing new keys %s, missing old keys %s",
+            missing_new,
+            missing_old,
+        )
+        return None
+
+
+class _UsageProxy:
+    def __init__(self, usage_dict: dict) -> None:
+        self.prompt_tokens = usage_dict.get("prompt_tokens", 0)
+        self.completion_tokens = usage_dict.get("completion_tokens", 0)

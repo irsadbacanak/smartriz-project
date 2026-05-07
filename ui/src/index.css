@@ -1,1 +1,2 @@
-/* Global reset handled in App.css */
+@import './styles/tokens.css';
+@import './styles/global.css';

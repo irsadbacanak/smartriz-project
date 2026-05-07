@@ -1,0 +1,33 @@
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --border: #e4e2dc;
+  --text-1: #1a1917;
+  --text-2: #6b6860;
+  --text-3: #9e9b94;
+  --contradiction: #c0392b;
+  --principle: #1a5276;
+  --resolved: #1e6e4b;
+  --processing: #7d5a9e;
+  --reading-tint: #f2f1ed;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "DM Sans", "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+}
+
+[data-theme="dark"] {
+  --bg: #1c1b19;
+  --surface: #232220;
+  --border: #34322e;
+  --text-1: #f0ede8;
+  --text-2: #a8a39a;
+  --text-3: #6e6a62;
+  --reading-tint: #232220;
+}

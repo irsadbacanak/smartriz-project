@@ -1,5 +1,14 @@
 .env
 .venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
 data/chroma_db/
+data/artifacts/
 ui/node_modules/
 ui/dist/

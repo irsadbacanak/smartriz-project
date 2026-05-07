@@ -1,0 +1,1041 @@
+{
+  "dataset_name": "SmarTRIZ-Seed-v2",
+  "version": "2026-05-05",
+  "schema": {
+    "id": "string",
+    "source": "string",
+    "language": "en|tr|mixed",
+    "domain": "string",
+    "problem": "string",
+    "contradiction_pair": {
+      "improving_parameter": "name (#)",
+      "worsening_parameter": "name (#)"
+    },
+    "inventive_principles": ["#name", "..."],
+    "reasoning_chain": "string",
+    "solution": "string",
+    "complexity": "simple|medium|complex"
+  },
+  "cases": [
+    {
+      "id": "TG-06",
+      "source": "TRIZ-GPT collection source paper: Yao et al. 2022, Sustainability 14(22):15482",
+      "language": "en",
+      "domain": "furniture/design-for-assembly",
+      "problem": "A folding chair should open very quickly at events and classrooms, ideally with one hand, but rapid deployment mechanisms often reduce structural stability and create accidental half-lock states.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#15 Dynamization", "#13 Inversion"],
+      "reasoning_chain": "1) The user wants faster setup, but directly forcing the frame open risks unstable partial locking. 2) In TRIZ terms, improve opening speed without harming reliability. 3) Apply #10 by pre-arranging the deployment path and latch geometry before use. 4) Apply #15 by giving the linkage a movable, self-locking state rather than a fixed manual sequence. 5) Apply #13 by letting the user release a trigger instead of spreading the whole frame by hand.",
+      "solution": "Use a pull-ring or thumb latch that releases a pre-arranged crossed-leg linkage. Gravity and a light spring assist the opening motion, and the chair snaps into a fully locked geometry only at end position, enabling one-hand rapid deployment without sacrificing stability.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-07",
+      "source": "TRIZ-GPT collection source paper: Yao et al. 2022, Sustainability 14(22):15482",
+      "language": "en",
+      "domain": "furniture/ergonomics",
+      "problem": "Folding chairs are usually collapsed by bending down and using both hands, which is slow and physically tiring for staff who repeatedly set up and clear venues.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#13 Inversion", "#15 Dynamization", "#34 Discarding/recovering"],
+      "reasoning_chain": "1) The task should become easier, but adding powered mechanisms would overcomplicate the chair. 2) Generalize this as improving convenience without increasing complexity too much. 3) Apply #13 by reversing the normal action: use the foot rather than the hand as the main collapsing input. 4) Apply #15 by adding a movable latch path that collapses only when a pedal is pressed. 5) Apply #34 by making the release feature temporary and non-structural during normal use.",
+      "solution": "Add a foot pedal connected to an over-center linkage so the chair can be folded while standing. The user presses the pedal, the lock disengages, and the frame collapses under controlled motion without requiring bending or two-handed handling.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-08",
+      "source": "TRIZ-GPT collection source paper: Yao et al. 2022, Sustainability 14(22):15482",
+      "language": "en",
+      "domain": "furniture/logistics",
+      "problem": "Event staff need to move many folding chairs at once, but adding transport hardware to each chair makes every unit heavier and less convenient in normal use.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Weight of moving object (#1)"
+      },
+      "inventive_principles": ["#5 Merging", "#1 Segmentation", "#15 Dynamization"],
+      "reasoning_chain": "1) Moving chairs one by one wastes time; permanent transport handles or wheels on every chair add mass. 2) Abstractly, increase logistics productivity without increasing moving weight too much. 3) Apply #5 by temporarily combining multiple chairs into a single transport unit. 4) Apply #1 by keeping the joining feature modular rather than integral. 5) Apply #15 by making the merged state appear only during transport.",
+      "solution": "Add small interlocking side features to each chair and use a removable dolly or connector bar. Several folded chairs can be linked into a train for transport, while each chair remains light and simple in normal operation.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-09",
+      "source": "TRIZ-GPT collection source paper: Yao et al. 2022, Sustainability 14(22):15482",
+      "language": "en",
+      "domain": "furniture/safety",
+      "problem": "Fast folding-chair mechanisms improve handling speed, but exposed linkages create finger-pinch hazards during opening and closing.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Speed (#9)"
+      },
+      "inventive_principles": ["#9 Preliminary anti-action", "#11 Beforehand cushioning", "#13 Inversion"],
+      "reasoning_chain": "1) Faster motion is useful, but it increases the chance of pinch injuries. 2) Translate this into reducing harmful factors without losing speed. 3) Apply #9 by preventing fingers from ever entering the dangerous zone. 4) Apply #11 by adding compliant stops before hard closure occurs. 5) Apply #13 by relocating the user contact points away from the folding linkage itself.",
+      "solution": "Cover the scissor linkages with thin guards, shape the frame so fingers naturally stay on safe grip zones, and add elastomeric end-stops that slow the final closure. The chair remains fast to operate while pinch risk is greatly reduced.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-10",
+      "source": "TRIZ-GPT collection source paper: Yao et al. 2022, Sustainability 14(22):15482",
+      "language": "en",
+      "domain": "furniture/storage",
+      "problem": "A folded chair should stand upright by itself during staging and storage, but giving it a stable folded stance usually increases folded bulk.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#17 Transition to a new dimension", "#15 Dynamization"],
+      "reasoning_chain": "1) Users want the folded chair to stand temporarily without leaning it against a wall. 2) Making the folded package wider often solves that, but increases storage volume. 3) Apply #17 by extending support only in a different geometric orientation when needed. 4) Apply #15 by making the support feature movable rather than always deployed.",
+      "solution": "Add a hidden support foot or rotating leg section that swings out only in the folded state to create a stable tripod-like stance. When the chair is opened for use or tightly stored, the support retracts flush into the frame.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-11",
+      "source": "TRIZ-GPT collection source paper: Chang et al. 2023, Advanced Engineering Informatics 56:101901",
+      "language": "en",
+      "domain": "biomedical/lab-equipment",
+      "problem": "A test tube rack should securely hold tubes of many diameters, but stronger gripping structures make insertion and removal harder for lab users.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#35 Parameter changes", "#3 Local quality"],
+      "reasoning_chain": "1) One rack should accept many tube sizes, but a universal rigid hole is either loose or hard to use. 2) Abstractly, increase adaptability without making handling worse. 3) Apply #15 by making the holding geometry deformable. 4) Apply #35 by changing local stiffness and opening size rather than the whole rack. 5) Apply #3 by reinforcing only the regions that must carry load.",
+      "solution": "Use tapered elastic petals or slit silicone sleeves inside each opening. Small tubes are centered by the petals, larger tubes expand them, and local reinforcing ribs prevent collapse of the overall rack structure.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-12",
+      "source": "TRIZ-GPT collection source paper: Chang et al. 2023, Advanced Engineering Informatics 56:101901",
+      "language": "en",
+      "domain": "biomedical/sterilizable-devices",
+      "problem": "A tube rack should be easy to sterilize and clean thoroughly, but truly easy-to-clean structures often become too weak or flimsy for repeated laboratory handling.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of repair (#34)",
+        "worsening_parameter": "Strength (#14)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#2 Taking out", "#30 Flexible shells and thin films"],
+      "reasoning_chain": "1) Hygienic cleaning favors simple detachable surfaces and minimal crevices, while durability favors a rigid integrated rack. 2) Generalize as improving cleanability without weakening the device. 3) Apply #1 by separating the washable contact features from the load-bearing frame. 4) Apply #2 by removing hard-to-clean internal corners from the product-contact region. 5) Apply #30 by using thin removable liners where contamination actually occurs.",
+      "solution": "Build the rack as a rigid outer skeleton with removable smooth inserts or liners in every tube location. The inserts can be sterilized or replaced independently, while the main frame remains structurally strong.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-13",
+      "source": "TRIZ-GPT collection source paper: Chang et al. 2023, Advanced Engineering Informatics 56:101901",
+      "language": "en",
+      "domain": "biomedical/information-design",
+      "problem": "The rack should reduce sample mix-ups by improving tube identification, but adding labels, indicators, and digital elements can quickly clutter the interface.",
+      "contradiction_pair": {
+        "improving_parameter": "Accuracy of measurement (#28)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#32 Color changes", "#2 Taking out", "#25 Self-service"],
+      "reasoning_chain": "1) Better identification reduces human error, but too many visible cues make the rack harder to read. 2) In TRIZ terms, improve operational accuracy without excessive complexity. 3) Apply #32 by using color and visual state changes instead of more text. 4) Apply #2 by showing only the most important identifiers on the primary surface. 5) Apply #25 by letting the rack itself guide the user through self-explaining cues.",
+      "solution": "Use color-coded slot zones, removable ID tabs, and optional low-profile e-ink or LED status indicators only on active rows. Users get clear identification where needed without turning the rack into a visually overloaded control panel.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-14",
+      "source": "TRIZ-GPT collection source paper: Chang et al. 2023, Advanced Engineering Informatics 56:101901",
+      "language": "en",
+      "domain": "biomedical/user-safety",
+      "problem": "The rack should have rounded, safe edges to avoid accidental cuts and impacts, but soft edge treatment can reduce perceived stability and structural security.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Strength (#14)"
+      },
+      "inventive_principles": ["#3 Local quality", "#40 Composite materials"],
+      "reasoning_chain": "1) Safer contact surfaces are desired, but making the whole rack soft would weaken it. 2) This becomes reducing harmful factors without sacrificing strength. 3) Apply #3 by making only the contact edges soft. 4) Apply #40 by combining a rigid structural core with a softer exterior material where users touch the device.",
+      "solution": "Use a rigid inner frame for load-bearing and a thin soft overmold only along outer corners and grip regions. The rack stays stable on the bench while becoming safer to handle.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-15",
+      "source": "TRIZ-GPT collection source paper: Chang et al. 2023, Advanced Engineering Informatics 56:101901",
+      "language": "en",
+      "domain": "biomedical/smart-product-service",
+      "problem": "An intelligent rack should monitor occupancy and workflow status, but embedding electronics everywhere makes the product costly and hard to wash.",
+      "contradiction_pair": {
+        "improving_parameter": "Degree of automation (#38)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#5 Merging", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) Smart monitoring adds value, but electronics inside the wet lab object increase cost and cleaning burden. 2) Abstractly, improve automation without overcomplicating the rack itself. 3) Apply #24 by separating intelligence into an intermediate platform. 4) Apply #5 by combining sensing functions in a shared base rather than in each slot. 5) Apply #28 by using optical or weight sensing instead of many embedded mechanical switches.",
+      "solution": "Keep the upper rack mostly passive and place sensing, connectivity, and status processing in a reusable smart base under it. The base detects occupancy and workflow state, while the washable top module remains simple and robust.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-16",
+      "source": "TRIZ-GPT collection source paper: Gilani and Lee 2023, International TRIZ Future Conference",
+      "language": "en",
+      "domain": "digital-experience/museum",
+      "problem": "A virtual exhibition should be easy for casual visitors to use, but simplifying the interface too much hides curatorial depth and scholarly content.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Loss of information (#24)"
+      },
+      "inventive_principles": ["#2 Taking out", "#17 Transition to a new dimension", "#15 Dynamization"],
+      "reasoning_chain": "1) A minimal interface reduces confusion, but too much simplification strips out valuable context. 2) This is improving convenience while risking information loss. 3) Apply #2 by removing advanced metadata from the default layer. 4) Apply #17 by putting deeper content into another layer or panel rather than the main screen. 5) Apply #15 by revealing detail dynamically on demand.",
+      "solution": "Use layered content architecture: the default exhibition view shows only essential navigation and exhibit labels, while contextual cards, timelines, and curator notes appear when the visitor intentionally opens them.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-17",
+      "source": "TRIZ-GPT collection source paper: Gilani and Lee 2023, International TRIZ Future Conference",
+      "language": "en",
+      "domain": "digital-experience/accessibility",
+      "problem": "The same virtual museum should serve older visitors, first-time users, and expert enthusiasts, but supporting all of them equally tends to create a bulky interface.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#2 Taking out", "#25 Self-service"],
+      "reasoning_chain": "1) A one-size-fits-all interface rarely works for highly different user groups. 2) Adjusting for everyone tends to increase complexity. 3) Apply #15 by making the interface mode-dependent. 4) Apply #2 by hiding features that a given user profile does not currently need. 5) Apply #25 by allowing the system to teach users through context-sensitive hints instead of fixed complexity.",
+      "solution": "Implement persona-based modes such as novice, accessible, and expert. Each mode changes control density, text size, navigation depth, and guidance level, allowing the exhibition to adapt without burdening all users with the same interface.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-18",
+      "source": "TRIZ-GPT collection source paper: Gilani and Lee 2023, International TRIZ Future Conference",
+      "language": "en",
+      "domain": "digital-experience/immersive-navigation",
+      "problem": "Highly realistic movement inside a virtual exhibition improves immersion, but continuous simulated walking can make visitors uncomfortable or motion-sick.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Loss of information (#24)"
+      },
+      "inventive_principles": ["#19 Periodic action", "#17 Transition to a new dimension", "#35 Parameter changes"],
+      "reasoning_chain": "1) Continuous smooth motion increases realism but can create physical discomfort. 2) Reducing motion can also reduce the sense of spatial continuity. 3) Apply #19 by making movement discontinuous when helpful. 4) Apply #17 by changing the form of movement from path-travel to point-jump and orbit view. 5) Apply #35 by adjusting movement mode according to user tolerance.",
+      "solution": "Use hybrid navigation with teleportation for long travel, orbit views for object inspection, and optional continuous movement only when the visitor explicitly enables it. A fixed horizon reference reduces discomfort while preserving spatial understanding.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-19",
+      "source": "TRIZ-GPT collection source paper: Gilani and Lee 2023, International TRIZ Future Conference",
+      "language": "en",
+      "domain": "digital-experience/performance",
+      "problem": "Dynamic lighting, animations, and interactive effects make a virtual exhibition more engaging, but they increase load time and reduce responsiveness on ordinary devices.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Loss of time (#25)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#19 Periodic action", "#28 Mechanics substitution"],
+      "reasoning_chain": "1) Rich visual effects improve engagement, but users dislike waiting for heavy scenes to load. 2) Generalize as improving visual intensity while avoiding time loss. 3) Apply #10 by preloading only critical low-cost assets. 4) Apply #19 by activating heavier effects only when needed. 5) Apply #28 by replacing expensive real-time rendering with lighter approximations where possible.",
+      "solution": "Adopt progressive rendering: lightweight geometry and basic lighting appear immediately, while high-resolution textures, dynamic shadows, and advanced animations stream in or activate only when the visitor approaches or interacts.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-20",
+      "source": "TRIZ-GPT collection source paper: Kim et al. 2022, International Journal of Advanced Manufacturing Technology 120:1793-1804",
+      "language": "en",
+      "domain": "construction-robotics",
+      "problem": "A layout robot should mark lines clearly on dusty construction floors, but stronger paint or chalk delivery increases overspray, contamination, and cleanup work.",
+      "contradiction_pair": {
+        "improving_parameter": "Productivity (#39)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "inventive_principles": ["#3 Local quality", "#9 Preliminary anti-action", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) Increasing deposition makes lines visible, but it also makes the worksite dirtier. 2) Abstractly, improve productivity without creating harmful side effects. 3) Apply #3 by depositing material only in the narrow needed zone. 4) Apply #9 by blocking or capturing excess marking medium before it spreads. 5) Apply #24 by adding an intermediate shoe or shield between the nozzle and the floor.",
+      "solution": "Use a shrouded marking head with a close-contact stencil shoe and a vacuum ring around the nozzle. The head concentrates paint or chalk on the target line while capturing excess material immediately.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-21",
+      "source": "TRIZ-GPT collection source paper: Kim et al. 2022, International Journal of Advanced Manufacturing Technology 120:1793-1804",
+      "language": "en",
+      "domain": "construction-robotics/power-management",
+      "problem": "The robot should navigate cluttered jobsites and work in many floor conditions, but making it compact and maneuverable leaves limited room for a large battery.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Duration of action of moving object (#15)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#10 Preliminary action", "#34 Discarding/recovering"],
+      "reasoning_chain": "1) Maneuverability favors a smaller robot, but endurance favors more onboard energy. 2) This becomes improving adaptability while duration worsens. 3) Apply #1 by separating the power function into modular segments. 4) Apply #10 by preparing charged modules before operation. 5) Apply #34 by allowing quick recovery and replacement of depleted packs instead of carrying maximum battery mass at all times.",
+      "solution": "Use swappable battery cartridges and low-power external localization beacons. The robot remains compact and agile, while endurance is extended through rapid battery replacement rather than a single oversized onboard pack.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-22",
+      "source": "TRIZ-GPT collection source paper: Kim et al. 2022, International Journal of Advanced Manufacturing Technology 120:1793-1804",
+      "language": "en",
+      "domain": "construction-robotics/mobility",
+      "problem": "The robot needs strong traction on uneven concrete and debris, but aggressive wheels or tracks can damage finished surfaces when conditions change.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#28 Mechanics substitution"],
+      "reasoning_chain": "1) Rough terrain demands grip, while finished surfaces demand gentle contact. 2) Improve operational reliability without increasing damage. 3) Apply #15 by making the contact condition variable instead of fixed. 4) Apply #28 by supplementing traction through nontraditional means rather than only by harsher mechanical tread.",
+      "solution": "Use compliant variable-stiffness wheels with smooth outer skins and deployable micro-tread or suction assist only when sensors detect rough surfaces. The robot grips debris when needed and reverts to surface-safe contact on finished floors.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-23",
+      "source": "TRIZ-GPT collection source paper: Kim et al. 2022, International Journal of Advanced Manufacturing Technology 120:1793-1804",
+      "language": "en",
+      "domain": "construction-robotics/mechanisms",
+      "problem": "The marking head should stay normal to sloped and irregular floors for consistent line quality, but active multi-axis correction adds weight and control complexity.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#1 Segmentation"],
+      "reasoning_chain": "1) Better geometric adaptation improves marking quality, but active actuators complicate the robot. 2) In TRIZ terms, increase adaptability without increasing complexity. 3) Apply #15 by allowing passive motion in the marking head. 4) Apply #1 by separating the head support from the main chassis so the small subsystem can adapt independently.",
+      "solution": "Mount the marking head on a passive gimbal with a spring-loaded vertical slider. The chassis can remain simple while the head self-aligns with local floor angle and height variations.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-24",
+      "source": "TRIZ-GPT collection source paper: Tsai et al. 2004, Structural and Multidisciplinary Optimization 26:249-255",
+      "language": "en",
+      "domain": "valves/mechanical-design",
+      "problem": "A metal-seated ball valve should survive high temperature and pressure better than soft seats, but metal-against-metal sealing usually raises operating torque.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Force (#10)"
+      },
+      "inventive_principles": ["#3 Local quality", "#15 Dynamization", "#40 Composite materials"],
+      "reasoning_chain": "1) Metal seats improve temperature resistance and life, but they increase friction during actuation. 2) Generalize this as improving reliability while worsening required force. 3) Apply #3 by tailoring only the contact zone rather than the whole seat. 4) Apply #15 by allowing the sealing element to move compliantly. 5) Apply #40 by combining hard wear surfaces with an elastic energy-storing backing.",
+      "solution": "Use a spring-energized metal seat with a locally hardened sealing band and a compliant backing element. The seat maintains tight sealing under pressure but reduces the torque needed during opening and closing.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-25",
+      "source": "TRIZ-GPT collection source paper: Tsai et al. 2004, Structural and Multidisciplinary Optimization 26:249-255",
+      "language": "en",
+      "domain": "valves/wear-design",
+      "problem": "A valve seat should resist wear for long service life, but making the whole seat from highly wear-resistant material increases cost and manufacturing difficulty.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Manufacturability (#32)"
+      },
+      "inventive_principles": ["#3 Local quality", "#40 Composite materials", "#35 Parameter changes"],
+      "reasoning_chain": "1) Uniformly hard materials are durable but difficult to machine and expensive. 2) Abstractly, improve reliability while manufacturability worsens. 3) Apply #3 by strengthening only the regions that actually wear. 4) Apply #40 by making the seat a material combination rather than a uniform body. 5) Apply #35 by controlling surface properties independently from bulk properties.",
+      "solution": "Use a seat with a machinable base material and a hardfaced or coated sealing band only at the contact ring. The valve gains long wear life without turning the entire component into a difficult high-hardness part.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-26",
+      "source": "TRIZ-GPT collection source paper: Tsai et al. 2004, Structural and Multidisciplinary Optimization 26:249-255",
+      "language": "en",
+      "domain": "valves/actuation",
+      "problem": "Valve operation should require low user torque, but lowering contact pressure between ball and seat can create leakage.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#9 Preliminary anti-action", "#23 Feedback"],
+      "reasoning_chain": "1) Lower friction helps the operator, but a loose seat leaks. 2) This is improving ease of operation while reliability worsens. 3) Apply #15 by making seat contact different during rotation and during final sealing. 4) Apply #9 by arranging the mechanism so rubbing is reduced before motion starts. 5) Apply #23 by using process pressure or spring force to re-establish final sealing automatically.",
+      "solution": "Use a cammed or spring-retracting seat that backs off slightly while the ball rotates, then re-engages at closed position under spring or line-pressure assistance. The user sees lower torque without losing sealing performance.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-27",
+      "source": "TRIZ-GPT collection source paper: Tsai et al. 2004, Structural and Multidisciplinary Optimization 26:249-255",
+      "language": "en",
+      "domain": "valves/high-temperature-service",
+      "problem": "High-temperature operation should not degrade sealing, but thermal expansion distorts the geometry of a rigid metal seat.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "inventive_principles": ["#35 Parameter changes", "#37 Thermal expansion", "#1 Segmentation"],
+      "reasoning_chain": "1) The valve must tolerate high temperature, yet expansion changes the seat form. 2) In TRIZ terms, improve temperature capability while shape worsens. 3) Apply #37 by explicitly designing around thermal expansion rather than resisting it. 4) Apply #1 by splitting the seat into segments or slots. 5) Apply #35 by changing stiffness and preload so distortion is absorbed rather than transmitted.",
+      "solution": "Use a slotted or segmented metal seat ring with compensating spring preload. Thermal growth is accommodated by controlled segment motion, preserving contact and sealing over a wide temperature range.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-28",
+      "source": "TRIZ-GPT collection source paper: Deng et al. 2010, IEEE ICIEEM 2010:520-523",
+      "language": "en",
+      "domain": "pumps/reconfigurable-design",
+      "problem": "A submersible motor pump should adapt to different serial-parallel operating conditions, but reconfiguring the existing large unit is difficult to install and remove in real use.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Ease of repair (#34)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#1 Segmentation", "#6 Universality"],
+      "reasoning_chain": "1) The pump should work across more scenarios, but every new configuration makes maintenance harder. 2) Generalize as improving adaptability while worsening repairability. 3) Apply #1 by modularizing the reconfiguration function. 4) Apply #15 by making the flow-path arrangement changeable rather than fixed. 5) Apply #6 by letting one module serve multiple operating modes.",
+      "solution": "Create a modular switching section in the pump head that allows serial-parallel flow-path reconfiguration without removing the whole installed pump. The main machine stays in place while the mode-changing cartridge handles the adaptation.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-29",
+      "source": "TRIZ-GPT collection source paper: Deng et al. 2010, IEEE ICIEEM 2010:520-523",
+      "language": "en",
+      "domain": "pumps/modular-design",
+      "problem": "The pump should cover a broader range of applications, but building many specialized configurations increases spare-part inventory and material reserve.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Amount of substance (#26)"
+      },
+      "inventive_principles": ["#6 Universality", "#1 Segmentation", "#15 Dynamization"],
+      "reasoning_chain": "1) A wider operating envelope is useful, but multiple complete variants increase inventory burden. 2) Abstractly, improve versatility while limiting material variety. 3) Apply #6 by giving shared modules multiple functions. 4) Apply #1 by isolating only the truly variable parts. 5) Apply #15 by allowing those parts to be reconfigured instead of replaced by different whole pumps.",
+      "solution": "Standardize the motor and housing, then use reconfigurable impeller and diffuser modules that can be rearranged for different flow and head conditions. One platform serves many applications with fewer unique parts.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-30",
+      "source": "TRIZ-GPT collection source paper: Deng et al. 2010, IEEE ICIEEM 2010:520-523",
+      "language": "en",
+      "domain": "pumps/automatic-adaptation",
+      "problem": "A submersible pump should maintain good efficiency under changing pit conditions and operating jumps, but active control systems make the overall unit harder to manage.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Complexity of control (#37)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#23 Feedback", "#35 Parameter changes"],
+      "reasoning_chain": "1) Stable performance is needed across varying conditions, but manual or electronic control adds burden. 2) Improve reliability without increasing control complexity. 3) Apply #23 by using physical-process feedback already present in the pump. 4) Apply #15 by allowing internal geometry to adjust automatically. 5) Apply #35 by changing bypass or guide-vane state as operating pressure changes.",
+      "solution": "Add a self-actuated internal bypass or adjustable guide-vane element that responds to pressure differential. The pump automatically shifts toward an efficient operating state without a separate control system.",
+      "complexity": "complex"
+    },
+    {
+      "id": "TG-31",
+      "source": "TRIZ-GPT collection source paper: Akay et al. 2008, International Journal of Production Research 46(11):2913-2925",
+      "language": "en",
+      "domain": "manufacturing/ergonomics",
+      "problem": "Operators need better visibility of small assembly points, but stronger lighting near the workstation can create glare, heat, and visual fatigue.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#3 Local quality", "#19 Periodic action", "#32 Color changes"],
+      "reasoning_chain": "1) Brighter workstations improve seeing detail, but uniform extra light becomes uncomfortable. 2) This is improving illumination while worsening harmful factors. 3) Apply #3 by lighting only the target area. 4) Apply #19 by activating task lighting only when needed. 5) Apply #32 by increasing visual contrast instead of relying solely on more brightness.",
+      "solution": "Use localized cool LED ring lighting around the task point plus matte, high-contrast part markings. The operator sees the assembly area clearly with less glare and less total light energy.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-32",
+      "source": "TRIZ-GPT collection source paper: Akay et al. 2008, International Journal of Production Research 46(11):2913-2925",
+      "language": "en",
+      "domain": "manufacturing/ergonomic-tools",
+      "problem": "Workers must apply high fastening torque in assembly, but repeated high manual force causes wrist and shoulder strain.",
+      "contradiction_pair": {
+        "improving_parameter": "Force (#10)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#24 Intermediary/Mediator", "#15 Dynamization"],
+      "reasoning_chain": "1) The process still needs high fastening force, but human joints should not absorb it repeatedly. 2) Improve force capability without increasing harmful effects on the worker. 3) Apply #28 by replacing direct manual effort with another energy source. 4) Apply #24 by inserting an intermediate support between tool reaction and the worker. 5) Apply #15 by allowing the support to move with the task.",
+      "solution": "Use a powered fastening tool with a reaction arm or suspended balancer that absorbs torque reaction. The worker guides the tool but no longer bears the full repetitive rotational load.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-33",
+      "source": "TRIZ-GPT collection source paper: Akay et al. 2008, International Journal of Production Research 46(11):2913-2925",
+      "language": "en",
+      "domain": "manufacturing/workstation-design",
+      "problem": "Many part variants should be available close to the worker to reduce motion, but keeping all bins nearby increases workstation footprint and clutter.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Area of stationary object (#6)"
+      },
+      "inventive_principles": ["#7 Nested doll", "#15 Dynamization", "#25 Self-service"],
+      "reasoning_chain": "1) More variants within reach support flexible assembly, but the line cannot expand outward indefinitely. 2) Improve adaptability while the occupied area worsens. 3) Apply #7 by nesting storage density vertically or concentrically. 4) Apply #15 by making the storage surface rotate or move. 5) Apply #25 by using gravity or simple mechanisms so the system services the operator automatically.",
+      "solution": "Use a rotating tiered bin carousel or vertical gravity-fed parts tower placed close to the station. Many variants stay available in a compact footprint, and the needed part rotates into reach when selected.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-34",
+      "source": "TRIZ-GPT collection source paper: Cascini and Rissone 2004, Journal of Engineering Design 15(4):405-424",
+      "language": "en",
+      "domain": "plastics/snap-fit-design",
+      "problem": "A plastic snap-fit should be strong and secure in service, but it also needs enough flexibility during assembly to avoid cracking.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#35 Parameter changes", "#3 Local quality"],
+      "reasoning_chain": "1) Easy one-step assembly favors flexible features, but long-term retention favors stiffness and strength. 2) This is improving manufacturability while risking reliability. 3) Apply #3 by giving different regions different mechanical roles. 4) Apply #35 by changing local thickness or material response. 5) Apply #15 by allowing temporary flexure during assembly and rigidity after lock-in.",
+      "solution": "Design the snap with a locally thinned flex zone and a reinforced locking nose. The flex zone bends safely during insertion, while the final locked region remains stiff and durable in service.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-35",
+      "source": "TRIZ-GPT collection source paper: Cascini and Rissone 2004, Journal of Engineering Design 15(4):405-424",
+      "language": "en",
+      "domain": "plastics/surface-engineering",
+      "problem": "A molded plastic product should hide scratches and fingerprints with textured surfaces, but aggressive texture makes demolding more difficult and slows production.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Manufacturability (#32)"
+      },
+      "inventive_principles": ["#3 Local quality", "#10 Preliminary action", "#35 Parameter changes"],
+      "reasoning_chain": "1) Texture improves user perception and durability in use, but it increases mold-release resistance. 2) Abstractly, reduce harmful appearance effects without hurting manufacturability. 3) Apply #3 by texturing only the exposed user-contact surfaces. 4) Apply #10 by preparing mold draft and release strategy in advance. 5) Apply #35 by adjusting texture depth and mold-surface properties regionally.",
+      "solution": "Use selective microtexture only on visible or high-touch areas and keep draft-rich release zones smooth. Combine this with release-optimized mold coatings so texture benefits are preserved without slowing every demolding step.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-36",
+      "source": "TRIZ-GPT collection source paper: Cascini and Rissone 2004, Journal of Engineering Design 15(4):405-424",
+      "language": "en",
+      "domain": "plastics/color-processing",
+      "problem": "Coloring plastic in the molding process eliminates painting, but each color change creates purge waste and contamination in the machine.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#34 Discarding/recovering", "#35 Parameter changes"],
+      "reasoning_chain": "1) In-mold coloration simplifies downstream work, but color changeovers generate scrap. 2) This is improving manufacturability while substance loss worsens. 3) Apply #1 by isolating the color-introduction zone from the main melt stream. 4) Apply #34 by recovering or minimizing the sacrificial purge volume. 5) Apply #35 by changing the color concentration locally rather than recoloring the whole system volume.",
+      "solution": "Use a small-metering color module or interchangeable hot-runner insert near the gate so only a short segment of the melt path changes color. Purge waste is minimized and color switching becomes faster and cleaner.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-37",
+      "source": "TRIZ-GPT collection source paper: Bariani et al. 2004, Proceedings of the Institution of Mechanical Engineers Part B 218(8):1023-1027",
+      "language": "en",
+      "domain": "manufacturing/dfma",
+      "problem": "Reducing fasteners can shorten assembly time, but losing separate locating parts can increase the chance of incorrect assembly orientation.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#4 Asymmetry", "#5 Merging", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) Fewer parts and fewer screws speed assembly. 2) However, removing locators and alignment aids can create mistakes. 3) Apply #4 by using asymmetrical, keyed geometry that only fits correctly one way. 4) Apply #5 by merging alignment and fastening into the same feature. 5) Apply #24 by using a guiding intermediate shape during insertion.",
+      "solution": "Replace separate locator hardware with keyed self-jigging interfaces and captive snap features that only allow one correct orientation. Assembly becomes faster and more mistake-proof at the same time.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-38",
+      "source": "TRIZ-GPT collection source paper: Bariani et al. 2004, Proceedings of the Institution of Mechanical Engineers Part B 218(8):1023-1027",
+      "language": "en",
+      "domain": "manufacturing/structural-consolidation",
+      "problem": "Several brackets can be merged into one component to reduce part count, but a single simplified part may lose stiffness in multiple loading directions.",
+      "contradiction_pair": {
+        "improving_parameter": "Amount of substance (#26)",
+        "worsening_parameter": "Strength (#14)"
+      },
+      "inventive_principles": ["#17 Transition to a new dimension", "#3 Local quality"],
+      "reasoning_chain": "1) Consolidation reduces components and assembly work. 2) Yet flat simplified parts often become weaker than the original multi-part structure. 3) Apply #17 by moving stiffness into folds, ribs, and out-of-plane geometry. 4) Apply #3 by reinforcing only the paths that carry load.",
+      "solution": "Use a single folded sheet-metal or molded monobracket with embossed ribs and local stiffening features. The assembly keeps a low part count while recovering multidirectional stiffness through geometry rather than extra pieces.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-39",
+      "source": "TRIZ-GPT collection source paper: Bariani et al. 2004, Proceedings of the Institution of Mechanical Engineers Part B 218(8):1023-1027",
+      "language": "en",
+      "domain": "manufacturing/serviceability",
+      "problem": "Tool-less assembly improves production speed, but fully permanent snap-together structures can be difficult to disassemble for service.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Ease of repair (#34)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#34 Discarding/recovering", "#10 Preliminary action"],
+      "reasoning_chain": "1) Fast assembly wants simple irreversible snaps, while service wants reversible access. 2) This is improving operation convenience while repairability worsens. 3) Apply #1 by separating production retention features from service-release features. 4) Apply #34 by allowing a sacrificial element to be discarded during repair. 5) Apply #10 by preparing release access in the design before service is needed.",
+      "solution": "Use primary snap tabs for assembly and concealed release windows or sacrificial secondary clips for maintenance. Production remains tool-less, while service technicians can still take the product apart controllably.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-40",
+      "source": "TRIZ-GPT collection source paper: Li et al. 2009, IEEE Workshop on Computer Science and Engineering, vice redesign case",
+      "language": "en",
+      "domain": "tools/clamping",
+      "problem": "A bench vice should adjust jaw spacing quickly, but fast coarse motion often reduces the ability to generate high final clamping force.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Force (#10)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#15 Dynamization", "#1 Segmentation"],
+      "reasoning_chain": "1) Users want rapid repositioning across different workpiece sizes, but high clamping force still requires a screw mechanism. 2) Generalize as improving speed while force worsens. 3) Apply #1 by separating coarse and fine motion into two stages. 4) Apply #15 by switching between motion modes. 5) Apply #10 by pre-arranging a quick-release engagement before fine compression begins.",
+      "solution": "Use a quick-release half nut or sliding coarse-adjust stage for rapid opening and closing, then engage a conventional fine screw for final clamping force. The vice becomes both fast to set and strong in use.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-41",
+      "source": "TRIZ-GPT collection source paper: Li et al. 2009, IEEE Workshop on Computer Science and Engineering, vice redesign case",
+      "language": "en",
+      "domain": "tools/clamping-surfaces",
+      "problem": "The vice should securely grip many workpiece shapes, but harder, more aggressive jaws can mark or damage delicate parts.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#3 Local quality", "#30 Flexible shells and thin films", "#1 Segmentation"],
+      "reasoning_chain": "1) More jaw geometries help handle varied workpieces, but aggressive surfaces damage finished parts. 2) Improve adaptability without worsening harmful effects. 3) Apply #3 by tailoring local jaw contact geometry to the part. 4) Apply #30 by adding compliant contact skins rather than hard serrations everywhere. 5) Apply #1 by making the jaw surface modular.",
+      "solution": "Use replaceable jaw inserts such as soft pads, V-grooved blocks, and swiveling faces. The same vice handles flat, round, and delicate parts without marking them unnecessarily.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-42",
+      "source": "TRIZ-GPT collection source paper: Li et al. 2009, IEEE Workshop on Computer Science and Engineering, vice redesign case",
+      "language": "en",
+      "domain": "tools/structural-design",
+      "problem": "A bench vice should be stiff under load, but increasing body mass makes it harder to handle, ship, and install.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Weight of stationary object (#2)"
+      },
+      "inventive_principles": ["#17 Transition to a new dimension", "#40 Composite materials", "#31 Porous materials"],
+      "reasoning_chain": "1) More material gives stiffness, but solid mass grows quickly. 2) This becomes improving strength while weight worsens. 3) Apply #17 by using depth, folds, and box sections instead of solid bulk. 4) Apply #31 by creating voids where material is not needed. 5) Apply #40 by combining casting or forging methods with local reinforcement.",
+      "solution": "Use a ribbed hollow-body vice frame or box-section casting with reinforcement only in the main load paths. The structure stays stiff while overall mass is reduced substantially.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-43",
+      "source": "TRIZ-GPT collection source paper: Dong et al. 2021, Advanced Engineering Informatics 49:101361",
+      "language": "en",
+      "domain": "consumer-electronics/antenna-redesign",
+      "problem": "A satellite TV receiver system needs better signal capture, but enlarging the antenna or reflector reduces portability and convenience in installation.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#15 Dynamization", "#17 Transition to a new dimension"],
+      "reasoning_chain": "1) Better reception usually asks for larger capture geometry. 2) Larger hardware makes transport and field installation worse. 3) Apply #1 by splitting the receiving surface into segments. 4) Apply #15 by letting those segments change state between transport and use. 5) Apply #17 by deploying the receiving area in another geometric arrangement only during operation.",
+      "solution": "Use a folding or petal-like segmented reflector that packs compactly for transport and deploys into a larger effective aperture at installation. Signal reliability improves without permanent bulk.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-44",
+      "source": "TRIZ-GPT collection source paper: Dong et al. 2021, Advanced Engineering Informatics 49:101361",
+      "language": "en",
+      "domain": "consumer-electronics/installation-design",
+      "problem": "An antenna receiver should be easy for users to align and install, but adding more alignment aids and adjusters can make the system harder to manufacture and assemble.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#10 Preliminary action", "#4 Asymmetry", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) Users need intuitive installation, but too many brackets and knobs add complexity. 2) Improve convenience while device complexity worsens. 3) Apply #10 by building alignment intelligence into the geometry ahead of time. 4) Apply #4 by using asymmetric keyed parts that naturally orient themselves. 5) Apply #24 by using a guide feature as an intermediate during setup.",
+      "solution": "Use self-aligning keyed mounts, indexed angle stops, and a simple visual guide integrated into the bracket. The installer gets correct alignment cues without a large increase in separate parts or instructions.",
+      "complexity": "simple"
+    },
+    {
+      "id": "TG-45",
+      "source": "TRIZ-GPT collection source paper: Haynes and Yang 2023, Advanced Engineering Informatics 58:102149",
+      "language": "en",
+      "domain": "design-methods/digital-twin",
+      "problem": "A supersystem digital twin can supply rich contextual information for conceptual design, but considering too much surrounding-system data slows the early design process.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Loss of time (#25)"
+      },
+      "inventive_principles": ["#2 Taking out", "#10 Preliminary action", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) More contextual data improves concept relevance, but early ideation becomes slow and noisy. 2) This is improving adaptability while time loss worsens. 3) Apply #2 by excluding irrelevant supersystem elements from the active model. 4) Apply #10 by preparing a structured requirement filter in advance. 5) Apply #24 by using a knowledge graph or mediator layer between raw data and the designer.",
+      "solution": "Use a pre-filtered supersystem knowledge graph that activates only those external actors, constraints, and interactions relevant to the current requirement set. Designers still benefit from context, but they no longer need to process the full environment manually.",
+      "complexity": "complex"
+    },
+    {
+      "id": "TG-46",
+      "source": "TRIZ-GPT collection source paper: Haynes and Yang 2023, Advanced Engineering Informatics 58:102149",
+      "language": "en",
+      "domain": "design-methods/concept-evaluation",
+      "problem": "Design teams need realistic early-stage concept evaluation, but building high-fidelity physical prototypes for each concept is too slow and expensive.",
+      "contradiction_pair": {
+        "improving_parameter": "Accuracy of measurement (#28)",
+        "worsening_parameter": "Loss of time (#25)"
+      },
+      "inventive_principles": ["#26 Copying", "#28 Mechanics substitution", "#27 Cheap short-living objects"],
+      "reasoning_chain": "1) High evaluation fidelity is useful, but real prototypes cost time and money. 2) Abstractly, improve evaluation accuracy without losing too much time. 3) Apply #26 by substituting a copy or representation for the real artifact. 4) Apply #28 by replacing full physical testing with digital simulation. 5) Apply #27 by combining the simulation with cheap, disposable mock-ups where tactile cues matter.",
+      "solution": "Use a digital twin for performance behavior and a low-cost foam, cardboard, or 3D-printed mock-up for human interaction checks. The team evaluates concepts more realistically without waiting for full prototypes.",
+      "complexity": "medium"
+    },
+    {
+      "id": "TG-47",
+      "source": "TRIZ-GPT collection source paper: Dong et al. 2021, Advanced Engineering Informatics 49:101361 and Haynes and Yang 2023, Advanced Engineering Informatics 58:102149",
+      "language": "en",
+      "domain": "design-methods/virtual-sensing",
+      "problem": "A redesigned product should reveal hidden performance problems during operation, but adding sensors to every subsystem increases hardware burden and redesign cost.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Amount of substance (#26)"
+      },
+      "inventive_principles": ["#26 Copying", "#24 Intermediary/Mediator", "#5 Merging"],
+      "reasoning_chain": "1) Better diagnosis improves redesign decisions, but extra instrumentation adds parts and integration work. 2) Improve reliability while amount of substance worsens. 3) Apply #26 by creating virtual copies of unmeasured states. 4) Apply #24 by estimating hidden conditions through a digital twin rather than direct sensors everywhere. 5) Apply #5 by merging signals from existing sensors to infer additional variables.",
+      "solution": "Use virtual sensing: existing current, vibration, temperature, and signal-quality measurements feed the digital twin, which estimates hidden internal states and failure tendencies. The product gains diagnostic visibility without a large sensor increase.",
+      "complexity": "complex"
+    },
+    {
+      "id": "ALT-05",
+      "source": "Altshuller, And Suddenly the Inventor Appeared / 40 Principles, classic case: Mobius conveyor belt",
+      "language": "en",
+      "domain": "manufacturing/material-handling",
+      "problem": "A conveyor belt wears out quickly because the same edge and same surface are stressed all the time. Making the belt thicker extends life but increases cost and inertia.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#13 Inversion", "#17 Transition to a new dimension"],
+      "reasoning_chain": "1) The specific issue is uneven wear concentrated on one side of the belt. 2) Simply adding more material treats the symptom but raises material consumption. 3) Apply #13 by inverting the conventional two-sided strip logic. 4) Apply #17 by changing the geometry into a twisted loop so both sides become one continuous surface.",
+      "solution": "Give the belt a half twist before joining the ends, creating a Mobius-strip conveyor belt. Wear is distributed over the whole belt surface, significantly extending service life without making the belt thicker.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-06",
+      "source": "Altshuller, And Suddenly the Inventor Appeared, classic case: Boat plus boat catamaran",
+      "language": "en",
+      "domain": "marine/transportation",
+      "problem": "A narrow boat moves fast but is unstable, while a wide boat is stable but slow and draggy.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Speed (#9)"
+      },
+      "inventive_principles": ["#5 Merging", "#17 Transition to a new dimension", "#4 Asymmetry"],
+      "reasoning_chain": "1) The contradiction is between hydrodynamic slenderness and lateral stability. 2) A single hull forces a compromise between the two. 3) Apply #5 by combining two optimized narrow hulls into one system. 4) Apply #17 by separating stability and drag functions across space instead of one cross-section.",
+      "solution": "Use a catamaran: two slender hulls connected by a frame. The vessel keeps the low drag of narrow hulls while gaining the transverse stability of a much wider craft.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-07",
+      "source": "Altshuller, Creativity as an Exact Science / 40 Principles, classic case: rotating X-ray tube anode",
+      "language": "en",
+      "domain": "medical-imaging",
+      "problem": "A stronger X-ray beam improves imaging, but increasing power overheats and damages the anode target.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#1 Segmentation"],
+      "reasoning_chain": "1) More beam intensity requires more concentrated energy at the target. 2) A stationary target accumulates heat locally and fails. 3) Apply #15 by making the target move during operation. 4) Apply #1 by spreading the thermal load over multiple target regions instead of one fixed point.",
+      "solution": "Use a rotating anode in which the electron beam hits a spinning target disk. Heat is distributed over a much larger area, allowing higher X-ray output without destroying the target.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-08",
+      "source": "Altshuller, 40 Principles / The Innovation Algorithm, classic case: laminated safety glass",
+      "language": "en",
+      "domain": "materials/transportation",
+      "problem": "Glass should remain clear and rigid, but when it breaks it forms dangerous sharp fragments.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#40 Composite materials", "#11 Beforehand cushioning"],
+      "reasoning_chain": "1) Ordinary glass is useful in service but dangerous in failure. 2) Making it simply thicker does not solve fragmentation. 3) Apply #40 by combining glass with another material that holds fragments together. 4) Apply #11 by preparing the protective layer before breakage happens.",
+      "solution": "Use laminated safety glass with a transparent polymer interlayer bonded between glass sheets. When fracture occurs, the interlayer retains the fragments and sharply reduces injury risk.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-09",
+      "source": "Altshuller, Creativity as an Exact Science, classic case: gimbaled ship compass",
+      "language": "en",
+      "domain": "navigation/instrumentation",
+      "problem": "A compass on a rolling ship must remain level for accuracy, but a rigid mount tilts with the vessel and gives poor readings.",
+      "contradiction_pair": {
+        "improving_parameter": "Accuracy of measurement (#28)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#15 Dynamization"],
+      "reasoning_chain": "1) The ship moves, but the measuring reference should not. 2) Keeping the instrument rigid to the ship creates error. 3) Apply #15 by giving the instrument freedom to reorient itself relative to gravity while the support moves.",
+      "solution": "Suspend the compass in gimbals so the housing can rotate independently of the ship's motion. The instrument stays approximately level and preserves directional accuracy.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-10",
+      "source": "Altshuller, And Suddenly the Inventor Appeared / 40 Principles, classic case: Curie-point self-limiting motor",
+      "language": "en",
+      "domain": "electromechanical/thermal-protection",
+      "problem": "An electric motor must be protected from overheating, but adding separate temperature sensors and control logic increases cost and complexity.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#23 Feedback", "#35 Parameter changes"],
+      "reasoning_chain": "1) The system needs temperature awareness, but an extra subsystem adds parts. 2) Generalize this as reducing harm without increasing complexity. 3) Apply #35 by using a material whose magnetic state changes at a critical temperature. 4) Apply #23 by making the system respond to its own condition automatically. 5) Apply #28 by replacing a separate mechanical/electronic measurement chain with a field-based material effect.",
+      "solution": "Use a ferromagnetic component or magnetic circuit element designed around the Curie point. When temperature rises above the threshold, magnetic performance drops and the motor self-limits or shuts down without a separate sensor chain.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-11",
+      "source": "Altshuller, The Innovation Algorithm / 40 Principles, classic case: halogen lamp regeneration",
+      "language": "en",
+      "domain": "lighting/materials",
+      "problem": "A hotter filament gives brighter light, but higher filament temperature shortens lamp life because tungsten evaporates faster.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#39 Inert atmosphere", "#25 Self-service"],
+      "reasoning_chain": "1) The contradiction is brightness versus filament lifetime. 2) Increasing performance destroys the working element. 3) Apply #39 by changing the bulb atmosphere so the failure mechanism changes. 4) Apply #25 by causing the system to restore the working element through its own operation.",
+      "solution": "Use a halogen-gas bulb in which evaporated tungsten participates in a regenerative chemical cycle and redeposits on the filament. The lamp can run hotter and brighter with much longer life than a comparable ordinary incandescent bulb.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-12",
+      "source": "Altshuller, The Innovation Algorithm / 40 Principles, classic case: variable-geometry wing",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "An aircraft needs high lift at takeoff and landing, but low drag at high-speed cruise.",
+      "contradiction_pair": {
+        "improving_parameter": "Force (#10)",
+        "worsening_parameter": "Speed (#9)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#34 Discarding/recovering"],
+      "reasoning_chain": "1) One fixed wing geometry cannot be simultaneously optimal for both low-speed lift and high-speed efficiency. 2) A compromise shape underperforms in both regimes. 3) Apply #15 by making the aerodynamic configuration change with operating condition. 4) Apply #34 by extending high-lift features only when needed and removing them from the airflow during cruise.",
+      "solution": "Use movable flaps, slats, or variable-sweep geometry so the wing changes shape across flight phases. Lift is increased during takeoff and landing, while cruise drag remains low.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-13",
+      "source": "Altshuller, The Innovation Algorithm / 40 Principles, classic case: deployable segmented antenna",
+      "language": "en",
+      "domain": "space-systems/communications",
+      "problem": "A communication antenna should have a large effective aperture for good signal performance, but a large rigid dish is difficult to transport and launch.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#15 Dynamization"],
+      "reasoning_chain": "1) Signal collection improves with size, but logistics worsen with size. 2) The aperture is needed in operation, not during transport. 3) Apply #1 by breaking the antenna into segments. 4) Apply #15 by letting those segments move between compact and deployed states.",
+      "solution": "Use a foldable segmented reflector or petal-like dish that packs tightly and deploys after installation or launch. The system achieves large operational area without large transport volume.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-14",
+      "source": "Altshuller, Creativity as an Exact Science / 40 Principles, classic case: electrostatic painting",
+      "language": "en",
+      "domain": "manufacturing/coatings",
+      "problem": "Paint should cover all surfaces efficiently, including recesses, but conventional spraying wastes material through overspray and poor deposition control.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#24 Intermediary/Mediator"],
+      "reasoning_chain": "1) The needed function is controlled deposition, not simply more spray momentum. 2) Mechanical spraying loses material because droplets are not guided strongly enough. 3) Apply #28 by replacing purely mechanical momentum with an electric field. 4) Apply #24 by using charge as an intermediate that guides droplets to the workpiece.",
+      "solution": "Electrostatically charge the paint and the target relation so droplets are attracted to the workpiece. Transfer efficiency rises and overspray drops, even for complex shapes.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-15",
+      "source": "Altshuller, The Innovation Algorithm, classic case: rail thermal expansion control",
+      "language": "en",
+      "domain": "rail-transport/infrastructure",
+      "problem": "Rail should remain continuous for smooth travel, but temperature changes make long steel rails expand and buckle.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Shape (#12)"
+      },
+      "inventive_principles": ["#9 Preliminary anti-action", "#37 Thermal expansion"],
+      "reasoning_chain": "1) Continuous rails are desirable for operation, but thermal growth changes geometry unpredictably. 2) The contradiction is not removably solved by more mass. 3) Apply #37 by explicitly using the thermal effect in design. 4) Apply #9 by stressing or spacing the rail system in advance so later expansion does not create dangerous distortion.",
+      "solution": "Install the rail at a controlled neutral temperature or use engineered expansion accommodation where needed. The system anticipates thermal growth instead of reacting to buckling afterward.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-16",
+      "source": "Altshuller, 40 Principles, classic case: honeycomb sandwich panel",
+      "language": "en",
+      "domain": "materials/structures",
+      "problem": "A structural panel should be stiff and strong, but adding solid material to achieve stiffness makes it heavy.",
+      "contradiction_pair": {
+        "improving_parameter": "Strength (#14)",
+        "worsening_parameter": "Weight of stationary object (#2)"
+      },
+      "inventive_principles": ["#40 Composite materials", "#31 Porous materials"],
+      "reasoning_chain": "1) Bending stiffness depends strongly on section depth, not only on solid mass. 2) A monolithic plate wastes material away from the surfaces that carry stress. 3) Apply #31 by introducing an empty or cellular interior. 4) Apply #40 by combining thin strong skins with a lightweight core.",
+      "solution": "Use a honeycomb sandwich panel with thin load-carrying face sheets bonded to a lightweight cellular core. The panel achieves high stiffness-to-weight ratio with much less solid material.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-17",
+      "source": "Altshuller, Creativity as an Exact Science, classic case: self-sharpening abrasive tool",
+      "language": "en",
+      "domain": "manufacturing/cutting-tools",
+      "problem": "A cutting or abrasive tool should stay sharp, but sharpening removes material and interrupts production.",
+      "contradiction_pair": {
+        "improving_parameter": "Shape (#12)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#34 Discarding/recovering", "#35 Parameter changes"],
+      "reasoning_chain": "1) Sharpness is lost when the edge rounds off during use. 2) External resharpening restores function but consumes time and material. 3) Apply #34 by intentionally discarding only small worn portions during operation. 4) Apply #35 by tailoring microstructure so wear exposes fresh sharp elements.",
+      "solution": "Use a self-sharpening abrasive or cutter whose matrix is designed for controlled micro-fracture and grain release. As dull grains are removed, new sharp edges are exposed automatically.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-18",
+      "source": "Altshuller, And Suddenly the Inventor Appeared / 40 Principles, classic case: ultrasonic drilling of brittle materials",
+      "language": "en",
+      "domain": "manufacturing/precision-processing",
+      "problem": "Glass or ceramic parts need precise holes, but ordinary mechanical drilling cracks brittle materials.",
+      "contradiction_pair": {
+        "improving_parameter": "Manufacturability (#32)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution", "#18 Mechanical vibration"],
+      "reasoning_chain": "1) The required function is material removal, but direct rotary force causes cracks. 2) Mechanical contact at full drilling torque is the source of harm. 3) Apply #28 by changing the interaction method. 4) Apply #18 by using high-frequency vibration and abrasive action instead of conventional drilling force.",
+      "solution": "Drill brittle materials ultrasonically with a vibrating tool and abrasive slurry. The material is eroded in a controlled way, enabling accurate holes with far less cracking.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-19",
+      "source": "Altshuller, Creativity as an Exact Science / 40 Principles, classic case: bimetal thermostat",
+      "language": "en",
+      "domain": "controls/thermal-switching",
+      "problem": "A system should switch automatically at a temperature threshold, but adding sensors and controllers makes the switching function more complex than necessary.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#37 Thermal expansion", "#23 Feedback"],
+      "reasoning_chain": "1) The system already contains the temperature stimulus that matters. 2) A separate measurement chain duplicates that function. 3) Apply #37 by using differential thermal expansion directly. 4) Apply #23 by letting the switching element respond to the physical condition itself.",
+      "solution": "Use a bimetal strip or disc that bends at the required temperature and opens or closes the circuit directly. The threshold function is achieved with very few parts and high robustness.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-20",
+      "source": "Altshuller, 40 Principles, classic case: telescoping ladder",
+      "language": "en",
+      "domain": "consumer-products/access-equipment",
+      "problem": "A ladder should be long enough for reach in use, but a long rigid ladder is difficult to store and transport.",
+      "contradiction_pair": {
+        "improving_parameter": "Length of moving object (#3)",
+        "worsening_parameter": "Volume of moving object (#7)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#7 Nested doll", "#15 Dynamization"],
+      "reasoning_chain": "1) The ladder needs large working size and small storage size. 2) A fixed object cannot satisfy both. 3) Apply #1 by splitting the ladder into sections. 4) Apply #7 by nesting those sections within each other. 5) Apply #15 by making the sections extend only during use.",
+      "solution": "Use a telescoping ladder with nested locking sections. It collapses to a compact package for transport and extends to full reach when needed.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-21",
+      "source": "Altshuller, The Innovation Algorithm / 40 Principles, classic case: retractable landing gear",
+      "language": "en",
+      "domain": "aerospace",
+      "problem": "Aircraft need wheels for takeoff and landing, but exposed wheels create drag during flight.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Device complexity (#36)"
+      },
+      "inventive_principles": ["#15 Dynamization", "#34 Discarding/recovering"],
+      "reasoning_chain": "1) The wheels are essential only during part of the mission. 2) Keeping them always exposed harms aerodynamic performance. 3) Apply #34 by removing the wheel system from the airflow when it is not needed. 4) Apply #15 by making its position variable by flight phase.",
+      "solution": "Use retractable landing gear that extends only for takeoff and landing and folds into the fuselage or wing during cruise. The aircraft retains ground mobility without paying full-time aerodynamic penalty.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-22",
+      "source": "Altshuller, 40 Principles, classic case: easy-open tear strip",
+      "language": "en",
+      "domain": "packaging",
+      "problem": "A package must stay securely closed in transport, but users should also be able to open it easily without tools.",
+      "contradiction_pair": {
+        "improving_parameter": "Ease of operation (#33)",
+        "worsening_parameter": "Reliability (#27)"
+      },
+      "inventive_principles": ["#1 Segmentation", "#34 Discarding/recovering"],
+      "reasoning_chain": "1) A strong closure resists accidental opening, but that same strength harms usability. 2) A single uniform wall forces the trade-off. 3) Apply #1 by creating a separate sacrificial opening line. 4) Apply #34 by letting only the tear strip be destroyed while the main structure remains optimized for strength.",
+      "solution": "Add a perforated tear strip or pull tab that breaks a narrow sacrificial section of the package. The main enclosure remains strong, while intended opening becomes easy and controlled.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-23",
+      "source": "Altshuller, 40 Principles, classic case: braided reinforced hose",
+      "language": "en",
+      "domain": "fluid-systems/materials",
+      "problem": "A hose should bend easily during installation, but it must also withstand internal pressure without ballooning or rupturing.",
+      "contradiction_pair": {
+        "improving_parameter": "Adaptability or versatility (#35)",
+        "worsening_parameter": "Strength (#14)"
+      },
+      "inventive_principles": ["#40 Composite materials", "#3 Local quality"],
+      "reasoning_chain": "1) Flexibility and pressure resistance pull the design in opposite directions. 2) A single homogeneous material rarely delivers both well. 3) Apply #40 by combining materials with different functions. 4) Apply #3 by assigning sealing to one layer and tensile restraint to another.",
+      "solution": "Use a flexible inner tube for sealing and a braided wire or fiber reinforcement layer for pressure containment. The hose stays bendable while resisting expansion and burst.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-24",
+      "source": "Altshuller, 40 Principles, classic case: porous self-lubricating bearing",
+      "language": "en",
+      "domain": "tribology/mechanical-design",
+      "problem": "A bearing needs continuous lubrication for long life, but external oiling systems add maintenance and leakage risk.",
+      "contradiction_pair": {
+        "improving_parameter": "Reliability (#27)",
+        "worsening_parameter": "Loss of substance (#23)"
+      },
+      "inventive_principles": ["#31 Porous materials", "#25 Self-service"],
+      "reasoning_chain": "1) The lubrication function is important, but an external supply complicates operation. 2) Generalize this as improving reliability while reducing substance loss and service burden. 3) Apply #31 by making the bearing body porous. 4) Apply #25 by letting that porous body store and release lubricant itself during operation.",
+      "solution": "Use a sintered porous bearing impregnated with oil. The bearing slowly releases lubricant where needed and replenishes it internally by capillary action, reducing separate lubrication infrastructure.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-25",
+      "source": "Altshuller, Creativity as an Exact Science / 40 Principles, classic case: magnetic separator",
+      "language": "en",
+      "domain": "manufacturing/process-separation",
+      "problem": "Metal particles should be removed from grain, powder, or bulk product streams, but stopping the flow for manual inspection hurts throughput.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Productivity (#39)"
+      },
+      "inventive_principles": ["#28 Mechanics substitution"],
+      "reasoning_chain": "1) Contamination must be removed, but manual separation interrupts production. 2) The harmful factor is the metal impurity, not the bulk material itself. 3) Apply #28 by replacing mechanical/manual separation with a field-based interaction that acts continuously in motion.",
+      "solution": "Place permanent magnets or magnetic separators along the product path. Ferromagnetic contaminants are captured continuously while the main stream keeps flowing at production rate.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-26",
+      "source": "Altshuller, The Innovation Algorithm / 40 Principles, classic case: air-cushion vehicle",
+      "language": "en",
+      "domain": "transportation",
+      "problem": "A vehicle should move quickly over soft ground, water, or uneven terrain, but wheels or hull contact create drag and resistance.",
+      "contradiction_pair": {
+        "improving_parameter": "Speed (#9)",
+        "worsening_parameter": "Object-affected harmful factors (#30)"
+      },
+      "inventive_principles": ["#29 Pneumatic or hydraulic construction", "#30 Flexible shells and thin films"],
+      "reasoning_chain": "1) Contact with the surface causes friction, sinkage, or drag. 2) A conventional wheeled or hull-borne vehicle remains tied to one terrain class. 3) Apply #29 by introducing a pressurized fluid cushion. 4) Apply #30 by using a flexible skirt to contain and stabilize that cushion.",
+      "solution": "Use an air-cushion vehicle or hovercraft that rides on a pressurized air layer contained by a flexible skirt. Surface contact is drastically reduced, allowing movement over diverse terrain with low drag.",
+      "complexity": "medium"
+    },
+    {
+      "id": "ALT-27",
+      "source": "Altshuller, 40 Principles, classic case: vacuum flask",
+      "language": "en",
+      "domain": "thermal-products",
+      "problem": "A container should keep liquid hot or cold for a long time, but adding thick insulation increases bulk and weight.",
+      "contradiction_pair": {
+        "improving_parameter": "Temperature (#17)",
+        "worsening_parameter": "Weight of stationary object (#2)"
+      },
+      "inventive_principles": ["#2 Taking out", "#39 Inert atmosphere"],
+      "reasoning_chain": "1) The main cause of heat loss is conduction and convection through the medium around the liquid. 2) Adding more solid insulation helps but adds bulk. 3) Apply #2 by removing the heat-transfer medium between walls. 4) Apply #39 by replacing that space with vacuum or controlled atmosphere.",
+      "solution": "Use a double-wall flask with an evacuated gap and reflective inner surfaces. Thermal transfer falls sharply without requiring very thick solid insulation.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-28",
+      "source": "Altshuller, 40 Principles, classic case: self-closing door",
+      "language": "en",
+      "domain": "buildings/energy-saving",
+      "problem": "A door should remain closed to save conditioned air and maintain safety, but people must pass through it easily without remembering to close it.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Ease of operation (#33)"
+      },
+      "inventive_principles": ["#25 Self-service", "#15 Dynamization"],
+      "reasoning_chain": "1) Leaving the door open wastes energy and reduces control of the room, but manual closing is inconvenient and unreliable. 2) Improve harmful-factor reduction without reducing convenience. 3) Apply #25 by letting the door perform the closing function itself. 4) Apply #15 by using a movable restoring mechanism active only during passage cycles.",
+      "solution": "Use a spring hinge, floor closer, or hydraulic self-closing mechanism so the door opens normally for users and then returns automatically to the closed position.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-29",
+      "source": "Altshuller, Creativity as an Exact Science / 40 Principles, classic case: flash photography",
+      "language": "en",
+      "domain": "optics/imaging",
+      "problem": "Low-light photography needs more light, but increasing exposure time causes motion blur and camera shake.",
+      "contradiction_pair": {
+        "improving_parameter": "Illumination intensity (#18)",
+        "worsening_parameter": "Loss of time (#25)"
+      },
+      "inventive_principles": ["#19 Periodic action", "#10 Preliminary action"],
+      "reasoning_chain": "1) The image sensor needs more photons, but a long exposure integrates unwanted motion. 2) Continuous low light is the wrong form of energy delivery. 3) Apply #19 by supplying light in a short pulse instead of continuously. 4) Apply #10 by charging or preparing the light-emission system before the shutter event.",
+      "solution": "Use a brief but intense flash synchronized with image capture. The subject is illuminated strongly during a very short interval, reducing motion blur without requiring a long exposure.",
+      "complexity": "simple"
+    },
+    {
+      "id": "ALT-30",
+      "source": "Altshuller, The Innovation Algorithm / Creativity as an Exact Science, classic case: extinguishing reactive-metal fires",
+      "language": "en",
+      "domain": "safety/fire-protection",
+      "problem": "A very hot reactive-metal fire must be extinguished, but water or ordinary liquid suppression can intensify the reaction and create additional hazards.",
+      "contradiction_pair": {
+        "improving_parameter": "Object-affected harmful factors (#30)",
+        "worsening_parameter": "Object-generated harmful factors (#31)"
+      },
+      "inventive_principles": ["#39 Inert atmosphere", "#35 Parameter changes"],
+      "reasoning_chain": "1) The suppression agent itself becomes part of the problem when it chemically reacts with the burning material. 2) Improve harm reduction without introducing a worse side effect. 3) Apply #39 by excluding oxygen with an inert or nonreactive suppressing medium. 4) Apply #35 by changing the extinguishing medium from liquid to dry particulate or gas form.",
+      "solution": "Use dry powder or other inert-class suppression suitable for reactive-metal fires. The powder blankets the burning material, isolates it from oxygen, and avoids the dangerous reactions caused by water.",
+      "complexity": "simple"
+    }
+  ]
+}
