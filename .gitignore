@@ -10,9 +10,5 @@ build/
 dist/
 data/chroma_db/
 data/artifacts/
-data/raw_generations.jsonl
-data/judged.jsonl
-data/matrix_validated.jsonl
-data/deduplicated.jsonl
 ui/node_modules/
 ui/dist/
