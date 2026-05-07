@@ -9,9 +9,38 @@ const initialAgentState = {
   critic: { status: 'waiting', logLine: 'Waiting for candidate solution.' },
 }
 
+function deriveLogLine(agent, updates) {
+  const truncate = (str, max) => (str && str.length > max ? str.slice(0, max - 1) + '…' : str || '')
+  const firstSentence = (str) => {
+    if (!str) return ''
+    const m = str.match(/[^.!?]+[.!?]/)
+    return truncate(m ? m[0].trim() : str.trim(), 110)
+  }
+
+  switch (agent) {
+    case 'analyst': {
+      return firstSentence(updates.analysis) || 'Analysis complete.'
+    }
+    case 'detector': {
+      return updates.contradictions?.[0] || 'No contradiction parsed.'
+    }
+    case 'solver': {
+      const principles = updates.selected_principles ?? []
+      const names = principles.slice(0, 2).join(', ')
+      return `${principles.length} principle${principles.length !== 1 ? 's' : ''} selected${names ? ': ' + names : ''}`
+    }
+    case 'critic': {
+      return firstSentence(updates.critic_feedback) || 'Evaluation complete.'
+    }
+    default:
+      return 'Step complete.'
+  }
+}
+
 export function useTrizStream() {
   const [status, setStatus] = useState('idle')
   const [result, setResult] = useState(null)
+  const [partialResult, setPartialResult] = useState(null)
   const [error, setError] = useState('')
   const [agentStates, setAgentStates] = useState(initialAgentState)
   const sourceRef = useRef(null)
@@ -23,6 +52,7 @@ export function useTrizStream() {
     }
     setStatus('idle')
     setResult(null)
+    setPartialResult(null)
     setError('')
     setAgentStates(initialAgentState)
   }, [])
@@ -38,6 +68,7 @@ export function useTrizStream() {
     setStatus('running')
     setError('')
     setResult(null)
+    setPartialResult(null)
     setAgentStates(initialAgentState)
 
     const streamUrl = `http://localhost:8000/api/stream?problem=${encodeURIComponent(trimmed)}`
@@ -51,21 +82,26 @@ export function useTrizStream() {
         [payload.agent]: {
           ...prev[payload.agent],
           status: 'active',
-          logLine: 'Running...',
+          logLine: 'Running…',
         },
       }))
     })
 
     source.addEventListener('agent_done', (event) => {
       const payload = JSON.parse(event.data)
+      const updates = payload.updates || {}
+      const logLine = deriveLogLine(payload.agent, updates)
+
       setAgentStates((prev) => ({
         ...prev,
         [payload.agent]: {
           ...prev[payload.agent],
           status: 'done',
-          logLine: payload.log_line || 'Step complete.',
+          logLine,
         },
       }))
+
+      setPartialResult((prev) => ({ ...(prev || {}), ...updates }))
     })
 
     source.addEventListener('complete', (event) => {
@@ -101,6 +137,7 @@ export function useTrizStream() {
   return {
     status,
     result,
+    partialResult,
     error,
     agentStates,
     currentStep,
