@@ -1,10 +1,11 @@
-from typing import Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict
 
 
 class TRIZState(TypedDict, total=False):
     original_problem: str
     analysis: Optional[str]
     contradictions: List[str]
+    contradiction_details: Optional[List[Dict[str, Any]]]
     selected_principles: List[str]
     final_solution: Optional[str]
     critic_feedback: Optional[str]
