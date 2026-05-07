@@ -1,58 +1,74 @@
-import { useMemo, useState } from 'react'
-
-function buildMarkdown(state) {
-  if (!state) return ''
+function ReasoningSections({ state }) {
   const sections = []
 
   if (state.analysis) {
-    sections.push(`## 1. Problem Analysis\n\n${state.analysis}`)
+    sections.push({
+      title: '1. Problem Analysis',
+      content: <p>{state.analysis}</p>,
+    })
   }
 
   const contradictions = state.contradictions || []
   if (contradictions.length > 0) {
-    const items = contradictions.map((c) => `- ${c}`).join('\n')
-    sections.push(`## 2. Identified Contradictions\n\n${items}`)
+    sections.push({
+      title: '2. Identified Contradictions',
+      content: (
+        <ul>
+          {contradictions.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      ),
+    })
   }
 
   const principles = state.selected_principles || []
   if (principles.length > 0) {
-    const items = principles.map((p) => `- ${p}`).join('\n')
-    sections.push(`## 3. Selected TRIZ Principles\n\n${items}`)
+    sections.push({
+      title: '3. Selected TRIZ Principles',
+      content: (
+        <ul>
+          {principles.map((p) => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
+      ),
+    })
   }
 
   if (state.final_solution) {
-    sections.push(`## 4. Proposed Solution\n\n${state.final_solution}`)
+    sections.push({
+      title: '4. Proposed Solution',
+      content: <p>{state.final_solution}</p>,
+    })
   }
 
   if (state.critic_feedback) {
-    sections.push(`## 5. Critic Feedback\n\n${state.critic_feedback}`)
+    sections.push({
+      title: '5. Critic Feedback',
+      content: <p>{state.critic_feedback}</p>,
+    })
   }
 
-  return sections.join('\n\n')
-}
-
-function renderMarkdown(markdown) {
-  return markdown
-    .split('\n')
-    .map((line) => {
-      if (line.startsWith('## ')) return `<h3>${line.slice(3)}</h3>`
-      if (line.startsWith('- ')) return `<li>${line.slice(2)}</li>`
-      if (line === '') return '<br/>'
-      return `<p>${line}</p>`
-    })
-    .join('')
+  return (
+    <>
+      {sections.map((s) => (
+        <section className="reasoning-section" key={s.title}>
+          <h3>{s.title}</h3>
+          {s.content}
+        </section>
+      ))}
+    </>
+  )
 }
 
 export default function ReasoningChain({ state }) {
-  const [open, setOpen] = useState(false)
-  const rendered = useMemo(() => renderMarkdown(buildMarkdown(state)), [state])
-
   return (
-    <section className="reasoning-screen">
-      <button className="text-button reasoning-toggle" onClick={() => setOpen((v) => !v)} type="button">
-        See full reasoning chain {open ? '↑' : '↓'}
-      </button>
-      {open ? <div className="reasoning-content" dangerouslySetInnerHTML={{ __html: rendered }} /> : null}
-    </section>
+    <details className="reasoning-screen">
+      <summary className="text-button reasoning-toggle">See full reasoning chain</summary>
+      <div className="reasoning-content">
+        <ReasoningSections state={state} />
+      </div>
+    </details>
   )
 }
