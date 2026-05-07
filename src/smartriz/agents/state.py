@@ -7,6 +7,7 @@ class TRIZState(TypedDict, total=False):
     contradictions: List[str]
     contradiction_details: Optional[List[Dict[str, Any]]]
     selected_principles: List[str]
+    principle_applications: Optional[Dict[str, str]]
     final_solution: Optional[str]
     critic_feedback: Optional[str]
     iterations: int

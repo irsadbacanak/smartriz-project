@@ -57,6 +57,8 @@ Identify the TRIZ technical contradictions present in this problem."""
 
 SOLVER_SYSTEM = """You are a TRIZ inventive principles expert. Given contradictions, select relevant TRIZ inventive principles and propose a concrete solution.
 
+All output strings MUST be in English.
+
 The 40 TRIZ principles include:
 1: Segmentation, 2: Taking out, 3: Local quality, 4: Asymmetry, 5: Merging,
 6: Universality, 7: Nested doll, 8: Anti-weight, 9: Preliminary anti-action, 10: Preliminary action,
@@ -72,10 +74,15 @@ The 40 TRIZ principles include:
 Respond with a JSON object containing exactly these fields:
 {
   "selected_principles": ["<number>: <name>", ...],
+  "principle_applications": {
+    "<principle_number_as_string>": "<1-2 sentences describing how this principle is applied to THIS specific problem>",
+    ...
+  },
   "final_solution": "<concrete 4-8 sentence solution proposal applying the selected principles>"
 }
 
-Select 2-4 principles most relevant to resolving the contradictions."""
+Select 2-4 principles most relevant to resolving the contradictions.
+The principle_applications keys must be the string form of the principle number (e.g. "1", "8")."""
 
 SOLVER_USER = """Original problem: {problem}
 

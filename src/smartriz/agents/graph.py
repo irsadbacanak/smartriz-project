@@ -89,10 +89,19 @@ def react_solver(state: TRIZState) -> dict:
             problem=state["original_problem"],
             contradictions=contradictions_text,
         ),
-        schema_hint='{"selected_principles": ["1: Segmentation", ...], "final_solution": "..."}',
+        schema_hint='{"selected_principles": ["1: Segmentation"], "principle_applications": {"1": "Applied as..."}, "final_solution": "..."}',
     )
+    raw_apps = result.get("principle_applications")
+    if isinstance(raw_apps, dict) and all(
+        isinstance(k, str) and isinstance(v, str) for k, v in raw_apps.items()
+    ):
+        principle_applications = raw_apps
+    else:
+        principle_applications = None
+
     return {
         "selected_principles": result.get("selected_principles", []),
+        "principle_applications": principle_applications,
         "final_solution": result.get("final_solution", ""),
     }
 
