@@ -1,17 +1,22 @@
 import { useMemo, useState } from 'react'
 import Breadcrumb from './components/Breadcrumb'
-import SolutionBody from './components/SolutionBody'
-import SolutionHero from './components/SolutionHero'
+import { ActionsFooter } from './components/results/ActionsFooter'
+import { ContradictionCard } from './components/results/ContradictionCard'
+import { CriticAssessment } from './components/results/CriticAssessment'
+import { PrinciplesGrid } from './components/results/PrinciplesGrid'
+import { ReasoningTrace } from './components/results/ReasoningTrace'
+import { ReferenceMatrix } from './components/results/ReferenceMatrix'
+import { ResultHeader } from './components/results/ResultHeader'
+import { ProblemSummary } from './components/results/ProblemSummary'
+import { SolutionText } from './components/results/SolutionText'
 import { casesMock } from './data/casesMock'
 import { matrixMock } from './data/matrixMock'
 import { parameters } from './data/parameters'
 import { principles } from './data/principles'
 import { useTrizStream } from './hooks/useTrizStream'
 import AgentPipeline from './screens/AgentPipeline'
-import ContradictionMatrix from './screens/ContradictionMatrix'
 import PrincipleDetailPanel from './screens/PrincipleDetailPanel'
 import ProblemInput from './screens/ProblemInput'
-import ReasoningChain from './screens/ReasoningChain'
 import './App.css'
 
 function resolvePair(result) {
@@ -84,8 +89,6 @@ export default function App() {
     setExpandedPrinciple(null)
   }
 
-  const primaryContradiction = result?.contradiction_details?.[0] || null
-
   return (
     <div className="app-shell">
       {status !== 'idle' ? <Breadcrumb currentStep={currentStep} /> : null}
@@ -109,38 +112,28 @@ export default function App() {
 
       {status === 'complete' ? (
         <main className="results-page">
-          <SolutionHero
-            contradiction={primaryContradiction}
-            problem={problem}
-            meta={result?.meta}
+          <ResultHeader meta={result?.meta} onBack={handleRefine} />
+          <ProblemSummary problem={problem} domain={domain} />
+          <ContradictionCard
+            details={result?.contradiction_details?.[0]}
+            contradictions={result?.contradictions}
           />
-
-          <SolutionBody
-            finalSolution={result?.final_solution}
+          <PrinciplesGrid
             principles={recommendedPrinciples}
-            principleApplications={result?.principle_applications}
-            criticFeedback={result?.critic_feedback}
-            onExpandPrinciple={setExpandedPrinciple}
+            applications={result?.principle_applications}
+            onExpand={setExpandedPrinciple}
           />
-
-          <ContradictionMatrix
+          <SolutionText text={result?.final_solution} />
+          <CriticAssessment feedback={result?.critic_feedback} />
+          <ReferenceMatrix
             parameters={parameters}
             improvingId={pair.improvingId}
             worseningId={pair.worseningId}
             matrixMap={matrixMock}
+            principleIds={recommendedPrinciples.map(p => p.id)}
           />
-
-          <ReasoningChain state={result} />
-
-          <div className="footer-actions">
-            <button className="outline-button" type="button">
-              Export as PDF
-            </button>
-            <button className="primary-button" type="button" onClick={handleRefine}>
-              Refine problem →
-            </button>
-          </div>
-
+          <ReasoningTrace state={result} />
+          <ActionsFooter onRefine={handleRefine} />
           <PrincipleDetailPanel
             principle={expandedPrinciple}
             cases={domainCases}
