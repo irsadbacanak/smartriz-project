@@ -22,7 +22,16 @@
   --space-6: 24px;
   --space-8: 32px;
   --radius-lg: 12px;
+  --radius-xl: 16px;
   --surface-2: #f0efe9;
+  --space-10: 40px;
+  --space-12: 48px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08);
+  --improving-bg: #e8f5e9;
+  --improving-text: #2e7d32;
+  --worsening-bg: #fce4ec;
+  --worsening-text: #c62828;
 }
 
 [data-theme="dark"] {
@@ -34,4 +43,8 @@
   --text-3: #6e6a62;
   --reading-tint: #232220;
   --surface-2: #2a2927;
+  --improving-bg: #1b3a1d;
+  --improving-text: #66bb6a;
+  --worsening-bg: #3e1a1a;
+  --worsening-text: #ef9a9a;
 }
