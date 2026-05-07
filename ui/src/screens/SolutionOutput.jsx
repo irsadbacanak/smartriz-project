@@ -8,11 +8,14 @@ export default function SolutionOutput({
   principles,
   cases,
   finalSolution,
+  confidence,
   onRefine,
 }) {
   const bullets = finalSolution
     ? finalSolution.split('.').map((item) => item.trim()).filter(Boolean).slice(0, 4)
     : []
+
+  const showCases = cases && cases.length > 0
 
   return (
     <section className="solution-card">
@@ -44,21 +47,27 @@ export default function SolutionOutput({
         </ul>
       </div>
 
-      <div className="solution-section">
-        <h3>Similar resolved cases</h3>
-        <div className="cases-grid">
-          {cases.slice(0, 2).map((item) => (
-            <CaseCard key={item.id} item={item} />
-          ))}
+      {showCases ? (
+        <div className="solution-section">
+          <h3>Reference cases (offline knowledge base)</h3>
+          <div className="cases-grid">
+            {cases.slice(0, 2).map((item) => (
+              <CaseCard key={item.id} item={item} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      <div className="solution-section">
-        <h3>Confidence indicators</h3>
-        <ConfidenceBar label="Contradiction clarity" value={0.78} />
-        <ConfidenceBar label="Principle relevance" value={0.72} />
-        <ConfidenceBar label="Case similarity" value={0.66} />
-      </div>
+      {confidence ? (
+        <div className="solution-section">
+          <h3>Confidence indicators</h3>
+          <ConfidenceBar label="Contradiction clarity" value={confidence.contradictionClarity} />
+          <ConfidenceBar label="Principle relevance" value={confidence.principleRelevance} />
+          {confidence.caseSimilarity !== null ? (
+            <ConfidenceBar label="Case similarity" value={confidence.caseSimilarity} />
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="footer-actions">
         <button className="outline-button" type="button">
