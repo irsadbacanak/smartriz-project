@@ -20,6 +20,9 @@
   --space-3: 12px;
   --space-4: 16px;
   --space-6: 24px;
+  --space-8: 32px;
+  --radius-lg: 12px;
+  --surface-2: #f0efe9;
 }
 
 [data-theme="dark"] {
@@ -30,4 +33,5 @@
   --text-2: #a8a39a;
   --text-3: #6e6a62;
   --reading-tint: #232220;
+  --surface-2: #2a2927;
 }
