@@ -136,6 +136,7 @@ export default function App() {
           <ActionsFooter onRefine={handleRefine} />
           <PrincipleDetailPanel
             principle={expandedPrinciple}
+            principleApplications={result?.principle_applications}
             cases={domainCases}
             onApply={() => setExpandedPrinciple(null)}
             onClose={() => setExpandedPrinciple(null)}

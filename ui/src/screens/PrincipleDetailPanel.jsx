@@ -1,6 +1,6 @@
 import CaseCard from '../components/CaseCard'
 
-export default function PrincipleDetailPanel({ principle, cases, onApply, onClose }) {
+export default function PrincipleDetailPanel({ principle, principleApplications, cases, onApply, onClose }) {
   if (!principle) return null
 
   const hasCases = cases && cases.length > 0
@@ -19,6 +19,15 @@ export default function PrincipleDetailPanel({ principle, cases, onApply, onClos
       <ol className="subprinciple-list">
         {principle.sub_principles?.slice(0, 4).map((item) => <li key={item}>{item}</li>)}
       </ol>
+
+      {principleApplications?.[String(principle.id)] && (
+        <div className="panel-applied-section">
+          <div className="cases-title">Applied in this analysis</div>
+          <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: '1.6' }}>
+            {principleApplications[String(principle.id)]}
+          </p>
+        </div>
+      )}
 
       {hasCases ? (
         <>
