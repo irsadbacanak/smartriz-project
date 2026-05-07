@@ -1,26 +1,85 @@
 from langgraph.graph import END, StateGraph
 
+from smartriz.agents.llm_client import chat_json
+from smartriz.agents.prompts import (
+    ANALYST_SYSTEM,
+    ANALYST_USER,
+    CRITIC_SYSTEM,
+    CRITIC_USER,
+    DETECTOR_SYSTEM,
+    DETECTOR_USER,
+    SOLVER_SYSTEM,
+    SOLVER_USER,
+)
 from smartriz.agents.state import TRIZState
 
 
-def problem_analyst(state: TRIZState):
+def problem_analyst(state: TRIZState) -> dict:
     print("Agent: Analyzing Problem...")
-    return {"analysis": "Initial problem analysis completed."}
+    result = chat_json(
+        system=ANALYST_SYSTEM,
+        user=ANALYST_USER.format(problem=state["original_problem"]),
+        schema_hint='{"analysis": "...", "system_boundary": "...", "key_parameters": [...]}',
+    )
+    return {
+        "analysis": result.get("analysis", ""),
+        "meta": {
+            "system_boundary": result.get("system_boundary", ""),
+            "key_parameters": result.get("key_parameters", []),
+        },
+    }
 
 
-def contradiction_detector(state: TRIZState):
+def contradiction_detector(state: TRIZState) -> dict:
     print("Agent: Detecting Contradictions...")
-    return {"contradictions": ["Weight vs. Strength"]}
+    result = chat_json(
+        system=DETECTOR_SYSTEM,
+        user=DETECTOR_USER.format(
+            problem=state["original_problem"],
+            analysis=state.get("analysis", ""),
+        ),
+        schema_hint='{"contradictions": ["Improving X worsens Y", ...]}',
+    )
+    contradictions = result.get("contradictions", [])
+    # Clamp to 1-3 items
+    contradictions = contradictions[:3] if contradictions else ["Improving strength worsens weight"]
+    return {"contradictions": contradictions}
 
 
-def react_solver(state: TRIZState):
+def react_solver(state: TRIZState) -> dict:
     print("Agent: Generating Solution...")
-    return {"final_solution": "Proposed TRIZ solution based on principles."}
+    contradictions_text = "\n".join(f"- {c}" for c in state.get("contradictions", []))
+    result = chat_json(
+        system=SOLVER_SYSTEM,
+        user=SOLVER_USER.format(
+            problem=state["original_problem"],
+            contradictions=contradictions_text,
+        ),
+        schema_hint='{"selected_principles": ["1: Segmentation", ...], "final_solution": "..."}',
+    )
+    return {
+        "selected_principles": result.get("selected_principles", []),
+        "final_solution": result.get("final_solution", ""),
+    }
 
 
-def reflexion_critic(state: TRIZState):
+def reflexion_critic(state: TRIZState) -> dict:
     print("Agent: Evaluating Solution...")
-    return {"critic_feedback": "Approved", "iterations": state.get("iterations", 0) + 1}
+    result = chat_json(
+        system=CRITIC_SYSTEM,
+        user=CRITIC_USER.format(
+            problem=state["original_problem"],
+            analysis=state.get("analysis", ""),
+            contradictions=", ".join(state.get("contradictions", [])),
+            selected_principles=", ".join(state.get("selected_principles", [])),
+            final_solution=state.get("final_solution", ""),
+        ),
+        schema_hint='{"critic_feedback": "...", "verdict": "approved|revise"}',
+    )
+    return {
+        "critic_feedback": result.get("critic_feedback", ""),
+        "iterations": state.get("iterations", 0) + 1,
+    }
 
 
 workflow = StateGraph(TRIZState)
