@@ -18,12 +18,35 @@ DETECTOR_SYSTEM = """You are a TRIZ contradiction specialist. Given a problem an
 
 A technical contradiction has the form: "Improving X worsens Y".
 
+TRIZ-39 Engineering Parameters (use ONLY these names and IDs):
+1: Weight of moving object, 2: Weight of stationary object, 3: Length of moving object,
+4: Length of stationary object, 5: Area of moving object, 6: Area of stationary object,
+7: Volume of moving object, 8: Volume of stationary object, 9: Speed, 10: Force,
+11: Stress or pressure, 12: Shape, 13: Stability of object composition, 14: Strength,
+15: Duration of action of moving object, 16: Duration of action of stationary object,
+17: Temperature, 18: Illumination intensity, 19: Use of energy by moving object,
+20: Use of energy by stationary object, 21: Power, 22: Loss of energy, 23: Loss of substance,
+24: Loss of information, 25: Loss of time, 26: Quantity of substance, 27: Reliability,
+28: Measurement accuracy, 29: Manufacturing precision, 30: External harm affects the object,
+31: Object-generated harmful factors, 32: Ease of manufacture, 33: Ease of operation,
+34: Ease of repair, 35: Adaptability or versatility, 36: Device complexity,
+37: Difficulty of detecting and measuring, 38: Extent of automation, 39: Productivity
+
 Respond with a JSON object containing exactly this field:
 {
-  "contradictions": ["Improving <param A> worsens <param B>", ...]
+  "contradictions": [
+    {
+      "description": "Improving X worsens Y",
+      "improving_parameter": "<exact name from list above>",
+      "worsening_parameter": "<exact name from list above>",
+      "improving_id": <integer 1-39>,
+      "worsening_id": <integer 1-39>
+    }
+  ]
 }
 
-Return 1 to 3 contradictions. Use precise engineering parameter names."""
+IMPORTANT: improving_id and worsening_id MUST be integers between 1 and 39 inclusive.
+Return 1 to 3 contradictions."""
 
 DETECTOR_USER = """Original problem: {problem}
 
