@@ -38,12 +38,46 @@ def contradiction_detector(state: TRIZState) -> dict:
             problem=state["original_problem"],
             analysis=state.get("analysis", ""),
         ),
-        schema_hint='{"contradictions": ["Improving X worsens Y", ...]}',
+        schema_hint='{"contradictions": [{"description": "...", "improving_parameter": "...", "worsening_parameter": "...", "improving_id": 1, "worsening_id": 14}]}',
     )
-    contradictions = result.get("contradictions", [])
-    # Clamp to 1-3 items
-    contradictions = contradictions[:3] if contradictions else ["Improving strength worsens weight"]
-    return {"contradictions": contradictions}
+    raw_items = result.get("contradictions", [])
+    if not raw_items:
+        raw_items = [{"description": "Improving strength worsens weight"}]
+
+    contradictions: list[str] = []
+    contradiction_details: list[dict] = []
+
+    for item in raw_items[:3]:
+        if isinstance(item, str):
+            contradictions.append(item)
+            continue
+        desc = item.get("description", "")
+        if desc:
+            contradictions.append(desc)
+        imp_id = item.get("improving_id")
+        wors_id = item.get("worsening_id")
+        if (
+            isinstance(imp_id, int)
+            and isinstance(wors_id, int)
+            and 1 <= imp_id <= 39
+            and 1 <= wors_id <= 39
+            and desc
+        ):
+            contradiction_details.append({
+                "description": desc,
+                "improving_parameter": item.get("improving_parameter", ""),
+                "worsening_parameter": item.get("worsening_parameter", ""),
+                "improving_id": imp_id,
+                "worsening_id": wors_id,
+            })
+
+    if not contradictions:
+        contradictions = ["Improving strength worsens weight"]
+
+    return {
+        "contradictions": contradictions,
+        "contradiction_details": contradiction_details if contradiction_details else None,
+    }
 
 
 def react_solver(state: TRIZState) -> dict:
