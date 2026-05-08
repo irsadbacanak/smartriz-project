@@ -21,7 +21,10 @@
       "Bash(curl -N --max-time 180 \"http://localhost:8000/api/stream?problem=A%20heavy%20bridge%20component%20must%20remain%20strong%20while%20reducing%20weight.\")",
       "Bash(python *)",
       "Bash(PYTHONPATH=src python3 *)",
-      "Bash(ruff check *)"
+      "Bash(ruff check *)",
+      "WebSearch",
+      "WebFetch(domain:www.philschmid.de)",
+      "WebFetch(domain:arxiv.org)"
     ]
   }
 }
